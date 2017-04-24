@@ -1,24 +1,295 @@
-.App {
+/**
+ * Main screen.
+ */
+.button.new-timer {
+  width: 100px;
+  padding: 0;
+}
+
+.search-timers-wrapper {
+  display: inline-block;
+  position: relative;
+}
+.search-timers {
+  width: 170px;
+  margin-left: 2%;
+}
+.ajax-results-timers {
+  display: none;
+  border: 1px solid #888;
+  padding: 10px .5em;
+  width: 170px;
+  position: absolute;
+  right: -4px;
+  top: 30px;
+  max-height: 280px;
+  overflow: auto;
+  background-color: #fff;
+}
+
+
+.ajax-results-timers p {
+  margin: 0;
+}
+
+.title-clients {
+  margin-top: 40px;
+}
+
+.taxonomy-terms-list,
+.ajax-results-timers ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.no-taxonomy-found,
+.taxonomy-terms-list {
+  padding-left: 10px;
+}
+
+.taxonomy-terms-list li,
+.ajax-results-timers li {
+  padding: 6px 0;
+}
+
+.ajax-results-timers ul {
+  margin: 0;
+}
+
+
+/**
+ * Show taxonomy.
+ */
+.show-wordpress .container {
+  padding: 0;
+  height: 100%;
+}
+
+.show-wordpress .button {
+  margin: 15px 20px;
+}
+
+.wordpress-iframe {
+  width: 100%;
+  height: calc( 100% - 61px );
+  border: 0;
+  overflow: hidden;
+}
+
+
+/**
+ * New Timer form.
+ */
+.ptt-form h1 {
+  margin-top: 20px;
+}
+
+.ptt-details-form {
+  margin-top: 20px;
+}
+
+.ptt-details-form textarea {
+  height: 80px;
+  resize: vertical;
+}
+
+.more-fields {
+  height: 40px;
+  overflow: hidden;
+}
+
+.more-link {
+  display: inline-block;
+  margin-bottom: 20px;
+}
+
+.ptt-form-clients {
+  font-size: 12px;
+}
+
+.ptt-client-field-wrapper {
+  height: 16px;
+  overflow: hidden;
+  margin-left: 10px;
+}
+
+.ptt-client-field-wrapper.unfolded .add-new-client-link,
+.more-fields.unfolded .more-link {
+  display: none;
+}
+
+.add-new-client-link {
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+.unfolded {
+  height: auto;
+}
+
+.ptt-form-clients input[type="checkbox"] {
+  width: 10px;
+  height: 10px;
+  line-height: normal;
+}
+
+.ptt-form-clients input[type="text"] {
+  width: 100%;
+  margin-bottom: .4em;
+}
+
+.ptt-form-clients > label {
+  margin-bottom: 12px;
+}
+
+.ptt-form-clients .taxonomy-terms-list label {
+  margin-bottom: 8px;
+  font-size: 12px;
+}
+
+.ptt-form-clients .taxonomy-terms-list ul {
+  margin-bottom: 0;
+}
+
+.ptt-form-clients .taxonomy-terms-list li {
+  padding: 0;
+}
+
+.new-tag-input {
+  width: 74%;
+}
+
+.new-tag-add-button {
+  width: 24%;
+  display: inline-block;
+  min-width: 1px;
+  padding: 0 4%;
+}
+
+.tags-list {
+  margin: 7px 0 7px 16px;
+  padding: 0;
+  font-size: 12px;
+  overflow: auto;
+}
+
+.tags-list > span {
+  float: left;
+  margin-right: 25px;
+  font-size: 13px;
+  line-height: 1.8em;
+  cursor: default;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.unfolded .tags-list .tag-delete-button {
+  position: absolute;
+  width: 23px;
+  min-width: 1px;
+  height: 23px;
+  border: none;
+  margin: 0 0 0 -18px;
+  padding: 0;
+  background: 0 0;
+  cursor: pointer;
+  text-indent: 0;
+}
+
+.tags-list .tag-delete-button .remove-tag-icon::before {
+  margin-left: 2px;
+  -webkit-border-radius: 50%;
+  border-radius: 50%;
+  border: 1px solid #ccc;
+  line-height: 1.28;
+}
+
+.tags-list .tag-delete-button .remove-tag-icon::before {
+  background: 0 0;
+  color: #ccc;
+  content: "x";
+  display: block;
+  speak: none;
+  height: 10px;
+  width: 10px;
+  text-align: center;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 7px;
+  font-size: 14px;
+}
+
+.tags-list .tag-delete-button:hover .remove-tag-icon::before {
+  color: #888;
+  border-color: #888;
+}
+
+.screen-reader-text, .screen-reader-text span, .ui-helper-hidden-accessible {
+  position: absolute;
+  margin: -1px;
+  padding: 0;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  border: 0;
+  word-wrap: normal !important;
+}
+
+
+/**
+ * Timer created / updated confirmation page.
+ */
+.ptt-created h1,
+.ptt-updated h1 {
+  margin-top: 20px;
+  margin-left: 20px;
+}
+
+.ptt-created p,
+.ptt-updated p {
+  text-align: center;
+  margin: 90px 0 40px;
+}
+
+.ptt-created table,
+.ptt-updated table {
+  width: 100%;
   text-align: center;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
+
+/**
+ * Reset button, New tab, Help button.
+ */
+.help-buttons-wrapper {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  font-size: 24px;
+  width: 82px;
 }
 
-.App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
-  color: white;
+.help-button {
+  float: right;
+}
+.reset-link,
+.new-tab-link {
+  /*display: none;*/
+  position: absolute;
+  right: -38px;
 }
 
-.App-intro {
-  font-size: large;
+.help-buttons-wrapper:hover .reset-link {
+  position: fixed;
+  right: 38px;
+  transition: .5s;
 }
 
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+.help-buttons-wrapper:hover .new-tab-link {
+  position: fixed;
+  right: 70px;
+  transition: .5s;
 }
+

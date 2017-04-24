@@ -1,5 +1,174 @@
-body {
-  margin: 0;
-  padding: 0;
-  font-family: sans-serif;
+/**
+ * Main Styles
+ */
+
+* {
+	box-sizing: border-box;
+	word-wrap: break-word;
+}
+
+body,
+textarea,
+input,
+select,
+button {
+	text-rendering: optimizeLegibility;
+
+	color: #5d5d5d;
+
+	line-height: 1.231;
+	font-size: 16px;
+	font-weight: 100;
+	font-style: normal;
+	font-stretch: normal;
+	font-family: 'Open Sans', sans-serif;
+}
+
+html, body {
+	margin: 0;
+	padding: 0;
+	min-width:320px;
+	height: 99%;
+}
+
+.container {
+	max-width: 600px;
+	padding: 15px 19.25px 36px; /* Dashboard */
+	margin: 0 auto;
+	position: relative;
+	overflow: visible;
+}
+
+.show-wordpress .container {
+	max-width: 1000px;
+}
+
+
+h1, h2, h3, h4, h5, h6 {
+	font-weight: 100;
+	font-style: normal;
+	font-stretch: normal;
+	font-family: 'Open Sans', sans-serif;
+	margin: 0.1em 0 0.2em;
+}
+
+h1 {
+	font-size: 40px;
+}
+
+h2 {
+	font-size: 30px;
+}
+
+ul, pre, p, blockquote, label {
+	display: block;
+	margin-top: 0;
+	margin-bottom: 1em;
+}
+
+code, pre {
+	font-family: 'Fira Mono', monospace;
+	font-size: 0.9em;
+}
+
+hr {
+	height: 2px;
+	border:0 none;
+	background: #979797;
+}
+
+a {
+	color: #5d5d5d;
+}
+
+input, textarea {
+	display: inline-block;
+	padding: 0 .5em;
+	border: 1px solid #888;
+	line-height: 30px;
+}
+
+input[type="checkbox"] {
+	display: inline-block;
+	margin-left: 0;
+}
+
+label > input,
+label > textarea {
+	display: block;
+	width: 100%;
+
+	font-size: inherit;
+}
+
+label {
+	font-size: 20px;
+}
+
+button, .button {
+	background: #fff;
+	line-height: 30px;
+	min-width: 80px;
+	text-align: center;
+	padding: 0 8%;
+	border: 1px solid #888;
+
+	cursor: hand;
+	cursor: pointer;
+}
+a.button {
+	display: inline-block;
+	text-decoration: none;
+}
+
+.button.cancel {
+	float: right;
+}
+
+.reset {
+	font-size: 0.8em;
+	opacity: 0.8;
+}
+
+.warn {
+	/* http://clrs.cc/ - red */
+	background: rgb( 255, 65, 54 );
+	background: rgba( 255, 65, 54, 0.4 );
+	padding: 1em;
+}
+
+
+/**
+ * Checkboxes
+ * @link http://stackoverflow.com/questions/4148499/how-to-style-checkbox-using-css
+ */
+.checkbox:before{
+	position: relative;
+	display: block;
+	width: 10px;
+	height: 10px;
+	content: "";
+	background: #fff;
+}
+.checkbox:after{
+	position: relative;
+	display: block;
+	left: 0;
+	top: -10px;
+	width: 10px;
+	height: 10px;
+	border: 1px solid #979797;
+	content: "";
+	background: #fff;
+}
+.checkbox:checked:after{
+	/* https://www.base64-image.de/ */
+	background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAMAAACdt4HsAAAAbFBMVEVHcEyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIBswtNpAAAAI3RSTlMAEeCX9/wJBQHz0+4651u/dUVRtWlvjCUwfR2eKRjIpWPYhn4JrZEAAAHjSURBVHhexZXdjoIwEIX7TwsgIIiCiuJ5/3fcBJo27g0wJLvfJeFLOzOHgf0rduCHfN5OktN1mzcK+k4/vioAuI5+vAZQtIbmm1YAQFpbmj9IBQDljdHISwDQr4GmJycBAKojTpD3bvZ7Yvuedw0Arkpo/qPB7F+Ifj7Ofkb16+nQ+fYsjvmnAkf6Z98ZlvnR/KRdfP0xx3xJ86338eKH6kc5HPNT4vfr54eipvln77u3peVXYEZ3tADcUiw0T5J/Hb2fPkj+s/F+dqbo1kjv696SAtwrLDScFoDM+xMtQbnwvnqvXTXvpaxuv8ocSnjuZmVUcr6qqL7eCw1Eel2JWooF1RkWsK3CgjutRF3AA1XFKvICHmm2+kCRhwSVWwv4KATivJMOHrVSADOVQ0Sd/S8gPHyZ1bhdHCKNmeeSwiM2RCipFAKuZoyZOzy62hT5j0bgnjB2UvCUnG2BvxAQD/YIBWRbt2BUgEsSCoDcvMXipdG0Dp5p+xYysQiVwaMve3anQCR2cAc9fuP2rcEh9jFugV20Gl8U+d4NPuKLzrKdXL786cr2chWI6IrtxkpERsqfsHbBz06MAC+9rss6IfghTEXPGY08m8uvLSPCR0DJgdHpIN6GHeBc5pYdgT/Zn/MDb2hb7+YGE+UAAAAASUVORK5CYII=');
+	background-size: contain;
+}
+.checkbox:disabled:after{
+	-webkit-filter: opacity(0.4);
+}
+.checkbox {
+	margin-right: 8px;
 }
