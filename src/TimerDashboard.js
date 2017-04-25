@@ -8,7 +8,9 @@ class TimerDashboard extends Component {
       <div className="timer-dashboard-wrapper">
         <a href="?step=ptt-form" className="button new-timer">New Timer</a>
         <TimerSearchForm />
-        <TimerTaxonomies />
+        <TimerTaxonomies taxonomyName="clients" />
+        <TimerTaxonomies taxonomyName="projects" />
+        <TimerTaxonomies taxonomyName="timesheets" />
       </div>
     );
   }
