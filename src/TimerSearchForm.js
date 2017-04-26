@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import FontAwesome from 'react-fontawesome';
+// import FontAwesome from 'react-fontawesome';
 
 class TimerSearchForm extends Component {
   render() {
