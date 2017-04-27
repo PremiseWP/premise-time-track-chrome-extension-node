@@ -1,36 +1,75 @@
 import React, { Component } from 'react';
 // import FontAwesome from 'react-fontawesome';
 
-class TimerNewForm extends Component {
+class TimerEditForm extends Component {
+
+  constructor() {
+
+    this.state = { timer: { id: null, title: null, content: null, hours: null, date: null } };
+  }
+
+  // called before the component is rendered to the page.
+  componentWillMount() {
+    // Fetch timer from server before component is rendered.
+    this._fetchTimer();
+  }
+
+  _fetchTimer() {
+
+    if ( ! this.props.timerId ) {
+      return;
+    }
+
+    timer = { id: 1, title: "Timer 1", content: "Timer description", hours: 2 };
+
+    this.setState({ timer });
+
+    return;
+
+    $.ajax({
+      method: 'GET',
+      url: '/api/' + this.props.timerId, // Makes call to the remote server.
+      success: (timer) => { // Arrow function preserves the this binding to our class.
+        // Get JSON.
+        timer = JSON.parse(timer);
+        console.log(timer);
+
+        this.setState({ timer });
+      }
+    });
+  }
+
   render() {
+
+    const timer = this.state.timer;
+
     return (
      <form className="ptt-details-form" method="GET" action="">
 
       <input type="hidden" name="step" value="ptt-save" />
 
-      <input type="hidden" name="ptt-id" value={null /* echo $ptt ? htmlspecialchars( $ptt['id'] ) : ''; */} />
+      <input type="hidden" name="ptt-id" value={timer.id} />
 
       <input type="hidden" name="ptt[status]" value="publish" />
 
       <div className="details">
         <label>Task:
-          <input type="text" name="ptt[title]"
-            value={null /* echo $ptt ?
-              htmlspecialchars( $ptt['title']['raw'] ) :
-              ''; */} required />
+          <input type="text" name="ptt[title]" required
+            value={timer.title}
+            ref={(input) => this._title = input} />
         </label>
 
         <label>Description:
-          <textarea name="ptt[content]">{/* echo $ptt ?
-              nl2br( htmlspecialchars( $ptt['content']['raw'] ) ) :
-              ''; */}</textarea>
+          <textarea name="ptt[content]"
+            ref={(textarea) => this._content = textarea}>
+            {timer.content}
+          </textarea>
         </label>
 
         <label>Time:
-          <input type="text" name="ptt[pwptt_hours]"
-            value={null /* echo $ptt ?
-              htmlspecialchars( $ptt['pwptt_hours'] ) :
-              ''; */} placeholder="1.75" required />
+          <input type="text" name="ptt[pwptt_hours]" placeholder="1.75" required
+            value={timer.hours}
+            ref={(input) => this._hours = input} />
         </label>
 
         <div className="more-fields">
@@ -38,44 +77,13 @@ class TimerNewForm extends Component {
 
           <label>Date:
             <input type="date" name="ptt[date]"
-              value={null /* echo $ptt ?
-                htmlspecialchars( substr( $ptt['date'], 0, 10 ) ) :
-                ''; */} />
+              value={_getTimerDate()}
+              ref={(input) => this._date = input} />
           </label>
 
           <div className="ptt-form-clients">
-            <label>Clients:</label>
-
-            {/* if ( $clients ) :
-              $no_clients = false; */}
-              <ul className="taxonomy-terms-list clients">
-              {/* foreach ( (array) $clients as $client ) : */}
-
-                <li>
-                  <label>
-                    <input type="checkbox" name="ptt[clients][]"
-                      value={null /* echo $client['id']; */} className="checkbox" />
-                      {/* if ( $ptt && in_array( $client['id'], $ptt['premise_time_tracker_client'] ) ) echo 'checked'; */}
-                    {/* echo htmlspecialchars( $client['name'] ); */}
-                  </label>
-                </li>
-
-              {/* endforeach; */}
-              </ul>
-            {/* endif; */}
-
-            {/* if ( $clients ) : */}
-              <div className="ptt-client-field-wrapper">
-                <a href="#" className="add-new-client-link unfold">Add a new client</a>
-            {/* endif; */}
-
-              <input type="text" name="ptt[clients][new]" value="" />
-
-            {/* if ( $clients ) : */}
-              </div>
-            {/* endif; */}
+            <TimerTaxonomiesEditForm timer={this.state.timer} taxonomyName="clients" />
           </div>
-
           <hr />
 
           <label>Projects:
@@ -164,6 +172,14 @@ class TimerNewForm extends Component {
     );
   }
 
+  _getTimerDate() {
+    if ( ! timer.date ) {
+      return null;
+    }
+
+    return timer.date.substring(0, 10);
+  }
+
   _closeModal(event) {
     event.preventDefault();
 
@@ -171,4 +187,4 @@ class TimerNewForm extends Component {
   }
 }
 
-export default TimerNewForm;
+export default TimerEditForm;

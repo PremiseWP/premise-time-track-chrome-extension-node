@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import Modal from 'react-modal';
-import TimerNewForm from './TimerNewForm';
+import TimerEditForm from './TimerEditForm';
 
-class TimerNewModal extends Component {
+class TimerEditModal extends Component {
   constructor() {
     super(); // super() must be called in our constructor.
 
@@ -43,14 +43,16 @@ class TimerNewModal extends Component {
           onAfterOpen={this._afterOpenModal.bind(this)}
           onRequestClose={this._closeModal.bind(this)}
           style={customStyles}
-          contentLabel="Example Modal"
+          contentLabel="Edit Timer Modal"
         >
           <h2 ref="subtitle">{ /*$ptt ? 'Edit' : 'New';*/ } Timer</h2>
-          <TimerNewForm onClose={this._closeModal.bind(this)} />
+          <TimerEditForm
+            timerId=""
+            onClose={this._closeModal.bind(this)} />
         </Modal>
       </div>
     );
   }
 }
 
-export default TimerNewModal;
+export default TimerEditModal;
