@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import TimerCategoryEdit from './TimerCategoryEdit';
+import $ from 'jquery'; // Import jQuery.
 
-class TimerTaxonomiesEdit extends Component {
+class TimerCategoriesEdit extends Component {
   constructor() {
     super(); // super() must be called in our constructor.
 
@@ -101,13 +103,14 @@ class TimerTaxonomiesEdit extends Component {
     // Returns an array...
     return this.state.taxonomies.map((taxonomy) => { // Each element from commentList is passed as argument...
       // ...with a new component built for each element present in commentList.
-      return ( <TimerTaxonomyEdit
+      return ( <TimerCategoryEdit
         taxonomy={taxonomy /* Pass the whole taxonomy */}
         taxonomyName={this.props.taxonomyName}
+        timer={this.props.timer}
         key={taxonomy.id} /> ); // ...which we can use to access properties and pass them as props.
         // Unique key.
     });
   }
 }
 
-export default TimerTaxonomiesEdit;
+export default TimerCategoriesEdit;

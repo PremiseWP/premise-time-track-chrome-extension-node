@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import TimerNewModal from './TimerNewModal';
+import TimerEditModal from './TimerEditModal';
 import TimerSearchForm from './TimerSearchForm';
 import TimerTaxonomies from './TimerTaxonomies';
 
@@ -7,7 +7,7 @@ class TimerDashboard extends Component {
   render() {
     return (
       <div className="timer-dashboard-wrapper">
-        <TimerNewModal />
+        <TimerEditModal />
         <TimerSearchForm />
         <TimerTaxonomies taxonomyName="clients" />
         <TimerTaxonomies taxonomyName="projects" />
