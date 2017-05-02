@@ -7,6 +7,7 @@ class TimerCategoriesEdit extends Component {
     super(); // super() must be called in our constructor.
 
     this.state = {
+      unfolded: false,
       taxonomies: []
     };
   }
@@ -66,17 +67,27 @@ class TimerCategoriesEdit extends Component {
     const taxonomyTitle = this.props.taxonomyName.charAt(0).toUpperCase() +
       this.props.taxonomyName.slice(1);
 
+    // Singular.
+    const taxonomyNameSingular = this.props.taxonomyName.substring(0, this.props.taxonomyName.length - 1);
+
     let taxonomyNodes,
       taxonomyNewField;
 
     const taxonomyNewName = "ptt[" + this.props.taxonomyName + "][new]";
 
+    const taxonomyNewWrapperClass = 'ptt-' + taxonomyNameSingular + '-field-wrapper ' +
+      (this.state.unfolded ? 'unfolded' : '');
+
     if (taxonomies) {
       const taxonomyClass = 'taxonomy-terms-list ' + this.props.taxonomyName;
       taxonomyNodes = <ul className={taxonomyClass}>{taxonomies}</ul>;
 
-      taxonomyNewField = <div className="ptt-client-field-wrapper">
-        <a href="#" className="add-new-client-link unfold">Add a new client</a>
+      taxonomyNewField = <div className={taxonomyNewWrapperClass}>
+        <a href="#"
+          className={'add-new-' + taxonomyNameSingular + '-link unfold'}
+          onClick={this._unfoldNewField.bind(this)}>
+          Add a new {taxonomyNameSingular}
+        </a>
         <input type="text" name={taxonomyNewName} value="" />
       </div>;
 
@@ -110,6 +121,13 @@ class TimerCategoriesEdit extends Component {
         key={taxonomy.id} /> ); // ...which we can use to access properties and pass them as props.
         // Unique key.
     });
+  }
+
+  _unfoldNewField(event) {
+    event.preventDefault();
+
+    // Show new field.
+    this.setState({unfolded: true});
   }
 }
 

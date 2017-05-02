@@ -9,16 +9,19 @@ class TimerEditForm extends Component {
   constructor() {
     super(); // super() must be called in our constructor.
 
-    this.state = { timer: {
-      id: null,
-      title: null,
-      content: null,
-      hours: null,
-      date: null,
-      clients: null,
-      projects: null,
-      timesheets: null
-    } };
+    this.state = {
+      unfolded: false,
+      timer: {
+        id: null,
+        title: null,
+        content: null,
+        hours: null,
+        date: null,
+        clients: null,
+        projects: null,
+        timesheets: null
+      }
+    };
   }
 
   // called before the component is rendered to the page.
@@ -85,8 +88,8 @@ class TimerEditForm extends Component {
               ref={(input) => this._hours = input} />
           </label>
 
-          <div className="more-fields">
-            <a href="#" className="more-link unfold">More</a>
+          <div className={'more-fields ' + (this.state.unfolded ? 'unfolded' : '')}>
+            <a href="#" onClick={this._unfoldMoreFields.bind(this)} className="more-link unfold">More</a>
 
             <label>Date:
               <input type="date" name="ptt[date]"
@@ -125,6 +128,13 @@ class TimerEditForm extends Component {
     event.preventDefault();
 
     this.props.onClose();
+  }
+
+  _unfoldMoreFields(event) {
+    event.preventDefault();
+
+    // Show more fields.
+    this.setState({unfolded: true});
   }
 }
 
