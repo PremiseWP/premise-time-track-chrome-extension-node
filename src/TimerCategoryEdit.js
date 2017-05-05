@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
+import TimerTaxonomyEdit from './TimerTaxonomyEdit';
 
-class TimerCategoryEdit extends Component {
+class TimerCategoryEdit extends TimerTaxonomyEdit {
   render() {
     const taxonomyInputName = "ptt[" + this.props.taxonomyName + "][]";
 
@@ -21,16 +22,6 @@ class TimerCategoryEdit extends Component {
         </label>
       </li>
     );
-  }
-
-  _timerHasTaxonomy() {
-    if ( this.props.timer &&
-      this.props.timer[ this.props.taxonomyName ] &&
-      this.props.timer[ this.props.taxonomyName ].indexOf( this.props.taxonomy.id ) > -1 ) {
-      return true;
-    }
-
-    return false;
   }
 }
 

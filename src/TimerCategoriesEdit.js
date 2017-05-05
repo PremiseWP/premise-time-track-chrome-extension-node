@@ -1,64 +1,9 @@
 import React, { Component } from 'react';
+import TimerTaxonomiesEdit from './TimerTaxonomiesEdit';
 import TimerCategoryEdit from './TimerCategoryEdit';
 import $ from 'jquery'; // Import jQuery.
 
-class TimerCategoriesEdit extends Component {
-  constructor() {
-    super(); // super() must be called in our constructor.
-
-    this.state = {
-      unfolded: false,
-      taxonomies: []
-    };
-  }
-
-  // called before the component is rendered to the page.
-  componentWillMount() {
-    // Fetch taxonomies from server before component is rendered.
-    this._fetchTaxonomies();
-  }
-
-  _fetchTaxonomies() {
-    // Use fake data.
-    let taxonomies = [];
-
-    if ( ! this.props.timer ) {
-      return;
-    }
-
-    if ( this.props.taxonomyName === 'projects' ) {
-
-      taxonomies = [{ id: 1, link: "http://tt.vallgroup.com/projects/1", name: "Project 1" },
-        { id: 2, link: "http://tt.vallgroup.com/projects/2", name: "Project 2" }];
-
-    } else if ( this.props.taxonomyName === 'clients' ) {
-
-      taxonomies = [{ id: 1, link: "http://tt.vallgroup.com/clients/1", name: "Client 1" },
-        { id: 2, link: "http://tt.vallgroup.com/clients/2", name: "Client 2" }];
-
-    } else if ( this.props.taxonomyName === 'timesheets' ) {
-
-      taxonomies = [{ id: 1, link: "http://tt.vallgroup.com/timesheets/1", name: "Timesheet 1" },
-        { id: 2, link: "http://tt.vallgroup.com/timesheets/2", name: "Timesheet 2" }];
-    }
-
-    this.setState({ taxonomies });
-
-    return;
-
-    $.ajax({
-      method: 'GET',
-      url: '/api/' + this.props.timerId + '/' + this.props.taxonomyName, // Makes call to the remote server.
-      success: (taxonomies) => { // Arrow function preserves the this binding to our class.
-        // Get JSON.
-        taxonomies = JSON.parse(taxonomies);
-        console.log(taxonomies);
-
-        this.setState({ taxonomies });
-      }
-    });
-  }
-
+class TimerCategoriesEdit extends TimerTaxonomiesEdit {
   render() {
     // Get & store taxonomies.
     const taxonomies = this._getTaxonomies() || [];
@@ -118,7 +63,7 @@ class TimerCategoriesEdit extends Component {
         taxonomy={taxonomy /* Pass the whole taxonomy */}
         taxonomyName={this.props.taxonomyName}
         timer={this.props.timer}
-        key={taxonomy.id} /> ); // ...which we can use to access properties and pass them as props.
+        key={this.props.taxonomyName + taxonomy.id} /> ); // ...which we can use to access properties and pass them as props.
         // Unique key.
     });
   }
