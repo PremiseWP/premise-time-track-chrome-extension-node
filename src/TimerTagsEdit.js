@@ -83,8 +83,9 @@ class TimerTagsEdit extends Component {
       <label>{taxonomyTitle}:
         <div className="new-tag-wrapper">
           <input type="text" name={taxonomyNewName}
-            value="" list={this.props.taxonomyName} className="new-tag-input" />
-          <button className="new-tag-add-button">Add</button>
+            list={this.props.taxonomyName} className="new-tag-input"
+            ref={(input) => this._taxonomy = input} />
+          <button onClick={this._addTaxonomy.bind(this)}>Add</button>
         </div>
 
         {taxonomyOptionsNodes /* Now being displayed based on component's state! */}
@@ -110,6 +111,20 @@ class TimerTagsEdit extends Component {
         key={taxonomy.id} /> ); // ...which we can use to access properties and pass them as props.
         // Unique key.
     });
+  }
+
+  _addTaxonomy(event) {
+    // Prevents page from reloading.
+    event.preventDefault();
+
+    const taxonomy = { id: this._taxonomy.id, value: this._taxonomy.value };
+
+    // Add our new taxonomy to state.
+    let taxonomies = this.state.taxonomies;
+
+    taxonomies.push( taxonomy );
+
+    this.setState({taxonomies});
   }
 }
 

@@ -12,14 +12,14 @@ class TimerEditForm extends Component {
     this.state = {
       unfolded: false,
       timer: {
-        id: null,
-        title: null,
-        content: null,
-        hours: null,
-        date: null,
-        clients: null,
-        projects: null,
-        timesheets: null
+        id: 0,
+        title: '',
+        content: '',
+        hours: '',
+        date: '',
+        clients: [],
+        projects: [],
+        timesheets: []
       }
     };
   }
@@ -60,31 +60,29 @@ class TimerEditForm extends Component {
     const timer = this.state.timer;
 
     return (
-      <form className="ptt-details-form" method="GET" action="">
+      <form className="ptt-details-form"
+        onSubmit={this._handleSubmit.bind(this) /* Bind an event listener to the submit event */}>
 
-        <input type="hidden" name="step" value="ptt-save" />
+        {/*<input type="hidden" name="ptt-id" defaultValue={timer.id} />
 
-        <input type="hidden" name="ptt-id" value={timer.id} />
-
-        <input type="hidden" name="ptt[status]" value="publish" />
+        <input type="hidden" name="ptt[status]" defaultValue="publish" />*/}
 
         <div className="details">
           <label>Task:
-            <input type="text" name="ptt[title]" required
-              value={timer.title}
+            <input required
+              defaultValue={timer.title}
               ref={(input) => this._title = input} />
           </label>
 
           <label>Description:
-            <textarea name="ptt[content]"
-              ref={(textarea) => this._content = textarea}>
-              {timer.content}
-            </textarea>
+            <textarea
+              defaultValue={timer.content}
+              ref={(textarea) => this._content = textarea} />
           </label>
 
           <label>Time:
-            <input type="text" name="ptt[pwptt_hours]" placeholder="1.75" required
-              value={timer.hours}
+            <input placeholder="1.75" required
+              defaultValue={timer.hours}
               ref={(input) => this._hours = input} />
           </label>
 
@@ -92,8 +90,8 @@ class TimerEditForm extends Component {
             <a href="#" onClick={this._unfoldMoreFields.bind(this)} className="more-link unfold">More</a>
 
             <label>Date:
-              <input type="date" name="ptt[date]"
-                value={this._getTimerDate(timer.date)}
+              <input type="date"
+                defaultValue={this._getTimerDate(timer.date)}
                 ref={(input) => this._date = input} />
             </label>
 
@@ -118,7 +116,7 @@ class TimerEditForm extends Component {
 
   _getTimerDate(date) {
     if ( ! date ) {
-      return null;
+      return '';
     }
 
     return date.substring(0, 10);
@@ -135,6 +133,38 @@ class TimerEditForm extends Component {
 
     // Show more fields.
     this.setState({unfolded: true});
+  }
+
+  _handleSubmit(event) {
+    console.log('TimerEditForm submitted!');
+    // Prevents page from reloading.
+    event.preventDefault();
+
+    // Form validation.
+    // checks whether the value property of title or hours is falsy.
+    if (! this._title.value || ! this._hours.value) {
+      alert("Please enter a task and the corresponding hours");
+      // Keep timer from being added.
+      return;
+    }
+
+    // Populated from refs in JSX.
+    let timer = this.state.timer;
+
+    timer.title = this._title.value;
+    timer.content = this._content.value;
+    timer.hours = this._hours.value;
+    timer.date = this._date.value;
+    timer.clients = []; //this._getCategoriesValues('clients');
+    timer.projects = []; //this._getTagsValues('projects');
+    timer.timesheets = []; //this._getTagsValues('timesheets');
+
+    this.setState({timer});
+
+    console.log(timer);
+
+    // The addTimer method has been passed as an argument from CommentBox (see later!).
+    this.props.addTimer(this.state.timer);
   }
 }
 

@@ -88,7 +88,7 @@ class TimerCategoriesEdit extends Component {
           onClick={this._unfoldNewField.bind(this)}>
           Add a new {taxonomyNameSingular}
         </a>
-        <input type="text" name={taxonomyNewName} value="" />
+        <input type="text" name={taxonomyNewName} />
       </div>;
 
     } else {

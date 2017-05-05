@@ -15,7 +15,7 @@ class TimerCategoryEdit extends Component {
         <label>
           <input type="checkbox"  className="checkbox"
             name={taxonomyInputName}
-            value={this.props.taxonomy.id}
+            defaultValue={this.props.taxonomy.id}
             {...checked} />
           {this.props.taxonomy.name}
         </label>
