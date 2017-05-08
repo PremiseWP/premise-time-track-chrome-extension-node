@@ -61,18 +61,7 @@ class TimerTaxonomiesEdit extends Component {
     });
   }
 
-  _addTaxonomy(event) {
-    // Prevents page from reloading.
-    event.preventDefault();
-
-    const selectedValue = this._taxonomy.value;
-
-    // Get ID back from options...
-    const selectedId = $( '#' + this.props.taxonomyName )
-      .find("[value='" + selectedValue + "']").data("id");
-
-    const taxonomy = { id: selectedId, name: selectedValue };
-
+  _addTaxonomy(taxonomy) {
     const hasTaxonomies = this.state.hasTaxonomies.concat([taxonomy]);
 
     // Add our new taxonomy to state.
@@ -81,12 +70,7 @@ class TimerTaxonomiesEdit extends Component {
     // console.log(taxonomy, hasTaxonomies);
   }
 
-  _removeTaxonomy(event) {
-    // Prevents page from reloading.
-    event.preventDefault();
-
-    const taxonomy = { id: this._taxonomy.id, value: this._taxonomy.value };
-
+  _removeTaxonomy(taxonomy) {
     // https://rainsoft.io/how-three-dots-changed-javascript/
     const hasTaxonomies = [...this.state.hasTaxonomies]; // use spread operator to clone existing array.
     const taxonomyIndex = hasTaxonomies.indexOf(taxonomy);

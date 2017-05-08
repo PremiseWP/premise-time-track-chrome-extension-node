@@ -23,7 +23,7 @@ class TimerCategoriesEdit extends TimerTaxonomiesEdit {
     const taxonomyNewWrapperClass = 'ptt-' + taxonomyNameSingular + '-field-wrapper ' +
       (this.state.unfolded ? 'unfolded' : '');
 
-    if (taxonomies) {
+    if (taxonomies.length) {
       const taxonomyClass = 'taxonomy-terms-list ' + this.props.taxonomyName;
       taxonomyNodes = <ul className={taxonomyClass}>{taxonomies}</ul>;
 
@@ -39,7 +39,7 @@ class TimerCategoriesEdit extends TimerTaxonomiesEdit {
     } else {
       taxonomyNodes = <span></span>;
 
-      taxonomyNewField = <input type="text" name={taxonomyNewName} value="" />;
+      taxonomyNewField = <input type="text" name={taxonomyNewName} />;
     }
 
     return (
@@ -63,6 +63,8 @@ class TimerCategoriesEdit extends TimerTaxonomiesEdit {
         taxonomy={taxonomy /* Pass the whole taxonomy */}
         taxonomyName={this.props.taxonomyName}
         timer={this.props.timer}
+        removeCategory={this._removeCategory.bind(this)}
+        addCategory={this._addCategory.bind(this)}
         key={this.props.taxonomyName + taxonomy.id} /> ); // ...which we can use to access properties and pass them as props.
         // Unique key.
     });
@@ -73,6 +75,16 @@ class TimerCategoriesEdit extends TimerTaxonomiesEdit {
 
     // Show new field.
     this.setState({unfolded: true});
+  }
+
+  _addCategory(taxonomy) {
+    // Call super method.
+    this._addTaxonomy(taxonomy);
+  }
+
+   _removeCategory(taxonomy) {
+      // Call super method.
+      this._removeTaxonomy(taxonomy);
   }
 }
 

@@ -3,8 +3,6 @@ import TimerTaxonomyEdit from './TimerTaxonomyEdit';
 
 class TimerTagEdit extends TimerTaxonomyEdit {
   render() {
-    const taxonomyInputName = "ptt[" + this.props.taxonomyName + "][]";
-
     if ( this.props.use === 'options' ) {
 
       return (
@@ -14,14 +12,21 @@ class TimerTagEdit extends TimerTaxonomyEdit {
 
     return (
       <span>
-        <button type="button" className="tag-delete-button">
+        <button className="tag-delete-button" onClick={this._removeTag.bind(this)}>
           <span className="remove-tag-icon" aria-hidden="true"></span>
           <span className="screen-reader-text">Remove term</span>
         </button>
-        <input type="hidden" name={taxonomyInputName} value={this.props.taxonomy.id} />
         {this.props.taxonomy.name}
       </span>
     );
+  }
+
+  _removeTag(event){
+    // Prevents page from reloading.
+    event.preventDefault();
+
+    // The removeTag method has been passed as an argument from TimerTagsEdit (see later!).
+    this.props.removeTag(this.props.taxonomy);
   }
 }
 

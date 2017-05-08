@@ -3,7 +3,6 @@ import TimerTaxonomyEdit from './TimerTaxonomyEdit';
 
 class TimerCategoryEdit extends TimerTaxonomyEdit {
   render() {
-    const taxonomyInputName = "ptt[" + this.props.taxonomyName + "][]";
 
     let checked = {};
 
@@ -15,13 +14,27 @@ class TimerCategoryEdit extends TimerTaxonomyEdit {
       <li>
         <label>
           <input type="checkbox"  className="checkbox"
-            name={taxonomyInputName}
-            defaultValue={this.props.taxonomy.id}
-            {...checked} />
+            {...checked}
+            onClick={this._handleCheck.bind(this)}
+            ref={(input) => this._checkbox = input} />
           {this.props.taxonomy.name}
         </label>
       </li>
     );
+  }
+
+  _handleCheck(event){
+    if (this._checkbox.checked) {
+
+      // The addCategory method has been passed as an argument from TimerCategoriesEdit (see later!).
+      this.props.addCategory(this.props.taxonomy);
+      // console.log('checked');
+    } else {
+
+      // The removeCategory method has been passed as an argument from TimerCategoriesEdit (see later!).
+      this.props.removeCategory(this.props.taxonomy);
+      // console.log('unchecked');
+    }
   }
 }
 

@@ -64,7 +64,7 @@ class TimerTaxonomies extends Component {
 
     let taxonomyNodes;
 
-    if (taxonomies) {
+    if (taxonomies.length) {
       const taxonomyClass = 'taxonomy-terms-list ' + this.props.taxonomyName;
       taxonomyNodes = <ul className={taxonomyClass}>{taxonomies}</ul>;
     } else {
