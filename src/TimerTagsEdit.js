@@ -26,7 +26,7 @@ class TimerTagsEdit extends TimerTaxonomiesEdit {
 
     const taxonomyClass = 'tags-list ' + this.props.taxonomyName;
 
-    if (taxonomies.length) {
+    if (taxonomyOptions.length) {
       taxonomyOptionsNodes = <datalist id={this.props.taxonomyName}>{taxonomyOptions}</datalist>;
     } else {
       taxonomyOptionsNodes = <span></span>;
