@@ -22,6 +22,8 @@ class TimerEditForm extends Component {
         timesheets: []
       }
     };
+
+    this._newTaxonomies = [];
   }
 
   // called before the component is rendered to the page.
@@ -96,13 +98,16 @@ class TimerEditForm extends Component {
             </label>
 
             <div className="ptt-form-clients">
-              <TimerCategoriesEdit timer={timer} taxonomyName="clients" />
+              <TimerCategoriesEdit timer={timer} taxonomyName="clients"
+                ref={(clients) => this._newTaxonomies['clients'] = clients} />
             </div>
             <hr />
 
-            <TimerTagsEdit timer={timer} taxonomyName="projects" />
+            <TimerTagsEdit timer={timer} taxonomyName="projects"
+              ref={(projects) => this._newTaxonomies['projects'] = projects} />
 
-            <TimerTagsEdit timer={timer} taxonomyName="timesheets" />
+            <TimerTagsEdit timer={timer} taxonomyName="timesheets"
+              ref={(timesheets) => this._newTaxonomies['timesheets'] = timesheets} />
 
           </div>
         </div>
@@ -148,6 +153,10 @@ class TimerEditForm extends Component {
       return;
     }
 
+    this._saveTimer();
+  }
+
+  _saveTimer() {
     // Populated from refs in JSX.
     let timer = this.state.timer;
 
@@ -155,16 +164,22 @@ class TimerEditForm extends Component {
     timer.content = this._content.value;
     timer.hours = this._hours.value;
     timer.date = this._date.value;
-    timer.clients = []; //this._getCategoriesValues('clients');
-    timer.projects = []; //this._getTagsValues('projects');
-    timer.timesheets = []; //this._getTagsValues('timesheets');
+    // Save new taxonomy terms if any first, and get IDs.
+    timer.clients = this._saveTaxonomy('clients');
+    timer.projects = this._saveTaxonomy('projects');
+    timer.timesheets = this._saveTaxonomy('timesheets');
 
     this.setState({timer});
 
     console.log(timer);
+  }
 
-    // The addTimer method has been passed as an argument from CommentBox (see later!).
-    this.props.addTimer(this.state.timer);
+  _saveTaxonomy(taxonomyName) {
+    if ( ! (taxonomyName in this._newTaxonomies) ) {
+      return [];
+    }
+
+    return this._newTaxonomies[ taxonomyName ]._saveNewTerms();
   }
 }
 

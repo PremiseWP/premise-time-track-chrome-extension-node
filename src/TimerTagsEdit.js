@@ -110,6 +110,29 @@ class TimerTagsEdit extends TimerTaxonomiesEdit {
       // Call super method.
       this._removeTaxonomy(taxonomy);
   }
+
+  _saveNewTerms(callback) {
+    // New terms have negative IDs.
+    const hasTaxonomies = this.state.hasTaxonomies.map((taxonomy) => {
+      if ( taxonomy.id > 0 ) {
+        return taxonomy;
+      }
+
+      // Call super method.
+      const newTerm = this._saveNewTerm(taxonomy.name);
+
+      console.log(newTerm);
+
+      return newTerm;
+    });
+
+    this.setState({hasTaxonomies}); // Problem: setState is async!!
+    // http://stackoverflow.com/questions/30782948/why-calling-react-setstate-method-doesnt-mutate-the-state-immediately
+    console.log(hasTaxonomies, this.state.hasTaxonomies);
+
+    // Call super method.
+    return this._getTaxonomyIds(hasTaxonomies);
+ }
 }
 
 export default TimerTagsEdit;

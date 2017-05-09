@@ -79,6 +79,36 @@ class TimerTaxonomiesEdit extends Component {
 
     this.setState({ hasTaxonomies });
   }
+
+  _getTaxonomyIds(taxonomies) {
+
+    const taxonomyIds = taxonomies.map((taxonomy) => taxonomy.id );
+
+    return taxonomyIds;
+  }
+
+  _saveNewTerm(name) {
+    let taxonomy = { name };
+
+    taxonomy.id = 3;
+
+    return taxonomy;
+
+    $.ajax({
+      method: 'POST',
+      url: '/api/' + this.props.taxonomyName, // Makes call to the remote server.
+      body: name,
+      success: (newTaxonomy) => { // Arrow function preserves the this binding to our class.
+        // Get JSON.
+        newTaxonomy = JSON.parse(newTaxonomy);
+        console.log(newTaxonomy);
+
+        taxonomy = newTaxonomy;
+
+        return taxonomy;
+      }
+    });
+  }
 }
 
 export default TimerTaxonomiesEdit;

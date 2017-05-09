@@ -33,13 +33,15 @@ class TimerCategoriesEdit extends TimerTaxonomiesEdit {
           onClick={this._unfoldNewField.bind(this)}>
           Add a new {taxonomyNameSingular}
         </a>
-        <input type="text" name={taxonomyNewName} />
+        <input type="text" name={taxonomyNewName}
+          ref={(input) => this._newTerm = input} />
       </div>;
 
     } else {
       taxonomyNodes = <span></span>;
 
-      taxonomyNewField = <input type="text" name={taxonomyNewName} />;
+      taxonomyNewField = <input type="text" name={taxonomyNewName}
+        ref={(input) => this._newTerm = input} />;
     }
 
     return (
@@ -85,6 +87,25 @@ class TimerCategoriesEdit extends TimerTaxonomiesEdit {
    _removeCategory(taxonomy) {
       // Call super method.
       this._removeTaxonomy(taxonomy);
+  }
+
+  _saveNewTerms(callback) {
+    let hasTaxonomies = this.state.hasTaxonomies;
+
+    if ( this._newTerm.value !== '' ) {
+      // New term.
+      // Call super method.
+      const newTerm = this._saveNewTerm(this._newTerm.value);
+
+      hasTaxonomies.push(newTerm);
+    }
+
+    this.setState({hasTaxonomies});
+
+    // console.log(hasTaxonomies, this.state.hasTaxonomies);
+
+    // Call super method.
+    return this._getTaxonomyIds(hasTaxonomies);
   }
 }
 
