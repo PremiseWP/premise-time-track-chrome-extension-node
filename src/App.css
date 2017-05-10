@@ -20,11 +20,15 @@
   padding: 10px .5em;
   width: 170px;
   position: absolute;
-  right: -4px;
-  top: 30px;
+  right: 0;
+  top: 31px;
   max-height: 280px;
   overflow: auto;
   background-color: #fff;
+}
+
+.ajax-results-timers.show {
+  display: block;
 }
 
 
