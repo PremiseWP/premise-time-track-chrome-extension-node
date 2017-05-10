@@ -62,60 +62,64 @@ class TimerEditForm extends Component {
     const timer = this.state.timer;
 
     return (
-      <form className="ptt-details-form"
-        onSubmit={this._handleSubmit.bind(this) /* Bind an event listener to the submit event */}>
+      <div className="ptt-form">
+        <h2>{ /*$ptt ? 'Edit' : 'New';*/ } Timer</h2>
 
-        {/*<input type="hidden" name="ptt-id" defaultValue={timer.id} />
+        <form className="ptt-details-form"
+          onSubmit={this._handleSubmit.bind(this) /* Bind an event listener to the submit event */}>
 
-        <input type="hidden" name="ptt[status]" defaultValue="publish" />*/}
+           {/*<input type="hidden" name="ptt-id" defaultValue={timer.id} />
 
-        <div className="details">
-          <label>Task:
-            <input required
-              defaultValue={timer.title}
-              ref={(input) => this._title = input} />
-          </label>
+          <input type="hidden" name="ptt[status]" defaultValue="publish" />*/}
 
-          <label>Description:
-            <textarea
-              defaultValue={timer.content}
-              ref={(textarea) => this._content = textarea} />
-          </label>
-
-          <label>Time:
-            <input placeholder="1.75" required
-              defaultValue={timer.hours}
-              ref={(input) => this._hours = input} />
-          </label>
-
-          <div className={'more-fields ' + (this.state.unfolded ? 'unfolded' : '')}>
-            <a href="#" onClick={this._unfoldMoreFields.bind(this)} className="more-link unfold">More</a>
-
-            <label>Date:
-              <input type="date"
-                defaultValue={this._getTimerDate(timer.date)}
-                ref={(input) => this._date = input} />
+          <div className="details">
+            <label>Task:
+              <input required
+                defaultValue={timer.title}
+                ref={(input) => this._title = input} />
             </label>
 
-            <div className="ptt-form-clients">
-              <TimerCategoriesEdit timer={timer} taxonomyName="clients"
-                ref={(clients) => this._newTaxonomies['clients'] = clients} />
+            <label>Description:
+              <textarea
+                defaultValue={timer.content}
+                ref={(textarea) => this._content = textarea} />
+            </label>
+
+            <label>Time:
+              <input placeholder="1.75" required
+                defaultValue={timer.hours}
+                ref={(input) => this._hours = input} />
+            </label>
+
+            <div className={'more-fields ' + (this.state.unfolded ? 'unfolded' : '')}>
+              <a href="#" onClick={this._unfoldMoreFields.bind(this)} className="more-link unfold">More</a>
+
+              <label>Date:
+                <input type="date"
+                  defaultValue={this._getTimerDate(timer.date)}
+                  ref={(input) => this._date = input} />
+              </label>
+
+              <div className="ptt-form-clients">
+                <TimerCategoriesEdit timer={timer} taxonomyName="clients"
+                  ref={(clients) => this._newTaxonomies['clients'] = clients} />
+              </div>
+              <hr />
+
+              <TimerTagsEdit timer={timer} taxonomyName="projects"
+                ref={(projects) => this._newTaxonomies['projects'] = projects} />
+
+              <TimerTagsEdit timer={timer} taxonomyName="timesheets"
+                ref={(timesheets) => this._newTaxonomies['timesheets'] = timesheets} />
+
             </div>
-            <hr />
-
-            <TimerTagsEdit timer={timer} taxonomyName="projects"
-              ref={(projects) => this._newTaxonomies['projects'] = projects} />
-
-            <TimerTagsEdit timer={timer} taxonomyName="timesheets"
-              ref={(timesheets) => this._newTaxonomies['timesheets'] = timesheets} />
-
           </div>
-        </div>
 
-        <button type="submit">Submit</button>
-        <button onClick={this._closeModal.bind(this)} className="cancel">Cancel</button>
+          <button type="submit">Submit</button>
+          <button onClick={this._closeModal.bind(this)} className="cancel">Cancel</button>
 
-      </form>
+        </form>
+      </div>
     );
   }
 
@@ -172,6 +176,9 @@ class TimerEditForm extends Component {
     this.setState({timer});
 
     console.log(timer);
+
+    // Confirmation page!
+    this.props.onSave();
   }
 
   _saveTaxonomy(taxonomyName) {

@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import Modal from 'react-modal';
 import TimerEditForm from './TimerEditForm';
+import TimerSavedConfirmation from './TimerSavedConfirmation';
 
 class TimerEditModal extends Component {
   constructor() {
     super(); // super() must be called in our constructor.
 
     // Initial state.
-    this.state = { modalIsOpen: false };
+    this.state = { modalIsOpen: false, timerSavedConfirmation: false };
   }
 
   _openModal() {
@@ -16,11 +17,11 @@ class TimerEditModal extends Component {
 
   _afterOpenModal() {
     // references are now sync'd and can be accessed.
-    this.refs.subtitle.style.color = 'red';
+    // this.refs.subtitle.style.color = 'red';
   }
 
   _closeModal() {
-    this.setState({modalIsOpen: false});
+    this.setState({modalIsOpen: false, timerSavedConfirmation: false});
   }
 
   render() {
@@ -35,6 +36,19 @@ class TimerEditModal extends Component {
       }
     };
 
+    let partial;
+
+    if ( this.state.timerSavedConfirmation ) {
+      partial = <TimerSavedConfirmation
+        onClose={this._closeModal.bind(this)}
+        onAddAnotherTimer={this._timerSavedConfirmation.bind(this)} />
+    } else {
+      partial = <TimerEditForm
+        timerId=""
+        onClose={this._closeModal.bind(this)}
+        onSave={this._timerSavedConfirmation.bind(this)} />;
+    }
+
     return (
       <div style={{display: 'inline-block'}}>
         <a href="#" onClick={this._openModal.bind(this)} className="button new-timer">New Timer</a>
@@ -45,13 +59,18 @@ class TimerEditModal extends Component {
           style={customStyles}
           contentLabel="Edit Timer Modal"
         >
-          <h2 ref="subtitle">{ /*$ptt ? 'Edit' : 'New';*/ } Timer</h2>
-          <TimerEditForm
-            timerId=""
-            onClose={this._closeModal.bind(this)} />
+          {partial /* TimerEditForm or TimerSavedConfirmation component. */}
         </Modal>
       </div>
     );
+  }
+
+  _timerSavedConfirmation() {
+    // Hide TimerEditForm.
+    this.setState({
+      // Toggles state of showComments between true and false.
+      timerSavedConfirmation: !this.state.timerSavedConfirmation
+    });
   }
 }
 
