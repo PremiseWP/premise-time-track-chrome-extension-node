@@ -13,7 +13,7 @@ class TimerEditForm extends Component {
       unfolded: false,
       timer: {
         id: 0,
-        title: '',
+        title: {raw: ''},
         content: '',
         hours: '',
         date: '',
@@ -21,7 +21,7 @@ class TimerEditForm extends Component {
         projects: [],
         timesheets: []
       }
-    };
+    }
 
     this._newTaxonomies = [];
   }
@@ -34,17 +34,19 @@ class TimerEditForm extends Component {
 
   _fetchTimer() {
 
-    if ( ! this.props.timerId ) {
+    const timer = this.props.timer;
+
+    if ( ! ('id' in timer) ) {
       return;
     }
 
-    const timer = { id: 1, title: "Timer 1", content: "Timer description", hours: 2 };
+    // const timer = { id: 1, title: {raw: "Timer 1"}, content: "Timer description", hours: 2 };
 
     this.setState({ timer });
 
     return;
 
-    $.ajax({
+    /*$.ajax({
       method: 'GET',
       url: '/api/' + this.props.timerId, // Makes call to the remote server.
       success: (timer) => { // Arrow function preserves the this binding to our class.
@@ -54,7 +56,7 @@ class TimerEditForm extends Component {
 
         this.setState({ timer });
       }
-    });
+    });*/
   }
 
   render() {
@@ -75,7 +77,7 @@ class TimerEditForm extends Component {
           <div className="details">
             <label>Task:
               <input required
-                defaultValue={timer.title}
+                defaultValue={timer.title.raw}
                 ref={(input) => this._title = input} />
             </label>
 
@@ -164,7 +166,7 @@ class TimerEditForm extends Component {
     // Populated from refs in JSX.
     let timer = this.state.timer;
 
-    timer.title = this._title.value;
+    timer.title.raw = this._title.value;
     timer.content = this._content.value;
     timer.hours = this._hours.value;
     timer.date = this._date.value;

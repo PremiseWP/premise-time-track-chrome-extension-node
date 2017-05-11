@@ -8,7 +8,10 @@ class TimerEditModal extends Component {
     super(); // super() must be called in our constructor.
 
     // Initial state.
-    this.state = { modalIsOpen: false, timerSavedConfirmation: false };
+    this.state = {
+      modalIsOpen: false,
+      timerSavedConfirmation: false
+    };
   }
 
   _openModal() {
@@ -22,6 +25,19 @@ class TimerEditModal extends Component {
 
   _closeModal() {
     this.setState({modalIsOpen: false, timerSavedConfirmation: false});
+  }
+
+  // https://facebook.github.io/react/docs/react-component.html#the-component-lifecycle
+  componentDidUpdate(prevProps, prevState) {
+    const timer = this.props.timer;
+    const prevTimer = prevProps.timer;
+
+    if ( ! ('id' in timer) ||
+      timer === prevTimer ) {
+      return;
+    }
+
+    this._openModal();
   }
 
   render() {
@@ -43,8 +59,11 @@ class TimerEditModal extends Component {
         onClose={this._closeModal.bind(this)}
         onAddAnotherTimer={this._timerSavedConfirmation.bind(this)} />
     } else {
+      // Will open modal if has timer, see componentWillMount().
+      const timer = this.props.timer;
+
       partial = <TimerEditForm
-        timerId=""
+        timer={timer}
         onClose={this._closeModal.bind(this)}
         onSave={this._timerSavedConfirmation.bind(this)} />;
     }
@@ -72,6 +91,8 @@ class TimerEditModal extends Component {
       timerSavedConfirmation: !this.state.timerSavedConfirmation
     });
   }
+
+
 }
 
 export default TimerEditModal;

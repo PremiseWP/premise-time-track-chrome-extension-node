@@ -16,7 +16,7 @@ class TimerSearchResult extends Component {
   _onClick(event) {
     event.preventDefault();
 
-    this.props.onClick(this.props.result);
+    this.props.onClick( this.props.result );
   }
 }
 

@@ -131,8 +131,15 @@ class TimerSearchForm extends Component {
 
 
   _onResultClick( result ) {
-    // Close results & open Edit Form modal.
+    // Close results, empty input & open Edit Form modal.
     console.log(result);
+
+    this._hideResults();
+
+    // Empty search input.
+    this._searchTerm.value = '';
+
+    this.props.onResultClick( result );
   }
 }
 
