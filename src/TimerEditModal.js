@@ -10,7 +10,8 @@ class TimerEditModal extends Component {
     // Initial state.
     this.state = {
       modalIsOpen: false,
-      timerSavedConfirmation: false
+      timerSavedConfirmation: false,
+      timer: {}
     };
   }
 
@@ -37,6 +38,8 @@ class TimerEditModal extends Component {
       return;
     }
 
+    this.setState({ timer });
+
     this._openModal();
   }
 
@@ -60,7 +63,7 @@ class TimerEditModal extends Component {
         onAddAnotherTimer={this._timerSavedConfirmation.bind(this)} />
     } else {
       // Will open modal if has timer, see componentWillMount().
-      const timer = this.props.timer;
+      const timer = this.state.timer;
 
       partial = <TimerEditForm
         timer={timer}
@@ -70,7 +73,7 @@ class TimerEditModal extends Component {
 
     return (
       <div style={{display: 'inline-block'}}>
-        <a href="#" onClick={this._openModal.bind(this)} className="button new-timer">New Timer</a>
+        <a href="#" onClick={this._openNewTimerModal.bind(this)} className="button new-timer">New Timer</a>
         <Modal
           isOpen={this.state.modalIsOpen}
           onAfterOpen={this._afterOpenModal.bind(this)}
@@ -92,7 +95,15 @@ class TimerEditModal extends Component {
     });
   }
 
+  _openNewTimerModal() {
+    if ( 'id' in this.state.timer ) {
 
+      // Reset Timer if any.
+      this.setState({ timer: {} });
+    }
+
+    this._openModal();
+  }
 }
 
 export default TimerEditModal;

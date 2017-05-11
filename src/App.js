@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import HelpButtons from './HelpButtons';
-import TimerDashboard from './TimerDashboard';
+import AppLoader from './AppLoader';
 import './App.css';
 
 class App extends Component {
   render() {
     return (
       <div className="container">
-        <TimerDashboard />
+        <AppLoader />
         <HelpButtons step="" />
       </div>
     );
