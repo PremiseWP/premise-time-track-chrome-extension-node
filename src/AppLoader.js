@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Cookies from 'js-cookie';
 import LoadingIcon from './LoadingIcon';
 import TimerDashboard from './TimerDashboard';
 import DiscoverWpApi from './DiscoverWpApi';
@@ -12,15 +13,18 @@ class AppLoader extends Component {
 
     this.state = {
       view: <LoadingIcon />,
+      ptt: { creds: Cookies.getJSON( '_ptt' ) }
     }
   }
 
   componentDidMount() {
-    console.log(window.ptt);
+    console.log(this.state.ptt);
+
+    const ptt = this.state.ptt;
 
     let view;
 
-    if ( window.ptt.auth && window.ptt.auth.authenticated() ) {
+    if ( ptt.auth && ptt.auth.authenticated() ) {
       console.log('authenticated');
 
       view = <TimerDashboard />;
@@ -29,16 +33,15 @@ class AppLoader extends Component {
 
       let credentials;
 
-      if ( window.ptt.creds ) {
+      if ( ptt.creds ) {
         console.log('not authenticated but we have creds.');
 
-        credentials = window.ptt.creds;
       } else {
 
         console.log('not authenticated, no creds.');
       }
 
-      view = <DiscoverWpApi credentials={credentials}
+      view = <DiscoverWpApi ptt={ptt}
         onDiscovered={this._showDashboard.bind(this)} />;
     }
 
@@ -53,10 +56,10 @@ class AppLoader extends Component {
     );
   }
 
-  _showDashboard() {
+  _showDashboard( ptt ) {
     const view = <TimerDashboard />;
 
-    this.setState({ view });
+    this.setState({ view, ptt });
   }
 }
 

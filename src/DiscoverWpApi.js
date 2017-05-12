@@ -13,10 +13,11 @@ class DiscoverWpApi extends Component {
     this.state = {
       message: props.message || 'Let\'s find your site and get you authenticated.',
       processing: false,
+      ptt: props.ptt
     };
 
     this._handleSubmit = this._handleSubmit.bind(this);
-  }
+ }
 
   // called before the component is rendered to the page.
   componentWillMount() {
@@ -24,9 +25,9 @@ class DiscoverWpApi extends Component {
   }
 
   _checkCredentials() {
-    const creds = this.props.credentials;
+    const creds = this.state.ptt.creds;
 
-    if ( ! this.props.credentials ) {
+    if ( ! creds ) {
 
       return;
     }
@@ -43,7 +44,7 @@ class DiscoverWpApi extends Component {
     const view = ( this.state.processing ) ? <LoadingIcon /> : this._theForm();
     return (
       <div className="discover-wp-api">
-        <h1>Premise Time Tracker</h1>
+        <h2>Premise Time Tracker</h2>
         <div className="message">
           <p>{this.state.message}</p>
         </div>
@@ -132,25 +133,24 @@ class DiscoverWpApi extends Component {
       return false;
     }
 
-    window.ptt.creds = creds;
-
     fetch( creds.url + '/wp-json/' )
     .then( r => {
       r.json()
-      .then( s => {
-        // Save the site info.
-        window.ptt.site = s;
-
-        // Save the.
-        window.ptt.auth = window.wpApiAuth( {
+      .then( site => {
+        const auth = window.wpApiAuth( {
           oauth_consumer_key: creds.key,
           oauth_secret:       creds.secret,
           url:                creds.api_url,
-          urls:               s.authentication.oauth1,
+          urls:               site.authentication.oauth1,
           // singlepage: true,
         });
 
-        window.ptt.auth.authenticate( this._maybeAuthenticated.bind(this) );
+        // Save the site info, auth & creds.
+        const ptt = { creds, site, auth };
+
+        this.setState({ ptt });
+
+        ptt.auth.authenticate( this._maybeAuthenticated.bind(this) );
       });
     });
   }
@@ -165,10 +165,10 @@ class DiscoverWpApi extends Component {
 
     } else {
 
-      // No errors! Show the dashboard.
-      Cookies.set( '_ptt', window.ptt.creds );
+      // No errors! Save creds to cookie & show the dashboard.
+      Cookies.set( '_ptt', this.state.ptt.creds );
 
-      this.props.onDiscovered();
+      this.props.onDiscovered( this.state.ptt );
     }
   }
 }
