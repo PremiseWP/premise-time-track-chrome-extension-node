@@ -16,7 +16,7 @@ class AppLoader extends Component {
   }
 
   componentDidMount() {
-    console.log(PTT);
+    console.log(window.ptt);
 
     let view;
 

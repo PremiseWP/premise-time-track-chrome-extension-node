@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Cookies from 'js-cookie';
 import LoadingIcon from './LoadingIcon';
 
 /**
@@ -142,11 +143,13 @@ class DiscoverWpApi extends Component {
     .then( r => {
       r.json()
       .then( s => {
-        // save the site info
+        let PTT = window.ptt;
+
+        // Save the site info.
         PTT.site = s;
 
-        // save the
-        PTT.auth = wpApiAuth( {
+        // Save the.
+        PTT.auth = window.wpApiAuth( {
           oauth_consumer_key: creds.key,
           oauth_secret:       creds.secret,
           url:                creds.api_url,
@@ -155,7 +158,6 @@ class DiscoverWpApi extends Component {
         });
 
         PTT.auth.authenticate( function( err, oauth ) {
-          var view;
 
           if ( err ) {
             // Handle errors first.
@@ -175,3 +177,5 @@ class DiscoverWpApi extends Component {
     });
   }
 }
+
+export default DiscoverWpApi;
