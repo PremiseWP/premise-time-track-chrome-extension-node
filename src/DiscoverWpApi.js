@@ -42,16 +42,12 @@ class DiscoverWpApi extends Component {
   render() {
     const view = ( this.state.processing ) ? <LoadingIcon /> : this._theForm();
     return (
-      <div className="discover_module">
-        <div className="header">
-          <h1>Premise Time Tracker</h1>
+      <div className="discover-wp-api">
+        <h1>Premise Time Tracker</h1>
+        <div className="message">
+          <p>{this.state.message}</p>
         </div>
-        <div className="container">
-          <div className="message">
-            <p>{this.state.message}</p>
-          </div>
-          {view}
-        </div>
+        {view}
       </div>
     );
   }
@@ -69,17 +65,17 @@ class DiscoverWpApi extends Component {
           </div>
           <div>
             <label>Site URL
-              <input type="url" id="site_url" />
+              <input type="url" name="site_url" />
             </label>
           </div>
           <div>
             <label>Client Key
-              <input id="key" />
+              <input name="client_key" />
             </label>
           </div>
           <div>
             <label>Client Secret
-              <input id="secret" />
+              <input name="client_secret" />
             </label>
           </div>
           <button type="submit">Submit</button>
@@ -136,17 +132,17 @@ class DiscoverWpApi extends Component {
       return false;
     }
 
+    window.ptt.creds = creds;
+
     fetch( creds.url + '/wp-json/' )
     .then( r => {
       r.json()
       .then( s => {
-        let PTT = window.ptt;
-
         // Save the site info.
-        PTT.site = s;
+        window.ptt.site = s;
 
         // Save the.
-        PTT.auth = window.wpApiAuth( {
+        window.ptt.auth = window.wpApiAuth( {
           oauth_consumer_key: creds.key,
           oauth_secret:       creds.secret,
           url:                creds.api_url,
@@ -154,24 +150,26 @@ class DiscoverWpApi extends Component {
           // singlepage: true,
         });
 
-        PTT.auth.authenticate( function( err, oauth ) {
-
-          if ( err ) {
-            // Handle errors first.
-            const message =  <span className="error">{err.responseText}</span>;
-
-            this.setState({message});
-
-          } else {
-
-            // No errors! Show the dashboard.
-            Cookies.set( '_ptt', creds );
-
-            this.props.onDiscovered();
-          }
-        });
+        window.ptt.auth.authenticate( this._maybeAuthenticated.bind(this) );
       });
     });
+  }
+
+  _maybeAuthenticated( error ) {
+
+    if ( error ) {
+      // Handle errors first.
+      const message =  <span className="error">{error.responseText}</span>;
+
+      this.setState({ message });
+
+    } else {
+
+      // No errors! Show the dashboard.
+      Cookies.set( '_ptt', window.ptt.creds );
+
+      this.props.onDiscovered();
+    }
   }
 }
 

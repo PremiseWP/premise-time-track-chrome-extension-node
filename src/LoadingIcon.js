@@ -10,7 +10,7 @@ class LoadingIcon extends Component {
 
     this.state = {
       size: '3em',
-      icon: 'fa-spinner',
+      icon: 'spinner',
       align: 'center',
     }
   }

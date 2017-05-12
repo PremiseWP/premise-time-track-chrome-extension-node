@@ -4,11 +4,9 @@ import HelpButtons from './HelpButtons';
 import AppLoader from './AppLoader';
 import './App.css';
 
-var PTT = {
+window.ptt = {
   creds: Cookies.getJSON( '_ptt' ),
 };
-
-window.ptt = PTT;
 
 class App extends Component {
   render() {
