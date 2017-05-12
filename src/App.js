@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import Cookies from 'js-cookie';
+import PTT from './PTT';
 import HelpButtons from './HelpButtons';
 import LoadingIcon from './LoadingIcon';
 import TimerDashboard from './Timer/TimerDashboard';
 import DiscoverWpApi from './DiscoverWpApi';
-import './App.css';
+import './css/App.css';
 
 /**
  * Application loader.
@@ -14,40 +14,8 @@ class App extends Component {
     super();
 
     this.state = {
-      view: <LoadingIcon />,
-      ptt: { creds: Cookies.getJSON( '_ptt' ) }
+      view: <LoadingIcon />
     }
-  }
-
-  componentDidMount() {
-    console.log(this.state.ptt);
-
-    const ptt = this.state.ptt;
-
-    let view;
-
-    if ( ptt.auth && ptt.auth.authenticated() ) {
-      console.log('authenticated');
-
-      view = <TimerDashboard />;
-
-    } else {
-
-      let credentials;
-
-      if ( ptt.creds ) {
-        console.log('not authenticated but we have creds.');
-
-      } else {
-
-        console.log('not authenticated, no creds.');
-      }
-
-      view = <DiscoverWpApi ptt={ptt}
-        onDiscovered={this._showDashboard.bind(this)} />;
-    }
-
-    this.setState({ view });
   }
 
   render() {
@@ -59,10 +27,38 @@ class App extends Component {
     );
   }
 
-  _showDashboard( ptt ) {
+  componentDidMount() {
+
+    console.log(PTT);
+
+    let view;
+
+    if ( PTT.auth && PTT.auth.authenticated() ) {
+      console.log('authenticated');
+
+      view = <TimerDashboard />;
+
+    } else {
+
+      if ( PTT.creds ) {
+        console.log('not authenticated but we have creds.');
+
+      } else {
+
+        console.log('not authenticated, no creds.');
+      }
+
+      view = <DiscoverWpApi
+        onDiscovered={this._showDashboard.bind(this)} />;
+    }
+
+    this.setState({ view });
+  }
+
+  _showDashboard() {
     const view = <TimerDashboard />;
 
-    this.setState({ view, ptt });
+    this.setState({ view });
   }
 }
 

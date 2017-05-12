@@ -230,6 +230,10 @@
   border-color: #888;
 }
 
+.button.cancel {
+  float: right;
+}
+
 .screen-reader-text, .screen-reader-text span, .ui-helper-hidden-accessible {
   position: absolute;
   margin: -1px;

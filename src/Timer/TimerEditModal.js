@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Modal from 'react-modal';
+import TimerNew from './TimerNew';
 import TimerEditForm from './TimerEditForm';
 import TimerSavedConfirmation from './TimerSavedConfirmation';
 

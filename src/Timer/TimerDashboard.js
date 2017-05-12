@@ -10,8 +10,6 @@ class TimerDashboard extends Component {
     this.state = {
       timer: {}
     };
-
-    this._typingTimer; // Timer identifier.
   }
 
   render() {

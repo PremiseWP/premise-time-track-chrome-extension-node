@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Cookies from 'js-cookie';
+import PTT from './PTT';
 import LoadingIcon from './LoadingIcon';
 
 /**
@@ -12,8 +12,7 @@ class DiscoverWpApi extends Component {
 
     this.state = {
       message: props.message || 'Let\'s find your site and get you authenticated.',
-      processing: false,
-      ptt: props.ptt
+      processing: false
     };
 
     this._handleSubmit = this._handleSubmit.bind(this);
@@ -25,7 +24,7 @@ class DiscoverWpApi extends Component {
   }
 
   _checkCredentials() {
-    const creds = this.state.ptt.creds;
+    const creds = PTT.get( 'creds' );
 
     if ( ! creds ) {
 
@@ -144,12 +143,14 @@ class DiscoverWpApi extends Component {
           // singlepage: true,
         });
 
-        // Save the site info, auth & creds.
-        const ptt = { creds, site, auth };
+        const endpoint = site.url + '/wp-json/wp/v2/premise_time_tracker';
 
-        this.setState({ ptt });
+        // Save the site info, auth, endpoint & creds.
+        const newPtt = { creds, site, auth, endpoint };
 
-        ptt.auth.authenticate( this._maybeAuthenticated.bind(this) );
+        PTT.set( newPtt );
+
+        newPtt.auth.authenticate( this._maybeAuthenticated.bind(this) );
       });
     });
   }
@@ -165,9 +166,9 @@ class DiscoverWpApi extends Component {
     } else {
 
       // No errors! Save creds to cookie & show the dashboard.
-      Cookies.set( '_ptt', this.state.ptt.creds );
+      PTT.setCookie( 'creds' );
 
-      this.props.onDiscovered( this.state.ptt );
+      this.props.onDiscovered();
     }
   }
 }
