@@ -123,7 +123,6 @@ class DiscoverWpApi extends Component {
    * info as a cookie in our browser.
    *
    * @param  {Object} creds the credentials to authenticate user
-   * @return {void}
    */
   _discoverSite( creds ) {
     creds = creds || null;
