@@ -62,28 +62,25 @@ class DiscoverWpApi extends Component {
       <div className="discovery-form">
         <form id="discover_form" onSubmit={this._handleSubmit}>
           <div>
-            <label htmlFor="land_url">Use this URL as your callback:</label><br />
+            <label htmlFor="land_url">Use this URL as your callback:</label>
             <pre name="land_url">
               <code>{window.location.href + 'land.html'}</code>
             </pre>
           </div>
           <div>
-            <label htmlFor="site_url">Site URL</label><br />
-            <input type="url"
-                name="site_url"
-                id="site_url" />
+            <label>Site URL
+              <input type="url" id="site_url" />
+            </label>
           </div>
           <div>
-            <label htmlFor="client_key">Client Key</label><br />
-            <input type="text"
-                name="client_key"
-                id="key" />
+            <label>Client Key
+              <input id="key" />
+            </label>
           </div>
           <div>
-            <label htmlFor="client_secret">Client Secret</label><br />
-            <input type="text"
-                name="client_secret"
-                id="secret" />
+            <label>Client Secret
+              <input id="secret" />
+            </label>
           </div>
           <button type="submit">Submit</button>
         </form>
@@ -95,9 +92,9 @@ class DiscoverWpApi extends Component {
     e.preventDefault();
 
     // Loading icon.
-    this.setState( {processing: true} );
+    this.setState({ processing: true });
 
-    // Get the data form the form.
+    // Get the data from the form.
     const data = new FormData( e.target );
 
     // Build our credentials object.
