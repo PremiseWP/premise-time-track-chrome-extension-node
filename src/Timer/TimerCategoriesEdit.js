@@ -8,7 +8,9 @@ class TimerCategoriesEdit extends TimerTaxonomiesEdit {
     // Get & store taxonomies.
     const taxonomies = this._getTaxonomies() || [];
 
-    const taxonomyNamePlural = this.props.taxonomyName + 's';
+    const taxonomyName = this.props.taxonomyName;
+
+    const taxonomyNamePlural = taxonomyName + 's';
 
     // Capitalize.
     const taxonomyTitle = taxonomyNamePlural.charAt(0).toUpperCase() +
@@ -17,20 +19,20 @@ class TimerCategoriesEdit extends TimerTaxonomiesEdit {
     let taxonomyNodes,
       taxonomyNewField;
 
-    const taxonomyNewName = "ptt[" + this.props.taxonomyName + "][new]";
+    const taxonomyNewName = "ptt[" + taxonomyName + "][new]";
 
-    const taxonomyNewWrapperClass = 'ptt-' + this.props.taxonomyName + '-field-wrapper ' +
+    const taxonomyNewWrapperClass = 'ptt-' + taxonomyName + '-field-wrapper ' +
       (this.state.unfolded ? 'unfolded' : '');
 
     if (taxonomies.length) {
-      const taxonomyClass = 'taxonomy-terms-list ' + this.props.taxonomyName;
+      const taxonomyClass = 'taxonomy-terms-list ' + taxonomyName;
       taxonomyNodes = <ul className={taxonomyClass}>{taxonomies}</ul>;
 
       taxonomyNewField = <div className={taxonomyNewWrapperClass}>
         <a href="#"
-          className={'add-new-' + this.props.taxonomyName + '-link unfold'}
+          className={'add-new-' + taxonomyName + '-link unfold'}
           onClick={this._unfoldNewField.bind(this)}>
-          Add a new {this.props.taxonomyName}
+          Add a new {taxonomyName}
         </a>
         <input type="text" name={taxonomyNewName}
           ref={(input) => this._newTerm = input} />

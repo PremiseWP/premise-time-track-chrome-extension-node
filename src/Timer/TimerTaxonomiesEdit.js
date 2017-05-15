@@ -47,12 +47,13 @@ class TimerTaxonomiesEdit extends Component {
 
     return;*/
 
-    this.setState({ hasTaxonomies: this.props.timer[ this.props.taxonomyName ] });
-
     TimerFetch.getTaxonomy( this.props.taxonomyName ).then( function( taxonomies ) {
-      console.log(taxonomies);
 
-      this.setState({ taxonomies });
+      taxonomies = taxonomies || [];
+
+      // console.log(taxonomies);
+      this.setState({ taxonomies,
+        hasTaxonomies: this.props.timer[ 'premise_time_tracker_' + this.props.taxonomyName ] });
     }.bind(this),
     function ( error ) {
       console.log( 'TimerFetch.getTaxonomy error:' + error );

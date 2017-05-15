@@ -13,13 +13,13 @@ class TimerEditForm extends Component {
       unfolded: false,
       timer: {
         id: 0,
-        title: {raw: ''},
+        title: {rendered: ''},
         content: '',
         hours: '',
         date: '',
-        client: [],
-        project: [],
-        timesheet: []
+        premise_time_tracker_client: [],
+        premise_time_tracker_project: [],
+        premise_time_tracker_timesheet: []
       }
     }
 
@@ -40,7 +40,7 @@ class TimerEditForm extends Component {
       return;
     }
 
-    // const timer = { id: 1, title: {raw: "Timer 1"}, content: "Timer description", hours: 2 };
+    // const timer = { id: 1, title: {rendered: "Timer 1"}, content: "Timer description", hours: 2 };
 
     this.setState({ timer });
 
@@ -77,7 +77,7 @@ class TimerEditForm extends Component {
           <div className="details">
             <label>Task:
               <input required
-                defaultValue={timer.title.raw}
+                defaultValue={timer.title.rendered}
                 ref={(input) => this._title = input} />
             </label>
 
@@ -166,7 +166,7 @@ class TimerEditForm extends Component {
     // Populated from refs in JSX.
     let timer = this.state.timer;
 
-    timer.title.raw = this._title.value;
+    timer.title.rendered = this._title.value;
     timer.content = this._content.value;
     timer.hours = this._hours.value;
     timer.date = this._date.value;

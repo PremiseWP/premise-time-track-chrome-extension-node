@@ -46,6 +46,29 @@ class TimerFetch {
   }
 
   /**
+   * Search timers.
+   *
+   * @param  {String}  Search term.
+   * @return {Promise} Promise for the results object
+   */
+  searchTimers( searchTerm ) {
+    searchTerm = searchTerm || null;
+
+    if ( ! searchTerm ) return false;
+
+    const url = PTT.get( 'endpoint' ) + '?search=' + encodeURIComponent( searchTerm );
+
+    // console.log(url);
+
+    const results = fetch( url )
+    .then( response => {
+      return response.json();
+    });
+
+    return results;
+  }
+
+  /**
    * Retrieve a post from premise time tracker.
    *
    * @param  {Integer} id      the id for the post we want to retrieve

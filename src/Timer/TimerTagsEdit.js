@@ -16,7 +16,9 @@ class TimerTagsEdit extends TimerTaxonomiesEdit {
     const taxonomies = this._getTaxonomies() || [];
     const taxonomyOptions = this._getTaxonomies('options') || [];
 
-    const taxonomyNamePlural = this.props.taxonomyName + 's';
+    const taxonomyName = this.props.taxonomyName;
+
+    const taxonomyNamePlural = taxonomyName + 's';
 
     // Capitalize.
     const taxonomyTitle = taxonomyNamePlural.charAt(0).toUpperCase() +
@@ -24,12 +26,12 @@ class TimerTagsEdit extends TimerTaxonomiesEdit {
 
     let taxonomyOptionsNodes;
 
-    const taxonomyNewName = "new-" + this.props.taxonomyName;
+    const taxonomyNewName = "new-" + taxonomyName;
 
     const taxonomyClass = 'tags-list ' + taxonomyNamePlural;
 
     if (taxonomyOptions.length) {
-      taxonomyOptionsNodes = <datalist id={this.props.taxonomyName}>{taxonomyOptions}</datalist>;
+      taxonomyOptionsNodes = <datalist id={taxonomyName}>{taxonomyOptions}</datalist>;
     } else {
       taxonomyOptionsNodes = <span></span>;
     }
@@ -38,7 +40,7 @@ class TimerTagsEdit extends TimerTaxonomiesEdit {
       <label>{taxonomyTitle}:
         <div className="new-tag-wrapper">
           <input type="text" name={taxonomyNewName}
-            list={this.props.taxonomyName} className="new-tag-input"
+            list={taxonomyName} className="new-tag-input"
             ref={(input) => this._tag = input} />
           <button onClick={this._addTag.bind(this)} className="new-tag-add-button">Add</button>
         </div>
@@ -63,6 +65,7 @@ class TimerTagsEdit extends TimerTaxonomiesEdit {
       taxonomies = this.state.hasTaxonomies;
     }
 
+console.log(this.state.taxonomies, this.state.hasTaxonomies);
     // Returns an array...
     return taxonomies.map((taxonomy) => { // Each element from taxonomyList is passed as argument...
       // ...with a new component built for each element present in taxonomyList.

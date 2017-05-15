@@ -44,7 +44,7 @@ class TimerTaxonomies extends Component {
     return;*/
 
     TimerFetch.getTaxonomy( this.props.taxonomyName ).then( function( taxonomies ) {
-      console.log(taxonomies);
+      // console.log(taxonomies);
 
       this.setState({ taxonomies });
     }.bind(this),

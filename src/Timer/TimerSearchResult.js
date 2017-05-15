@@ -7,7 +7,7 @@ class TimerSearchResult extends Component {
     return (
       <li>
         <a href="#" onClick={this._onClick.bind(this)}>
-          {this.props.result.title.raw}
+          {this.props.result.title.rendered}
         </a>
       </li>
     );

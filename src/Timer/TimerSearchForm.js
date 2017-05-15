@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import TimerSearchResult from './TimerSearchResult';
+import TimerFetch from './TimerFetch';
 import $ from 'jquery'; // Import jQuery.
 // import FontAwesome from 'react-fontawesome';
 
@@ -87,31 +88,27 @@ class TimerSearchForm extends Component {
       return;
     }
 
+    /* Disable test data:
     const results = [
-      { id: 1, title: {raw: "Timer 1"}, content: "Timer description", hours: 1 },
-      { id: 2, title: {raw: "Timer 2"}, content: "Timer description 2", hours: 2 }
+      { id: 1, title: {rendered: "Timer 1"}, content: "Timer description", hours: 1 },
+      { id: 2, title: {rendered: "Timer 2"}, content: "Timer description 2", hours: 2 }
     ]
 
     this.setState({ results, searchTerm });
 
     this._showResults();
 
-    return;
+    return;*/
 
-    // Should be...
+    TimerFetch.searchTimers( searchTerm ).then( function( results ) {
+      // console.log(results);
 
-    $.ajax({
-      method: 'GET',
-      url: '/api/timer/search/' + searchTerm, // Makes call to the remote server.
-      success: (results) => { // Arrow function preserves the this binding to our class.
-        // Get JSON.
-        results = JSON.parse(results);
-        console.log(results);
+      this.setState({ results, searchTerm });
 
-        this.setState({ results, searchTerm });
-
-        this._showResults();
-      }
+      this._showResults();
+    }.bind(this),
+    function ( error ) {
+      console.log( 'TimerFetch.searchTimers error:' + error );
     });
   }
 
