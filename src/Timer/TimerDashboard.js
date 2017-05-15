@@ -19,9 +19,9 @@ class TimerDashboard extends Component {
       <div className="timer-dashboard-wrapper">
         <TimerEditModal timer={timer} />
         <TimerSearchForm onResultClick={this._openTimerEditModal.bind(this)} />
-        <TimerTaxonomies taxonomyName="clients" />
-        <TimerTaxonomies taxonomyName="projects" />
-        <TimerTaxonomies taxonomyName="timesheets" />
+        <TimerTaxonomies taxonomyName="client" />
+        <TimerTaxonomies taxonomyName="project" />
+        <TimerTaxonomies taxonomyName="timesheet" />
       </div>
     );
   }

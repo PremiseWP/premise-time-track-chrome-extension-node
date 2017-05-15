@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import TimerTaxonomy from './TimerTaxonomy';
-import $ from 'jquery'; // Import jQuery.
+import TimerFetch from './TimerFetch';
+// import $ from 'jquery'; // Import jQuery.
 
 class TimerTaxonomies extends Component {
   constructor() {
@@ -18,6 +19,7 @@ class TimerTaxonomies extends Component {
   }
 
   _fetchTaxonomies() {
+    /* Disable test data:
     // Use fake data.
     let taxonomies = [];
 
@@ -39,18 +41,15 @@ class TimerTaxonomies extends Component {
 
     this.setState({ taxonomies });
 
-    return;
+    return;*/
 
-    $.ajax({
-      method: 'GET',
-      url: '/api/' + this.props.taxonomyName, // Makes call to the remote server.
-      success: (taxonomies) => { // Arrow function preserves the this binding to our class.
-        // Get JSON.
-        taxonomies = JSON.parse(taxonomies);
-        console.log(taxonomies);
+    TimerFetch.getTaxonomy( this.props.taxonomyName ).then( function( taxonomies ) {
+      console.log(taxonomies);
 
-        this.setState({ taxonomies });
-      }
+      this.setState({ taxonomies });
+    }.bind(this),
+    function ( error ) {
+      console.log( 'TimerFetch.getTaxonomy error:' + error );
     });
   }
 
@@ -58,17 +57,19 @@ class TimerTaxonomies extends Component {
     // Get & store taxonomies.
     const taxonomies = this._getTaxonomies() || [];
 
+    const taxonomyNamePlural = this.props.taxonomyName + 's';
+
     // Capitalize.
-    const taxonomyTitle = this.props.taxonomyName.charAt(0).toUpperCase() +
-      this.props.taxonomyName.slice(1);
+    const taxonomyTitle = taxonomyNamePlural.charAt(0).toUpperCase() +
+      taxonomyNamePlural.slice(1);
 
     let taxonomyNodes;
 
     if (taxonomies.length) {
-      const taxonomyClass = 'taxonomy-terms-list ' + this.props.taxonomyName;
+      const taxonomyClass = 'taxonomy-terms-list ' + taxonomyNamePlural;
       taxonomyNodes = <ul className={taxonomyClass}>{taxonomies}</ul>;
     } else {
-      taxonomyNodes = <p className="no-taxonomy-found">No {this.props.taxonomyName} found.</p>
+      taxonomyNodes = <p className="no-taxonomy-found">No {taxonomyNamePlural} found.</p>
     }
 
     return (
