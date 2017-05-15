@@ -51,13 +51,43 @@ class TimerTaxonomiesEdit extends Component {
 
       taxonomies = taxonomies || [];
 
+      const hasTaxonomies = this._getHasTaxonomies( taxonomies );
+
       // console.log(taxonomies);
-      this.setState({ taxonomies,
-        hasTaxonomies: this.props.timer[ 'premise_time_tracker_' + this.props.taxonomyName ] });
+      this.setState({ taxonomies, hasTaxonomies });
     }.bind(this),
     function ( error ) {
       console.log( 'TimerFetch.getTaxonomy error:' + error );
     });
+  }
+
+  _getHasTaxonomies(taxonomies) {
+      let hasTaxonomies;
+
+
+      hasTaxonomies = this.props.timer[ 'premise_time_tracker_' + this.props.taxonomyName ];
+
+      console.log(taxonomies, hasTaxonomies);
+
+      // Get real taxonomy object from IDs.
+      for (var i = hasTaxonomies.length - 1; i >= 0; i--) {
+
+        if ( typeof hasTaxonomies[i] === 'object' ) {
+          break;
+        }
+
+        let id = hasTaxonomies[i];
+
+        hasTaxonomies[i] = {};
+
+        for (var j = taxonomies.length - 1; j >= 0; j--) {
+          if ( id == taxonomies[j]['id'] ) {
+            hasTaxonomies[i] = taxonomies[j];
+          }
+        }
+      }
+
+      return hasTaxonomies;
   }
 
   _addTaxonomy(taxonomy) {

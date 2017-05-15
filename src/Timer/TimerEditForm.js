@@ -83,7 +83,7 @@ class TimerEditForm extends Component {
 
             <label>Description:
               <textarea
-                defaultValue={timer.content}
+                defaultValue={timer.content.rendered}
                 ref={(textarea) => this._content = textarea} />
             </label>
 

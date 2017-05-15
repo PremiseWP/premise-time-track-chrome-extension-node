@@ -65,7 +65,6 @@ class TimerTagsEdit extends TimerTaxonomiesEdit {
       taxonomies = this.state.hasTaxonomies;
     }
 
-console.log(this.state.taxonomies, this.state.hasTaxonomies);
     // Returns an array...
     return taxonomies.map((taxonomy) => { // Each element from taxonomyList is passed as argument...
       // ...with a new component built for each element present in taxonomyList.
