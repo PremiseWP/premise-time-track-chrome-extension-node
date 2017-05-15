@@ -93,15 +93,25 @@ class TimerTagsEdit extends TimerTaxonomiesEdit {
     let selectedId = $( '#' + this.props.taxonomyName )
       .find("[value='" + selectedValue + "']");
 
+    let taxonomy;
+
     if (selectedId.length) {
 
       selectedId = selectedId.data("id");
+
+      taxonomy = taxonomies.find(function(taxonomy) {
+        if ( taxonomy.id == selectedId ) {
+          return taxonomy;
+        }
+      });
     } else {
       // New temp ID, < 0!
       selectedId = this.newTmpId--;
+
+      taxonomy = { id: selectedId, name: selectedValue };
     }
 
-    const taxonomy = { id: selectedId, name: selectedValue };
+    const taxonomies = this.state.taxonomies;
 
     // Call super method.
     this._addTaxonomy(taxonomy);

@@ -15,7 +15,7 @@ class TimerCategoryEdit extends TimerTaxonomyEdit {
         <label>
           <input type="checkbox"  className="checkbox"
             {...checked}
-            onClick={this._handleCheck.bind(this)}
+            onChange={this._handleCheck.bind(this)}
             ref={(input) => this._checkbox = input} />
           {this.props.taxonomy.name}
         </label>
