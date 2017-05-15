@@ -73,9 +73,13 @@
   margin: 15px 20px;
 }
 
+.wordpress-iframe-wrapper {
+  height: 100%;
+}
+
 .wordpress-iframe {
   width: 100%;
-  height: calc( 100% - 61px );
+  height: calc( 100% - 16px );
   border: 0;
   overflow: hidden;
 }

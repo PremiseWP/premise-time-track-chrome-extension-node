@@ -1,14 +1,36 @@
 import React, { Component } from 'react';
+import WordpressModal from '../WordpressModal';
 
 class TimerTaxonomy extends Component {
+  constructor() {
+    super(); // super() must be called in our constructor.
+
+    this.state = {
+      showWordpressTaxonomy: false
+    };
+  }
+
   render() {
-    const taxonomyUrl = "?step=show-wordpress&url=" +
-      encodeURIComponent( this.props.taxonomy.link );
+    const url = this.props.taxonomy.link;
+
+    let showWordpress;
+
+    if ( this.state.showWordpressTaxonomy ) {
+
+      showWordpress = <WordpressModal url={url} onClose={this._showWordpressTaxonomy.bind(this)} />;
+    }
+
     return (
       <li>
-        <a href={taxonomyUrl}>{this.props.taxonomy.name}</a>
+        <a href="#" onClick={this._showWordpressTaxonomy.bind(this)}>{this.props.taxonomy.name}</a>
+        {showWordpress}
       </li>
     );
+  }
+
+  _showWordpressTaxonomy() {
+
+    this.setState({ showWordpressTaxonomy: ! this.state.showWordpressTaxonomy });
   }
 }
 
