@@ -17,9 +17,9 @@ class TimerEditForm extends Component {
         content: '',
         hours: '',
         date: '',
-        clients: [],
-        projects: [],
-        timesheets: []
+        client: [],
+        project: [],
+        timesheet: []
       }
     }
 
@@ -103,16 +103,16 @@ class TimerEditForm extends Component {
               </label>
 
               <div className="ptt-form-clients">
-                <TimerCategoriesEdit timer={timer} taxonomyName="clients"
-                  ref={(clients) => this._newTaxonomies['clients'] = clients} />
+                <TimerCategoriesEdit timer={timer} taxonomyName="client"
+                  ref={(client) => this._newTaxonomies['client'] = client} />
               </div>
               <hr />
 
-              <TimerTagsEdit timer={timer} taxonomyName="projects"
-                ref={(projects) => this._newTaxonomies['projects'] = projects} />
+              <TimerTagsEdit timer={timer} taxonomyName="project"
+                ref={(project) => this._newTaxonomies['project'] = project} />
 
-              <TimerTagsEdit timer={timer} taxonomyName="timesheets"
-                ref={(timesheets) => this._newTaxonomies['timesheets'] = timesheets} />
+              <TimerTagsEdit timer={timer} taxonomyName="timesheet"
+                ref={(timesheet) => this._newTaxonomies['timesheet'] = timesheet} />
 
             </div>
           </div>
@@ -171,9 +171,9 @@ class TimerEditForm extends Component {
     timer.hours = this._hours.value;
     timer.date = this._date.value;
     // Save new taxonomy terms if any first, and get IDs.
-    timer.clients = this._saveTaxonomy('clients');
-    timer.projects = this._saveTaxonomy('projects');
-    timer.timesheets = this._saveTaxonomy('timesheets');
+    timer.client = this._saveTaxonomy('client');
+    timer.project = this._saveTaxonomy('project');
+    timer.timesheet = this._saveTaxonomy('timesheet');
 
     this.setState({timer});
 

@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import TimerFetch from './TimerFetch';
 import $ from 'jquery'; // Import jQuery.
 
 class TimerTaxonomiesEdit extends Component {
@@ -18,6 +19,7 @@ class TimerTaxonomiesEdit extends Component {
   }
 
   _fetchTaxonomies() {
+    /* Disable test data:
     // Use fake data.
     let taxonomies = [];
 
@@ -43,29 +45,33 @@ class TimerTaxonomiesEdit extends Component {
 
     this.setState({ taxonomies });
 
-    return;
+    return;*/
 
-    // Should be :
-    this.setState({ taxonomies: this.props.timer[ this.props.taxonomyName ] });
+    this.setState({ hasTaxonomies: this.props.timer[ this.props.taxonomyName ] });
 
-    $.ajax({
-      method: 'GET',
-      url: '/api/' + this.props.timerId + '/' + this.props.taxonomyName, // Makes call to the remote server.
-      success: (hasTaxonomies) => { // Arrow function preserves the this binding to our class.
-        // Get JSON.
-        hasTaxonomies = JSON.parse(hasTaxonomies);
-        console.log(hasTaxonomies);
+    TimerFetch.getTaxonomy( this.props.taxonomyName ).then( function( taxonomies ) {
+      console.log(taxonomies);
 
-        this.setState({ hasTaxonomies });
-      }
+      this.setState({ taxonomies });
+    }.bind(this),
+    function ( error ) {
+      console.log( 'TimerFetch.getTaxonomy error:' + error );
     });
   }
 
   _addTaxonomy(taxonomy) {
-    const hasTaxonomies = this.state.hasTaxonomies.concat([taxonomy]);
+    let hasTaxonomies = [...this.state.hasTaxonomies]; // use spread operator to clone existing array.
+    const taxonomyIndex = hasTaxonomies.indexOf(taxonomy);
+
+    if ( taxonomyIndex >= 0 ) {
+      // Already has taxonomy...
+      return;
+    }
+
+    hasTaxonomies = hasTaxonomies.concat([taxonomy]);
 
     // Add our new taxonomy to state.
-    this.setState({hasTaxonomies});
+    this.setState({ hasTaxonomies });
 
     // console.log(taxonomy, hasTaxonomies);
   }

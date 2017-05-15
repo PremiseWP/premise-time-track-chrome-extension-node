@@ -79,7 +79,7 @@
 
 .wordpress-iframe {
   width: 100%;
-  height: calc( 100% - 16px );
+  height: calc( 100% - 30px );
   border: 0;
   overflow: hidden;
 }

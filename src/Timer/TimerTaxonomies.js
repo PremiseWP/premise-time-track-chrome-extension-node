@@ -74,7 +74,7 @@ class TimerTaxonomies extends Component {
 
     return (
       <div className="timer-taxonomies-wrapper">
-        <h2>{taxonomyTitle}:</h2>
+        <h2>{taxonomyTitle}</h2>
         {taxonomyNodes /* Now being displayed based on component's state! */}
       </div>
     );

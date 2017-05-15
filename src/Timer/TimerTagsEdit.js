@@ -16,15 +16,17 @@ class TimerTagsEdit extends TimerTaxonomiesEdit {
     const taxonomies = this._getTaxonomies() || [];
     const taxonomyOptions = this._getTaxonomies('options') || [];
 
+    const taxonomyNamePlural = this.props.taxonomyName + 's';
+
     // Capitalize.
-    const taxonomyTitle = this.props.taxonomyName.charAt(0).toUpperCase() +
-      this.props.taxonomyName.slice(1);
+    const taxonomyTitle = taxonomyNamePlural.charAt(0).toUpperCase() +
+      taxonomyNamePlural.slice(1);
 
     let taxonomyOptionsNodes;
 
-    const taxonomyNewName = "new-" + this.props.taxonomyName.substring( -1 );
+    const taxonomyNewName = "new-" + this.props.taxonomyName;
 
-    const taxonomyClass = 'tags-list ' + this.props.taxonomyName;
+    const taxonomyClass = 'tags-list ' + taxonomyNamePlural;
 
     if (taxonomyOptions.length) {
       taxonomyOptionsNodes = <datalist id={this.props.taxonomyName}>{taxonomyOptions}</datalist>;
