@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import TimerSearchResult from './TimerSearchResult';
 import TimerFetch from './TimerFetch';
 import $ from 'jquery'; // Import jQuery.
-// import FontAwesome from 'react-fontawesome';
+import LoadingIcon from '../LoadingIcon';
 
 class TimerSearchForm extends Component {
   constructor() {
@@ -11,7 +11,8 @@ class TimerSearchForm extends Component {
     this.state = {
       results: [], // Initial state hides comments.
       searchTerm: '',
-      showResults: false
+      showResults: false,
+      loadingResults: false
     };
 
     this._typingTimer; // Timer identifier.
@@ -24,9 +25,13 @@ class TimerSearchForm extends Component {
 
     if ( ! this.state.showResults ) {
 
-      // Nothing to display.
+    } else if ( this.state.loadingResults ) {
+
+      resultNodes = <LoadingIcon size="1em" />;
+
     } else if ( ! results.length ) {
 
+      // Nothing to display.
       resultNodes = <p>No timers found.</p>;
     } else {
       resultNodes = <ul>{results}</ul>;
@@ -51,11 +56,11 @@ class TimerSearchForm extends Component {
   }
 
   _hideResults() {
-    this.setState({ showResults: false });
+    this.setState({ showResults: false, loadingResults: false });
   }
 
-  _showResults() {
-    this.setState({ showResults: true });
+  _showResults(loadingResults) {
+    this.setState({ showResults: true, loadingResults });
   }
 
 
@@ -100,15 +105,17 @@ class TimerSearchForm extends Component {
 
     return;*/
 
+    this._showResults(true);
+
     TimerFetch.searchTimers( searchTerm ).then( function( results ) {
       // console.log(results);
 
-      this.setState({ results, searchTerm });
-
-      this._showResults();
+      this.setState({ results, searchTerm, loadingResults: false });
     }.bind(this),
     function ( error ) {
       console.log( 'TimerFetch.searchTimers error:' + error );
+
+      this._hideResults();
     });
   }
 
@@ -133,8 +140,12 @@ class TimerSearchForm extends Component {
 
     this._hideResults();
 
+    const searchTerm = '';
+
     // Empty search input.
-    this._searchTerm.value = '';
+    this._searchTerm.value = searchTerm;
+
+    this.setState({ searchTerm });
 
     this.props.onResultClick( result );
   }

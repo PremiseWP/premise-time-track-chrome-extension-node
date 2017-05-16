@@ -15,7 +15,7 @@ class TimerEditForm extends Component {
         id: 0,
         title: {rendered: ''},
         content: '',
-        hours: '',
+        pwptt_hours: '',
         date: '',
         premise_time_tracker_client: [],
         premise_time_tracker_project: [],
@@ -89,7 +89,7 @@ class TimerEditForm extends Component {
 
             <label>Time:
               <input placeholder="1.75" required
-                defaultValue={timer.hours}
+                defaultValue={timer.pwptt_hours}
                 ref={(input) => this._hours = input} />
             </label>
 

@@ -5,11 +5,17 @@ import FontAwesome from 'react-fontawesome';
  * Display a loading icon
  */
 class LoadingIcon extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+
+    let size = '3em';
+
+    if ( size in props && props.size ) {
+      size = props.size;
+    }
 
     this.state = {
-      size: '3em',
+      size: size,
       icon: 'spinner',
       align: 'center',
     }
