@@ -186,7 +186,7 @@ class TimerNewForm extends Component {
       list.push(
         <li key={terms[i].id} className="taxonomy_field">
           <label htmlFor={terms[i].taxonomy + '_' + terms[i].id}>
-            <input  type="radio"
+            <input type="radio"
                 name={terms[i].taxonomy}
                 value={terms[i].id}
                 id={terms[i].taxonomy + '_' + terms[i].id} />

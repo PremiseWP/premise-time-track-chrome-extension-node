@@ -94,11 +94,11 @@ class TimerFetch {
     }
 
     // Fetch the post and return promise.
-    var tax = fetch( PTT.get( 'endpoint' ) + '/' + id + '?' + _options + '/' )
+    var post = fetch( PTT.get( 'endpoint' ) + '/' + id + '?' + _options + '/' )
     .then( response => {
       return response.json();
     });
-    return tax;
+    return post;
   }
 }
 

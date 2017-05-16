@@ -10,7 +10,7 @@ class LoadingIcon extends Component {
 
     let size = '3em';
 
-    if ( size in props && props.size ) {
+    if ( props.size ) {
       size = props.size;
     }
 

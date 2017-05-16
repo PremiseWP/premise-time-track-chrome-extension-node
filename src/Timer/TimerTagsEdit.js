@@ -95,6 +95,8 @@ class TimerTagsEdit extends TimerTaxonomiesEdit {
 
     let taxonomy;
 
+    const taxonomies = this.state.taxonomies;
+
     if (selectedId.length) {
 
       selectedId = selectedId.data("id");
@@ -110,8 +112,6 @@ class TimerTagsEdit extends TimerTaxonomiesEdit {
 
       taxonomy = { id: selectedId, name: selectedValue };
     }
-
-    const taxonomies = this.state.taxonomies;
 
     // Call super method.
     this._addTaxonomy(taxonomy);

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PTT from '../PTT';
 import TimerCategoriesEdit from './TimerCategoriesEdit';
 import TimerTagsEdit from './TimerTagsEdit';
 import $ from 'jquery'; // Import jQuery.
@@ -171,16 +172,65 @@ class TimerEditForm extends Component {
     timer.hours = this._hours.value;
     timer.date = this._date.value;
     // Save new taxonomy terms if any first, and get IDs.
-    timer.client = this._saveTaxonomy('client');
-    timer.project = this._saveTaxonomy('project');
-    timer.timesheet = this._saveTaxonomy('timesheet');
+    timer.premise_time_tracker_client = this._saveTaxonomy('client');
+    timer.premise_time_tracker_project = this._saveTaxonomy('project');
+    timer.premise_time_tracker_timesheet = this._saveTaxonomy('timesheet');
 
-    this.setState({timer});
+    this.setState({timer}, this._saveTimerAjax.bind(this));
 
     console.log(timer);
 
     // Confirmation page!
     this.props.onSave();
+  }
+
+  _saveTimerAjax() {
+    const timer = this.state.timer;
+
+    let url = PTT.get('endpoint') + '/' + timer.id + '?';
+
+    delete timer['id'];
+
+    url += Object.keys(timer).map(function(k) {
+      if ( Object.prototype.toString.call( timer[k] ) === '[object Array]' ) {
+        return timer[k].map(function(value, index) {
+          return encodeURIComponent(k) + '[' + index + ']=' +
+            encodeURIComponent(value);
+        }).join('&');
+      }
+      return encodeURIComponent(k) + '=' + encodeURIComponent(timer[k]);
+    }).join('&');
+
+    // Save our timer.
+    $.ajax( {
+      url: url,
+      method: 'POST',
+      beforeSend: PTT.get('auth').ajaxBeforeSend,
+    }).done( function( response ) {
+      // We were successful!
+      console.log(response);
+        /*
+        {
+        "code":"rest_invalid_param",
+        "message":"Invalid parameter(s): date, meta, premise_time_tracker_client, premise_time_tracker_project, premise_time_tracker_timesheet",
+        "data":{
+        "status":400,
+        "params":{
+        "date":"Invalid date.",
+        "meta":"Invalid parameter.",
+        "premise_time_tracker_client":"premise_time_tracker_client[0] is not of type integer.",
+        "premise_time_tracker_project":"premise_time_tracker_project[0] is not of type integer.",
+        "premise_time_tracker_timesheet":"premise_time_tracker_timesheet[0] is not of type integer."}}}
+         */
+    }).fail( function( err ) {
+      console.error( err );
+
+      // TODO, pb, TimerEditForm already unmounted so this wont work!
+      /*this.setState( {
+        message: <span className="error">There was an error</span>
+        // TODO test err.responseText();
+      });*/
+    });
   }
 
   _saveTaxonomy(taxonomyName) {
