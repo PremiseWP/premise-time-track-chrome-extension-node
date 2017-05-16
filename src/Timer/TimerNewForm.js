@@ -19,7 +19,7 @@ class TimerNewForm extends Component {
       projects: <LoadingIcon />,
       clients: <LoadingIcon />,
       form: {
-        action: PTT.endpoint,
+        action: PTT.get('endpoint'),
         status: 'publish',
         id: props.post  || '',
         time: props.total || '',
@@ -48,40 +48,37 @@ class TimerNewForm extends Component {
             method="post"
             onSubmit={this._handleSubmit}>
 
-          <input  type="hidden"
+          <input type="hidden"
               name="status"
               value={state.form.status} />
 
-          <input  type="hidden"
+          <input type="hidden"
               name="id"
               value={state.form.id} />
 
           <div className="basic_fields">
-            <div className="premise-field">
-              <label htmlFor="pwptt_hours">Time</label><br />
+            <label htmlFor="pwptt_hours">Time
               <input type="text" name="pwptt_hours" id="pwptt_hours"  defaultValue={state.form.time} />
-            </div>
-            <div className="premise-field">
-              <label htmlFor="title">Title</label><br />
+            </label>
+            <label htmlFor="title">Title
               <input type="text" name="title" id="title"
                 value={state.form.title}
                 onChange={this._updateFieldValue} />
-            </div>
-            <div className="span12 premise-field">
-              <label htmlFor="content">Description</label><br />
+            </label>
+            <label htmlFor="content">Description
               <textarea name="content" id="content"
                 value={state.form.content}
                 onChange={this._updateFieldValue}  />
-            </div>
+            </label>
           </div>
 
-            <div className="clients">
-            <h3>Clients</h3>
-                  {state.clients}
+          <div className="timer-taxonomies-wrapper clients">
+            <h3>Clients:</h3>
+            {state.clients}
           </div>
 
-          <div className="projects">
-            <h3>Projects</h3>
+          <div className="timer-taxonomies-wrapper projects">
+            <h3>Projects:</h3>
             {state.projects}
           </div>
 
@@ -164,7 +161,7 @@ class TimerNewForm extends Component {
     $.ajax( {
       url: query,
       method: 'POST',
-      beforeSend: PTT.auth.ajaxBeforeSend,
+      beforeSend: PTT.get('auth').ajaxBeforeSend,
     }).done( function( response ) {
       // we were successful!
       console.log(response);

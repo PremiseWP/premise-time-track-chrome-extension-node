@@ -12,8 +12,8 @@ class TimerStopButton extends Component {
 
 	render() {
 		return (
-			<div className="stop_timer_btn">
-				<button id="stop_timer_btn"
+			<div>
+				<button className="timer-button timer-stop-button"
 					title="Stop Timer"
 					onClick={this.state.onClick}>
 					<TimerSVG />

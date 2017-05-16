@@ -12,8 +12,8 @@ class TimerNewButton extends Component {
 
 	render() {
 		return (
-			<div className="new_timer_btn">
-				<button id="new_timer_btn"
+			<div>
+				<button className="timer-button timer-new-button"
 					title="New Timer"
 					onClick={this.state.onClick}>
 					<TimerSVG />

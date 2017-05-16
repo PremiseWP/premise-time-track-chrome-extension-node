@@ -307,3 +307,31 @@ button.cancel {
   transition: .5s;
 }
 
+
+
+/**
+ * New / Stop Timer button
+ */
+.timer-button {
+  display: block;
+  width: 80%;
+  padding: 2.5em;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 0.375em;
+  border: 0;
+  box-shadow: 0 0 0.125em #aaa;
+  box-sizing: border-box;
+}
+
+.timer-button svg {
+  pointer-events: none !important;
+}
+
+.timer-new-button path {
+  fill: #099c22;
+}
+
+.timer-stop-button path {
+  fill: #d60000;
+}

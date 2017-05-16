@@ -13,10 +13,6 @@ class TimerNew extends Component {
 	constructor(props) {
 		super(props);
 
-		// Bind this.
-		this._handleNewTimer  = this._handleNewTimer.bind(this);
-		this._handleStopTimer = this._handleStopTimer.bind(this);
-
 		const post = Cookies.getJSON( 'ptt_current_timer' );
 
 		const message = ( post )
@@ -25,8 +21,8 @@ class TimerNew extends Component {
 
 		const view = ( post )
 				? <TimerStopButton post={post.id}
-								onClick={this._handleStopTimer()} />
-				: <TimerNewButton onClick={this._handleNewTimer()} />;
+								onClick={this._handleStopTimer.bind(this)} />
+				: <TimerNewButton onClick={this._handleNewTimer.bind(this)} />;
 
 		this.state = { post, message, view };
 	}
@@ -50,9 +46,9 @@ class TimerNew extends Component {
 		const _start = new Date();
 
 		$.ajax({
-			beforeSend: PTT.auth.ajaxBeforeSend,
+			beforeSend: PTT.get('auth').ajaxBeforeSend,
 			method: 'POST', // Create a post. 'GET' retrieves them.
-			url: PTT.endpoint
+			url: PTT.get('endpoint')
 				+ '?status=publish&title=Timer in progress create by PTT at '
 				+ _start.toLocaleTimeString(),
 		})
@@ -103,11 +99,11 @@ class TimerNew extends Component {
 	_timerStartedMessage( date ) {
 		const time = date.toLocaleTimeString();
 		return (
-			<span>
+			<p>
 				Timer started at:
 				<span className="time"> {time}</span>.<br />
 				Time is ticking...
-			</span>
+			</p>
 		);
 	}
 }

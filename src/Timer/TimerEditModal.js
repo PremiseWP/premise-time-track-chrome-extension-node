@@ -62,7 +62,8 @@ class TimerEditModal extends Component {
       partial = <TimerSavedConfirmation
         onClose={this._closeModal.bind(this)}
         onAddAnotherTimer={this._timerSavedConfirmation.bind(this)} />
-    } else {
+    } else if ( 'id' in this.state.timer ) {
+
       // Will open modal if has timer, see componentWillMount().
       const timer = this.state.timer;
 
@@ -70,6 +71,10 @@ class TimerEditModal extends Component {
         timer={timer}
         onClose={this._closeModal.bind(this)}
         onSave={this._timerSavedConfirmation.bind(this)} />;
+
+    } else {
+
+      partial = <TimerNew />;
     }
 
     return (
