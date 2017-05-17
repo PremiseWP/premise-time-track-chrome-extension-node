@@ -33,14 +33,14 @@ class App extends Component {
 
     let view;
 
-    if ( PTT.auth && PTT.auth.authenticated() ) {
+    if ( PTT.get('auth') && PTT.get('auth').authenticated ) {
       console.log('authenticated');
 
       view = <TimerDashboard />;
 
     } else {
 
-      if ( PTT.creds ) {
+      if ( PTT.get('creds') ) {
         console.log('not authenticated but we have creds.');
 
       } else {

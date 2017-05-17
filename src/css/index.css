@@ -28,7 +28,16 @@ html, body {
 	margin: 0;
 	padding: 0;
 	min-width:320px;
-	height: 99%;
+	height: 100%;
+}
+
+body {
+    margin: 0 auto;
+}
+
+code {
+	white-space: nowrap;
+	overflow: auto;
 }
 
 .container {

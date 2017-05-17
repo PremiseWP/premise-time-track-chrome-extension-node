@@ -54,13 +54,20 @@ class DiscoverWpApi extends Component {
 
   // Returns the form.
   _theForm() {
+    let callback = window.location.href;
+
+    // Remove "index.html".
+    callback = callback.replace( 'index.html', '' );
+
+    callback += 'land.html';
+
     return (
       <div className="discovery-form">
         <form id="discover_form" onSubmit={this._handleSubmit}>
           <div>
             <label htmlFor="land_url">Use this URL as your callback:</label>
             <pre name="land_url">
-              <code>{window.location.href + 'land.html'}</code>
+              <code>{callback}</code>
             </pre>
           </div>
           <div>
