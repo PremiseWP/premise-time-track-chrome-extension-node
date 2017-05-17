@@ -1,15 +1,38 @@
-# premise-time-track-chrome-extension-node
-Chrome extension for the Premise Time Tracker Wordpress plugin (using React &amp; Javascript WordPress REST API client)
+# Premise Time Track Chrome extension
+
+Chrome extension for the [Premise Time Tracker](https://github.com/PremiseWP/premise-time-track/) Wordpress plugin.
 
 
-## CORS issue
+### React
 
-Added `proxy` field to the `package.json`. Avoids [CORS issues](http://stackoverflow.com/questions/21854516/understanding-ajax-cors-and-security-considerations) in development environment (when using `fetch`).
+Uses [React](README-create-react-app.md).
 
-Add this `.htaccess` file to your web root folder;
+Install, serve, build commands:
 ```
-# Add to www root folder!
-# FJ CORS for Time Tracker node app/extension.
-Header set Access-Control-Allow-Origin "*"
-Header set Access-Control-Allow-Headers "Content-Type, Authorization"
+$ npm install
+$ npm start
+$ npm run build
 ```
+
+### 400 No Oauth parameters supplied error
+
+If you experience a "400 No Oauth parameters supplied error", this may be due to the Authorization header blocked.
+Edit your **Wordpress** `.htaccess` file this way:
+
+```
+# REST API fix 400 error.
+# RewriteRule ^index\.php$ - [L]
+RewriteRule ^index\.php$ - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization},L]
+```
+
+
+### New client / project / timesheet not appearing in the list
+
+When creating a new Timer and adding a new client / project / timesheet, it may not be displayed right away.
+If you experience this issue, please check your Wordpress installation for _cache plugins_ and deactivate them.
+
+
+### Security rule error
+
+In case the Wordpress page you are trying to view is restricted due to a security rule.
+Please disable any `mod_security` (Apache) rule blocking `iframe` on you Wordpress server.
