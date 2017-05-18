@@ -41,7 +41,7 @@ code {
 }
 
 .container {
-	max-width: 360px;
+	max-width: 375px;
 	padding: 15px 19.25px 36px; /* Dashboard */
 	margin: 0 auto;
 	position: relative;
@@ -51,7 +51,7 @@ code {
 /* React Modal */
 .ReactModal__Content {
 	min-width:320px;
-	width: 360px;
+	width: 375px;
 	max-width: 100%;
 	height: 100%;
 }
