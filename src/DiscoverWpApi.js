@@ -20,7 +20,7 @@ class DiscoverWpApi extends Component {
 
   // called before the component is rendered to the page.
   componentWillMount() {
-    this._checkCredentials(); // Fetch comments from server before component is rendered.
+    this._checkCredentials();
   }
 
   _checkCredentials() {
