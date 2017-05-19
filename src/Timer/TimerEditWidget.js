@@ -40,7 +40,7 @@ class TimerEditWidget extends Component {
         onRequestClose={this._closeWidget.bind(this)}
         title={this.state.widgetTitle}
       >
-        {partial}
+        <TimerNew />
       </TimerDashboardWidget>
     );
   }

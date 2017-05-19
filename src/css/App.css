@@ -101,6 +101,29 @@
 
 
 /**
+ * Dashboard widgets.
+ */
+.timer-dashboard-widget {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 40px;
+  padding: 0 20px;
+}
+
+.widget-title {
+  text-align: center;
+  font-size: 24px;
+  line-height: 52px;
+  color: rgb(52, 52, 52);
+  cursor: pointer;
+}
+
+.widget-content {
+  padding: 20px 0;
+}
+
+
+/**
  * Show taxonomy.
  */
 .show-wordpress .container {
@@ -353,13 +376,11 @@ button.cancel {
  */
 .timer-button {
   display: block;
-  width: 80%;
-  padding: 2.5em;
+  width: 62%;
+  padding: 20px;
   margin: 0 auto;
   background: #fff;
-  border-radius: 0.375em;
   border: 0;
-  box-shadow: 0 0 0.125em #aaa;
   box-sizing: border-box;
 }
 

@@ -4,15 +4,19 @@ import TimerTaxonomyTerms from './TimerTaxonomyTerms';
 import TimerTaxonomyTerm from './TimerTaxonomyTerm';
 
 class TimerTaxonomyWidget extends Component {
-  constructor() {
-    super(); // super() must be called in our constructor.
+  constructor(props) {
+    super(props); // super() must be called in our constructor.
 
     // Initial state.
     this.state = {
       widgetIsOpen: false,
-      widgetTitle: this.props.taxonomyName,
+      widgetTitle: '',
       term: {} // We manage the current term here, only!
     };
+  }
+
+  componentWillMount() {
+    this._setTitle();
   }
 
   _openWidget() {
@@ -38,16 +42,29 @@ class TimerTaxonomyWidget extends Component {
         onRequestClose={this._closeWidget.bind(this)}
         title={this.state.widgetTitle}
       >
-        {partial}
+        <div>here{partial}</div>
       </TimerDashboardWidget>
     );
+  }
+
+  _setTitle() {
+
+    const taxonomyNamePlural = this.props.taxonomyName + 's';
+
+    // Capitalize.
+    const taxonomyTitle = taxonomyNamePlural.charAt(0).toUpperCase() +
+      taxonomyNamePlural.slice(1);
+
+    this.setState({widgetTitle: taxonomyTitle});
+
+    return taxonomyTitle;
   }
 
   _getPartial() {
     let partial;
 
     if ( ! this.state.widgetIsOpen ) {
-      return partial;
+      return <span>there</span>;
     }
 
     /*if ( 'id' in this.state.term ) {
