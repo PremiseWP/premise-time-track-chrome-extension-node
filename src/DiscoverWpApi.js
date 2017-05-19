@@ -43,7 +43,6 @@ class DiscoverWpApi extends Component {
     const view = ( this.state.processing ) ? <LoadingIcon /> : this._theForm();
     return (
       <div className="discover-wp-api">
-        <h2>Premise Time Tracker</h2>
         <div className="message">
           <p>{this.state.message}</p>
         </div>
@@ -65,8 +64,8 @@ class DiscoverWpApi extends Component {
       <div className="discovery-form">
         <form id="discover_form" onSubmit={this._handleSubmit}>
           <div>
-            <label htmlFor="land_url">Use this URL as your callback:</label>
-            <pre name="land_url">
+            <span>Use this as your callback:</span>
+            <pre className="land-url">
               <code>{callback}</code>
             </pre>
           </div>

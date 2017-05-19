@@ -1,4 +1,32 @@
 /**
+ * Header
+ */
+.header {
+  background-color: rgb(32,111,204);
+  color: #fff;
+  text-align: center;
+  padding: 25px;
+}
+
+.header h2 {
+  margin: 0;
+  line-height: 30px;
+  font-size: 26px;
+  font-weight: 400;
+}
+
+
+/**
+ * Discover WP API screen.
+ */
+.land-url {
+  display: block;
+  overflow: auto;
+  font-size: inherit;
+  padding: 5px 7px;
+}
+
+/**
  * Main screen.
  */
 .button.new-timer {

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PTT from './PTT';
 import HelpButtons from './HelpButtons';
 import LoadingIcon from './LoadingIcon';
+import Header from './Header';
 import TimerDashboard from './Timer/TimerDashboard';
 import DiscoverWpApi from './DiscoverWpApi';
 import './css/App.css';
@@ -20,9 +21,12 @@ class App extends Component {
 
   render() {
     return (
-      <div className="container">
-        {this.state.view}
-        <HelpButtons step="" />
+      <div className="app">
+        <Header />
+        <div className="container">
+          {this.state.view}
+          <HelpButtons step="" />
+        </div>
       </div>
     );
   }
