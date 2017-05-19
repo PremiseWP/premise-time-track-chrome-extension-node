@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import TimerEditModal from './TimerEditModal';
-import TimerSearchForm from './TimerSearchForm';
-import TimerTaxonomies from './TimerTaxonomies';
+import TimerEditWidget from './TimerEditWidget';
+import TimerTaxonomyWidget from './TimerTaxonomyWidget';
 
 class TimerDashboard extends Component {
   constructor() {
@@ -17,16 +16,14 @@ class TimerDashboard extends Component {
 
     return (
       <div className="timer-dashboard-wrapper">
-        <TimerEditModal timer={timer} />
-        <TimerSearchForm onResultClick={this._openTimerEditModal.bind(this)} />
-        <TimerTaxonomies taxonomyName="client" />
-        <TimerTaxonomies taxonomyName="project" />
-        <TimerTaxonomies taxonomyName="timesheet" />
+        <TimerEditWidget timer={timer} />
+        <TimerTaxonomyWidget taxonomyName="client" />
+        <TimerTaxonomyWidget taxonomyName="project" />
       </div>
     );
   }
 
-  _openTimerEditModal( timer ) {
+  _openTimerEditWidget( timer ) {
 
     if ( ! ('id' in timer) ) {
       return;

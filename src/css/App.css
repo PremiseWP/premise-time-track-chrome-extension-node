@@ -15,10 +15,21 @@
   font-weight: 400;
 }
 
+/**
+ * Error.
+ */
+.error {
+  color: rgb(182, 0, 4);
+}
+
 
 /**
  * Discover WP API screen.
  */
+.discover-wp-api {
+  padding: 10px 14px 0;
+}
+
 .land-url {
   display: block;
   overflow: auto;

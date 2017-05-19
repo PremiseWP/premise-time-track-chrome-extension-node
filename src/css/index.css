@@ -42,7 +42,7 @@ code {
 
 .container {
 	max-width: 375px;
-	padding: 15px 19.25px 36px; /* Dashboard */
+	padding: 40px 20px; /* Dashboard */
 	margin: 0 auto;
 	position: relative;
 	overflow: visible;
