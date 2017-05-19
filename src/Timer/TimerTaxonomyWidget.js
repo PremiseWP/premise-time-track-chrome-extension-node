@@ -42,7 +42,8 @@ class TimerTaxonomyWidget extends Component {
         onRequestClose={this._closeWidget.bind(this)}
         title={this.state.widgetTitle}
       >
-        <div>here{partial}</div>
+        <TimerTaxonomyTerms
+          taxonomyName={this.props.taxonomyName} />
       </TimerDashboardWidget>
     );
   }
