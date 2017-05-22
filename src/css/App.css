@@ -418,3 +418,12 @@ button.cancel {
 .timer-stop-button path {
   fill: #d60000;
 }
+
+
+/**
+ * New Timer form
+ */
+.timer-taxonomies-wrapper .new-tag-input {
+  width: 100%;
+  margin-right: 0;
+}

@@ -16,8 +16,8 @@ class TimerNewForm extends Component {
       view: 'show',
       loading: '',
       post: null, // The current post we are working with.
-      projects: <LoadingIcon />,
-      clients: <LoadingIcon />,
+      projects: null,
+      clients: null,
       form: {
         action: PTT.get('endpoint'),
         status: 'publish',
@@ -41,7 +41,7 @@ class TimerNewForm extends Component {
     const state = this.state;
 
     return (
-      <div className="new_timer_form">
+      <div className="timer-new-form">
         {state.loading}
         <form className={state.view}
             action={state.form.action}
@@ -57,13 +57,13 @@ class TimerNewForm extends Component {
               value={state.form.id} />
 
           <div className="basic_fields">
-            <label htmlFor="pwptt_hours">Time
-              <input type="text" name="pwptt_hours" id="pwptt_hours"  defaultValue={state.form.time} />
-            </label>
             <label htmlFor="title">Title
               <input type="text" name="title" id="title"
                 value={state.form.title}
                 onChange={this._updateFieldValue} />
+            </label>
+            <label htmlFor="pwptt_hours">Time
+              <input type="text" name="pwptt_hours" id="pwptt_hours"  defaultValue={state.form.time} />
             </label>
             <label htmlFor="content">Description
               <textarea name="content" id="content"
@@ -73,13 +73,23 @@ class TimerNewForm extends Component {
           </div>
 
           <div className="timer-taxonomies-wrapper clients">
-            <h3>Clients:</h3>
-            {state.clients}
+            <label>Clients
+              <input type="text" name="client"
+                list="clients" className="new-tag-input"
+                ref={(input) => this._client = input}
+                onFocus={this._loadClients.bind(this)} />
+              {state.clients}
+            </label>
           </div>
 
           <div className="timer-taxonomies-wrapper projects">
-            <h3>Projects:</h3>
-            {state.projects}
+            <label>Projects
+              <input type="text" name="project"
+                list="projects" className="new-tag-input"
+                ref={(input) => this._project = input}
+                onFocus={this._loadProjects.bind(this)} />
+              {state.projects}
+            </label>
           </div>
 
           <button type="submit">Submit</button>
@@ -113,9 +123,6 @@ class TimerNewForm extends Component {
         console.log('form should be built');
       } );
     }
-
-    this._loadClients();
-    this._loadProjects();
   }
 
   _updateFieldValue(e) {
@@ -179,26 +186,22 @@ class TimerNewForm extends Component {
     });
   }
 
-  _listTax( terms ) {
+  _listTax( terms, taxonomyName ) {
+
+    if (!terms.length) {
+      return <span></span>;
+    }
 
     let list = [];
     for (var i = terms.length - 1; i >= 0; i--) {
       list.push(
-        <li key={terms[i].id} className="taxonomy_field">
-          <label htmlFor={terms[i].taxonomy + '_' + terms[i].id}>
-            <input type="radio"
-                name={terms[i].taxonomy}
-                value={terms[i].id}
-                id={terms[i].taxonomy + '_' + terms[i].id} />
-            <span>{terms[i].name}</span>
-          </label>
-        </li>
+        <option value={terms[i].name} data-id={terms[i].id} />
       );
     }
 
-    const ul = <ul>
+    const ul = <datalist id={taxonomyName}>
       {list}
-    </ul>;
+    </datalist>;
     return ul;
   }
 
@@ -215,7 +218,7 @@ class TimerNewForm extends Component {
       // Do not mutate state directly. Use setState().
       // this.state.clients = this._listTax( clients );
       this.setState({
-        clients: this._listTax( clients ),
+        clients: this._listTax( clients, 'clients' ),
         view: this._theForm(),
       });
     });
@@ -225,7 +228,7 @@ class TimerNewForm extends Component {
     console.log('loading projects');
     TimerFetch.getTaxonomy( 'project' ).then( projects => {
       this.setState({
-        projects: this._listTax( projects ),
+        projects: this._listTax( projects, 'projects' ),
       });
     });
   }

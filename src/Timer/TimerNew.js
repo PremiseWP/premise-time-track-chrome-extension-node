@@ -97,7 +97,8 @@ class TimerNew extends Component {
 
     this.setState( {
       view: <TimerNewForm post={this.state.post.id} total={time} />,
-      message: 'Congratulations, you finished a task! Enter some information about it here to complete recording your time.',
+      // message: 'Congratulations, you finished a task! Enter some information about it here to complete recording your time.',
+      message: '',
     });
   }
 
