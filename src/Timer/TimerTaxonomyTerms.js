@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import TimerTaxonomy from './TimerTaxonomy';
+import TimerTaxonomyTerm from './TimerTaxonomyTerm';
 import TimerFetch from './TimerFetch';
 // import $ from 'jquery'; // Import jQuery.
 
@@ -8,45 +9,22 @@ class TimerTaxonomyTerms extends Component {
     super(); // super() must be called in our constructor.
 
     this.state = {
-      taxonomies: []
+      terms: [],
+      selectedTerm: null
     };
   }
 
   // called before the component is rendered to the page.
   componentWillMount() {
-    // Fetch taxonomies from server before component is rendered.
-    this._fetchTaxonomies();
+    // Fetch terms from server before component is rendered.
+    this._fetchTerms();
   }
 
-  _fetchTaxonomies() {
-    /* Disable test data:
-    // Use fake data.
-    let taxonomies = [];
+  _fetchTerms() {
+    TimerFetch.getTaxonomy( this.props.taxonomyName ).then( function( terms ) {
+      // console.log(terms);
 
-    if ( this.props.taxonomyName === 'projects' ) {
-
-      taxonomies = [{ id: 1, link: "http://tt.vallgroup.com/projects/1", name: "Project 1" },
-        { id: 2, link: "http://tt.vallgroup.com/projects/2", name: "Project 2" }];
-
-    } else if ( this.props.taxonomyName === 'clients' ) {
-
-      taxonomies = [{ id: 1, link: "http://tt.vallgroup.com/clients/1", name: "Client 1" },
-        { id: 2, link: "http://tt.vallgroup.com/clients/2", name: "Client 2" }];
-
-    } else if ( this.props.taxonomyName === 'timesheets' ) {
-
-      taxonomies = [{ id: 1, link: "http://tt.vallgroup.com/timesheets/1", name: "Timesheet 1" },
-        { id: 2, link: "http://tt.vallgroup.com/timesheets/2", name: "Timesheet 2" }];
-    }
-
-    this.setState({ taxonomies });
-
-    return;*/
-
-    TimerFetch.getTaxonomy( this.props.taxonomyName ).then( function( taxonomies ) {
-      // console.log(taxonomies);
-
-      this.setState({ taxonomies });
+      this.setState({ terms });
     }.bind(this),
     function ( error ) {
       console.log( 'TimerFetch.getTaxonomy error:' + error );
@@ -54,39 +32,64 @@ class TimerTaxonomyTerms extends Component {
   }
 
   render() {
-    // Get & store taxonomies.
-    const taxonomies = this._getTaxonomies() || [];
+
+    if ( this.state.selectedTerm ) {
+      return this._termView();
+    }
+
+    return this._termsListView();
+  }
+
+  _termsListView() {
+
+    // Get & store terms.
+    const terms = this._getTerms() || [];
 
     const taxonomyNamePlural = this.props.taxonomyName + 's';
 
     let taxonomyNodes;
 
-    if (taxonomies.length) {
+    if (terms.length) {
       const taxonomyClass = 'taxonomy-terms-list ' + taxonomyNamePlural;
-      taxonomyNodes = <ul className={taxonomyClass}>{taxonomies}</ul>;
+      taxonomyNodes = <ul className={taxonomyClass}>{terms}</ul>;
     } else {
       taxonomyNodes = <p className="no-taxonomy-found">No {taxonomyNamePlural} found.</p>
     }
 
     return (
-      <div className="timer-taxonomies-wrapper">
+      <div className="timer-terms-wrapper">
         {taxonomyNodes /* Now being displayed based on component's state! */}
       </div>
     );
   }
 
+  _termView() {
+    const term = this.state.selectedTerm;
+    return (
+      <div>{term.name}</div>
+    );
+  }
+
   // Underscore helps distinguish custom methods from React methods.
-  _getTaxonomies() {
+  _getTerms() {
 
     // Returns an array...
-    return this.state.taxonomies.map((taxonomy) => { // Each element from commentList is passed as argument...
-      // ...with a new component built for each element present in commentList.
-      return ( <TimerTaxonomy
-        taxonomy={taxonomy /* Pass the whole taxonomy */}
+    return this.state.terms.map((term) => {
+      return ( <TimerTaxonomyTerm
+        term={term /* Pass the whole term */}
         taxonomyName={this.props.taxonomyName}
-        key={taxonomy.id} /> ); // ...which we can use to access properties and pass them as props.
+        selectedTerm={this._selectedTerm.bind(this)}
+        key={this.props.taxonomyName + term.id} /> );
         // Unique key.
     });
+  }
+
+  _selectedTerm( term ) {
+
+    this.setState({ selectedTerm: term });
+
+    // Update Widget title & set term.
+    this.props.updateWidget( term );
   }
 }
 

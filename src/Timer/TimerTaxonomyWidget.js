@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import TimerDashboardWidget from './TimerDashboardWidget';
 import TimerTaxonomyTerms from './TimerTaxonomyTerms';
-import TimerTaxonomyTerm from './TimerTaxonomyTerm';
 
 class TimerTaxonomyWidget extends Component {
   constructor(props) {
@@ -10,8 +9,7 @@ class TimerTaxonomyWidget extends Component {
     // Initial state.
     this.state = {
       widgetIsOpen: false,
-      widgetTitle: '',
-      term: {} // We manage the current term here, only!
+      widgetTitle: ''
     };
   }
 
@@ -33,8 +31,6 @@ class TimerTaxonomyWidget extends Component {
   }
 
   render() {
-    const partial = this._getPartial.bind(this);
-
     return (
       <TimerDashboardWidget
         isOpen={this.state.widgetIsOpen}
@@ -44,47 +40,31 @@ class TimerTaxonomyWidget extends Component {
         title={this.state.widgetTitle}
       >
         <TimerTaxonomyTerms
-          taxonomyName={this.props.taxonomyName} />
+          taxonomyName={this.props.taxonomyName}
+          term={this.state.term}
+          updateWidget={this._updateWidget.bind(this)} />
       </TimerDashboardWidget>
     );
   }
 
-  _setTitle() {
-
-    const taxonomyNamePlural = this.props.taxonomyName + 's';
-
-    // Capitalize.
-    const taxonomyTitle = taxonomyNamePlural.charAt(0).toUpperCase() +
-      taxonomyNamePlural.slice(1);
-
-    this.setState({widgetTitle: taxonomyTitle});
-
-    return taxonomyTitle;
+  _updateWidget( term ) {
+    this._setTitle( term.name );
   }
 
-  _getPartial() {
-    let partial;
+  _setTitle( title ) {
 
-    if ( ! this.state.widgetIsOpen ) {
-      return <span>there</span>;
-    }
-
-    /*if ( 'id' in this.state.term ) {
-
-      // Will open modal if has term, see componentWillMount().
-      const term = this.state.term;
-
-      partial = <TimerTaxonomyTerm
-        term={term}
-        onClose={this._closeWidget.bind(this)} />;
-
+    if ( title ) {
+      this.setState({widgetTitle: title});
     } else {
 
-      partial = <TimerTaxonomyTerms
-        taxonomyName={this.props.taxonomyName} />;
-    }*/
+      const taxonomyNamePlural = this.props.taxonomyName + 's';
 
-    return partial;
+      // Capitalize.
+      const taxonomyTitle = taxonomyNamePlural.charAt(0).toUpperCase() +
+        taxonomyNamePlural.slice(1);
+
+      this.setState({widgetTitle: taxonomyTitle});
+    }
   }
 }
 

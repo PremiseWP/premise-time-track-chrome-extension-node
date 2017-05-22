@@ -87,12 +87,18 @@
 
 .no-taxonomy-found,
 .taxonomy-terms-list {
-  padding-left: 10px;
+  padding-left: 0;
+  margin-bottom: 0;
+  font-size: 20px;
 }
 
 .taxonomy-terms-list li,
 .ajax-results-timers li {
   padding: 6px 0;
+}
+
+.taxonomy-terms-list a {
+  text-decoration: none;
 }
 
 .ajax-results-timers ul {
