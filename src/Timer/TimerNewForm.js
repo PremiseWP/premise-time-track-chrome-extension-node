@@ -16,8 +16,8 @@ class TimerNewForm extends Component {
       view: 'show',
       loading: '',
       post: null, // The current post we are working with.
-      projects: null,
-      clients: null,
+      premise_time_tracker_project: null,
+      premise_time_tracker_client: null,
       form: {
         action: PTT.get('endpoint'),
         status: 'publish',
@@ -39,6 +39,16 @@ class TimerNewForm extends Component {
 
   render() {
     const state = this.state;
+
+    let clientsList, projectsList;
+
+    if ( state.premise_time_tracker_client ) {
+      clientsList = this._listTax( state.premise_time_tracker_client, 'clients' );
+    }
+
+    if ( state.premise_time_tracker_project ) {
+      projectsList = this._listTax( state.premise_time_tracker_project, 'projects' );
+    }
 
     return (
       <div className="timer-new-form">
@@ -74,21 +84,21 @@ class TimerNewForm extends Component {
 
           <div className="timer-taxonomies-wrapper clients">
             <label>Clients
-              <input type="text" name="client"
+              <input type="text" name="premise_time_tracker_client"
                 list="clients" className="new-tag-input"
                 ref={(input) => this._client = input}
                 onFocus={this._loadClients.bind(this)} />
-              {state.clients}
+              {clientsList}
             </label>
           </div>
 
           <div className="timer-taxonomies-wrapper projects">
             <label>Projects
-              <input type="text" name="project"
+              <input type="text" name="premise_time_tracker_project"
                 list="projects" className="new-tag-input"
                 ref={(input) => this._project = input}
                 onFocus={this._loadProjects.bind(this)} />
-              {state.projects}
+              {projectsList}
             </label>
           </div>
 
@@ -154,6 +164,13 @@ class TimerNewForm extends Component {
       // exclude id or empty values
       if ( 'id' !== fields[i].name
          && fields[i].value.length ) {
+
+        if ( fields[i].name === 'premise_time_tracker_client' ||
+          fields[i].name === 'premise_time_tracker_project' ) {
+          // Get term ID from list, or create new term if needed.
+          fields[i].value = this._getTermId( fields[i].name, fields[i].value );
+        }
+
         parser += '&' + fields[i].name + '=' + fields[i].value;
       }
       // save the id separately
@@ -163,6 +180,8 @@ class TimerNewForm extends Component {
     }
     // build the query
     query += '/' + id + '?' + parser.substr(1, parser.length);
+
+    console.log(query); return;
 
     // save our timer
     $.ajax( {
@@ -195,7 +214,9 @@ class TimerNewForm extends Component {
     let list = [];
     for (var i = terms.length - 1; i >= 0; i--) {
       list.push(
-        <option value={terms[i].name} data-id={terms[i].id} />
+        <option value={terms[i].name}
+          data-id={terms[i].id}
+          key={terms[i].name + terms[i].id} />
       );
     }
 
@@ -214,23 +235,35 @@ class TimerNewForm extends Component {
 
   _loadClients() {
     console.log('loading clients');
-    TimerFetch.getTaxonomy( 'client' ).then( clients => {
+    TimerFetch.getTaxonomy( 'client' ).then( premise_time_tracker_client => {
       // Do not mutate state directly. Use setState().
       // this.state.clients = this._listTax( clients );
       this.setState({
-        clients: this._listTax( clients, 'clients' ),
-        view: this._theForm(),
+        premise_time_tracker_client
       });
     });
   }
 
   _loadProjects() {
     console.log('loading projects');
-    TimerFetch.getTaxonomy( 'project' ).then( projects => {
+    TimerFetch.getTaxonomy( 'project' ).then( premise_time_tracker_project => {
       this.setState({
-        projects: this._listTax( projects, 'projects' ),
+        premise_time_tracker_project,
       });
     });
+  }
+
+  _getTermId( taxonomyName, termName ) {
+    // Check if term already in list.
+    let term = this.state[taxonomyName].find(function(term){
+      return term.name === termName;
+    });
+
+    if ( typeof term !== 'undefined' ) {
+      return term.id;
+    }
+
+    // TODO Else create term first and get ID.
   }
 }
 
