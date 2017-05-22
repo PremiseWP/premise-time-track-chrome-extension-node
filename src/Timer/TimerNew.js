@@ -4,6 +4,7 @@ import Cookies from 'js-cookie';
 import TimerNewButton from './TimerNewButton';
 import TimerStopButton from './TimerStopButton';
 import TimerNewForm from './TimerNewForm';
+import LoadingIcon from '../LoadingIcon';
 import $ from 'jquery'; // Import jQuery.
 
 /**
@@ -39,6 +40,10 @@ class TimerNew extends Component {
   // TODO handle error
   _handleNewTimer(e) {
     e.preventDefault();
+
+    const view = <LoadingIcon />;
+
+    this.setState({ view });
 
     var _this = this; // Move callback to proper functions w/ bind this!!
 
