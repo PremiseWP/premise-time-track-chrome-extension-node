@@ -30,7 +30,7 @@ class TimerNew extends Component {
 
   render() {
     return (
-      <div id="new_timer">
+      <div id="timer-new">
         <div className="message">{this.state.message}</div>
         {this.state.view}
       </div>
@@ -104,10 +104,9 @@ class TimerNew extends Component {
   _timerStartedMessage( date ) {
     const time = date.toLocaleTimeString();
     return (
-      <p>
+      <p className="timer-started">
         Timer started at:
-        <span className="time"> {time}</span>.<br />
-        Time is ticking...
+        <span className="time"> {time}</span>
       </p>
     );
   }
