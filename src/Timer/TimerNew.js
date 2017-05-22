@@ -14,6 +14,10 @@ class TimerNew extends Component {
   constructor(props) {
     super(props);
 
+    this._construct( true );
+  }
+
+  _construct( isConstructor ) {
     const post = Cookies.getJSON( 'ptt_current_timer' );
 
     const message = ( post )
@@ -25,7 +29,11 @@ class TimerNew extends Component {
                 onClick={this._handleStopTimer.bind(this)} />
         : <TimerNewButton onClick={this._handleNewTimer.bind(this)} />;
 
-    this.state = { post, message, view };
+    if ( isConstructor ) {
+      this.state = { post, message, view };
+    } else {
+      this.setState({ post, message, view });
+    }
   }
 
   render() {
@@ -96,7 +104,7 @@ class TimerNew extends Component {
     const time     = ( Math.round(total * 4) / 4).toFixed(2);
 
     this.setState( {
-      view: <TimerNewForm post={this.state.post.id} total={time} />,
+      view: <TimerNewForm post={this.state.post.id} total={time} onSaved={this._construct.bind(this)} />,
       // message: 'Congratulations, you finished a task! Enter some information about it here to complete recording your time.',
       message: '',
     });

@@ -181,7 +181,7 @@ class TimerNewForm extends Component {
     // build the query
     query += '/' + id + '?' + parser.substr(1, parser.length);
 
-    console.log(query); return;
+    // console.log(query); return;
 
     // save our timer
     $.ajax( {
@@ -193,9 +193,9 @@ class TimerNewForm extends Component {
       console.log(response);
       // delete post cookie
       Cookies.remove( 'ptt_current_timer' );
-      // reload because we cannot update the view.
-      // TODO fix this!
-      location.reload();
+
+      _this.props.onSaved();
+
     }).fail( function( err ) {
       console.error( err );
       _this.setState( {

@@ -40,6 +40,16 @@ code {
 	overflow: auto;
 }
 
+/**
+ * Show / hide.
+ */
+.show {
+	display: block;
+}
+.hide {
+	display: none;
+}
+
 .container {
 	max-width: 375px;
 	padding: 40px 20px; /* Dashboard */
