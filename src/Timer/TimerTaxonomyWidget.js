@@ -39,6 +39,7 @@ class TimerTaxonomyWidget extends Component {
       <TimerDashboardWidget
         isOpen={this.state.widgetIsOpen}
         onAfterOpen={this._afterOpenWidget.bind(this)}
+        onRequestOpen={this._openWidget.bind(this)}
         onRequestClose={this._closeWidget.bind(this)}
         title={this.state.widgetTitle}
       >
