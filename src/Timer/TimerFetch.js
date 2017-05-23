@@ -69,6 +69,34 @@ class TimerFetch {
   }
 
   /**
+   * Get timers by term.
+   *
+   * @param  {Integer}  Term ID.
+   * @param  {String}  Taxonomy.
+   * @return {Promise} Promise for the timers object
+   */
+  getTimersByTerm( termId, taxonomy ) {
+    taxonomy = taxonomy || null;
+
+    if ( ! termId ) return false;
+    if ( ! taxonomy ) return false;
+
+    taxonomy = 'premise_time_tracker_' + taxonomy;
+
+    const url = PTT.get( 'endpoint' ) + '?' + encodeURIComponent( taxonomy ) +
+      '[]=' + encodeURIComponent( termId );
+
+    console.log(url);
+
+    const timers = fetch( url )
+    .then( response => {
+      return response.json();
+    });
+
+    return timers;
+  }
+
+  /**
    * Retrieve a post from premise time tracker.
    *
    * @param  {Integer} id      the id for the post we want to retrieve

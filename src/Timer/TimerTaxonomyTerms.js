@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import TimerTaxonomyTerm from './TimerTaxonomyTerm';
+import TimerTermControlsBar from './TimerTermControlsBar';
+import TimerTermTimersList from './TimerTermTimersList';
 import TimerFetch from './TimerFetch';
-import FontAwesome from 'react-fontawesome';
 // import $ from 'jquery'; // Import jQuery.
 
 class TimerTaxonomyTerms extends Component {
@@ -67,13 +68,12 @@ class TimerTaxonomyTerms extends Component {
     const term = this.state.selectedTerm;
     return (
       <div className="timer-terms-wrapper">
-        <div className="term-buttons-bar">
-          <a className="back-arrow" href="#" onClick={this._backToTermsList.bind(this)}>
-            <FontAwesome
-              name="long-arrow-left" />
-          </a>
-        </div>
-        {term.name}
+        <TimerTermControlsBar
+          term={term}
+          onBack={this._backToTermsList.bind(this)} />
+        <TimerTermTimersList
+          term={term}
+          taxonomyName={this.props.taxonomyName} />
       </div>
     );
   }
@@ -100,9 +100,7 @@ class TimerTaxonomyTerms extends Component {
     this.props.updateWidget( term );
   }
 
-  _backToTermsList( event ) {
-
-    event.preventDefault();
+  _backToTermsList() {
 
     this.setState({ selectedTerm: null });
 

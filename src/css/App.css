@@ -142,16 +142,31 @@
 /**
  * Timer terms widget
  */
-.term-buttons-bar {
+.term-controls-bar {
   color: rgb(155, 155, 155);
   font-size: 18px;
 }
 
-.back-arrow .fa {
+.back-arrow {
+  margin-right: 22px;
+}
+
+.term-controls-bar .fa {
   color: rgb(155, 155, 155);
   line-height: 18px;
+  vertical-align: top;
+}
+
+.term-filters {
+  font-size: 24px;
+}
+
+.back-arrow .fa {
   font-size: 34px;
-  vertical-align: middle;
+}
+
+.term-total-hours {
+  float: right;
 }
 
 
