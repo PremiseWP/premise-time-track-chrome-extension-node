@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import LoadingIcon from '../LoadingIcon';
 import TimerTermTimer from './TimerTermTimer';
 import TimerFetch from './TimerFetch';
+import FontAwesome from 'react-fontawesome';
 
 class TimerTermTimersList extends Component {
   constructor() {
@@ -11,6 +12,8 @@ class TimerTermTimersList extends Component {
       timers: [],
       loadingTimers: false
     };
+
+    this._totalHours;
   }
 
   // Called before the component is rendered to the page.
@@ -56,17 +59,49 @@ class TimerTermTimersList extends Component {
     }
 
     return (
-      <div className="timer-term-timers-wrapper">
-        {timerNodes /* Now being displayed based on component's state! */}
+      <div className="term-timers-wrapper">
+        <div className="term-controls-bar">
+          <a className="back-arrow" href="#" onClick={this._backToTermsList.bind(this)}>
+            <FontAwesome
+              name="long-arrow-left" />
+          </a>
+          <a className="term-filters" href="#" onClick={this._openTermFilters.bind(this)}>
+            <FontAwesome
+              name="list-ul" />
+          </a>
+          <div className="term-total-hours-wrapper">
+            {this._totalHours} hrs
+          </div>
+        </div>
+        <div className="timer-term-timers-list-wrapper">
+          {timerNodes /* Now being displayed based on component's state! */}
+        </div>
       </div>
     );
+  }
+
+  _backToTermsList( event ) {
+
+    event.preventDefault();
+
+    this.props.onBack();
+  }
+
+  _openTermFilters( event ) {
+
+    event.preventDefault();
   }
 
   // Underscore helps distinguish custom methods from React methods.
   _getTimers() {
 
+    this._totalHours = 0;
+
     // Returns an array...
     return this.state.timers.map((timer) => {
+
+      this._totalHours += parseFloat(timer.pwptt_hours);
+
       return ( <TimerTermTimer
         timer={timer /* Pass the whole timer */}
         taxonomyName={this.props.taxonomyName}

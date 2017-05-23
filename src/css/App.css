@@ -143,6 +143,7 @@
  * Timer terms widget
  */
 .term-controls-bar {
+  height: 18px;
   color: rgb(155, 155, 155);
   font-size: 18px;
 }
@@ -165,7 +166,54 @@
   font-size: 34px;
 }
 
-.term-total-hours {
+.term-total-hours-wrapper {
+  float: right;
+}
+
+/**
+ * Term timers
+ */
+.term-timers-list {
+  padding-left: 0;
+  list-style-type: none;
+}
+
+.term-timers-list li {
+  border: 1px solid rgb(238,238,238);
+  border-radius: 5px;
+  padding: 14px 14px 0;
+  margin: 20px 0;
+}
+
+.term-timers-list h4 {
+  font-size: 20px;
+  margin-bottom: 11px;
+}
+
+.term-timers-list .timer-details-wrapper {
+  color: rgb(155, 155, 155);
+}
+
+.term-timers-list .timer-date {
+  font-size: 14px;
+}
+
+.term-timers-list .timer-description {
+  padding-bottom: 13px;
+  border-bottom: 1px solid rgb(238,238,238);
+  margin-bottom: 8px;
+}
+
+.term-timers-list .timer-details-bottom-wrapper {
+
+}
+
+.term-timers-list .timer-project {
+  display: inline-block;
+  margin-bottom: 6px;
+}
+
+.term-timers-list .timer-hours {
   float: right;
 }
 

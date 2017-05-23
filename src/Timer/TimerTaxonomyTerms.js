@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import TimerTaxonomyTerm from './TimerTaxonomyTerm';
-import TimerTermControlsBar from './TimerTermControlsBar';
 import TimerTermTimersList from './TimerTermTimersList';
 import TimerFetch from './TimerFetch';
 // import $ from 'jquery'; // Import jQuery.
@@ -67,14 +66,10 @@ class TimerTaxonomyTerms extends Component {
   _termView() {
     const term = this.state.selectedTerm;
     return (
-      <div className="timer-terms-wrapper">
-        <TimerTermControlsBar
-          term={term}
-          onBack={this._backToTermsList.bind(this)} />
-        <TimerTermTimersList
-          term={term}
-          taxonomyName={this.props.taxonomyName} />
-      </div>
+      <TimerTermTimersList
+        term={term}
+        taxonomyName={this.props.taxonomyName}
+        onBack={this._backToTermsList.bind(this)} />
     );
   }
 
