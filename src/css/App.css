@@ -139,29 +139,19 @@
 }
 
 
-
-
 /**
- * Show taxonomy.
+ * Timer terms widget
  */
-.show-wordpress .container {
-  padding: 0;
-  height: 100%;
+.term-buttons-bar {
+  color: rgb(155, 155, 155);
+  font-size: 18px;
 }
 
-.show-wordpress .button {
-  margin: 15px 20px;
-}
-
-.wordpress-iframe-wrapper {
-  height: 100%;
-}
-
-.wordpress-iframe {
-  width: 100%;
-  height: calc( 100% - 40px );
-  border: 0;
-  overflow: hidden;
+.back-arrow .fa {
+  color: rgb(155, 155, 155);
+  line-height: 18px;
+  font-size: 34px;
+  vertical-align: middle;
 }
 
 

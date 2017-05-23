@@ -48,7 +48,14 @@ class TimerTaxonomyWidget extends Component {
   }
 
   _updateWidget( term ) {
-    this._setTitle( term.name );
+
+    let title;
+
+    if ( term ) {
+      title = term.name;
+    }
+
+    this._setTitle( title );
   }
 
   _setTitle( title ) {

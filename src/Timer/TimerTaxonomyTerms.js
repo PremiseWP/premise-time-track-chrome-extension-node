@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import TimerTaxonomy from './TimerTaxonomy';
 import TimerTaxonomyTerm from './TimerTaxonomyTerm';
 import TimerFetch from './TimerFetch';
+import FontAwesome from 'react-fontawesome';
 // import $ from 'jquery'; // Import jQuery.
 
 class TimerTaxonomyTerms extends Component {
@@ -66,7 +66,15 @@ class TimerTaxonomyTerms extends Component {
   _termView() {
     const term = this.state.selectedTerm;
     return (
-      <div>{term.name}</div>
+      <div className="timer-terms-wrapper">
+        <div className="term-buttons-bar">
+          <a className="back-arrow" href="#" onClick={this._backToTermsList.bind(this)}>
+            <FontAwesome
+              name="long-arrow-left" />
+          </a>
+        </div>
+        {term.name}
+      </div>
     );
   }
 
@@ -88,8 +96,18 @@ class TimerTaxonomyTerms extends Component {
 
     this.setState({ selectedTerm: term });
 
-    // Update Widget title & set term.
+    // Update Widget title.
     this.props.updateWidget( term );
+  }
+
+  _backToTermsList( event ) {
+
+    event.preventDefault();
+
+    this.setState({ selectedTerm: null });
+
+    // Update Widget title.
+    this.props.updateWidget();
   }
 }
 
