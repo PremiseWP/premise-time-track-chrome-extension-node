@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import TimerTaxonomyTerm from './TimerTaxonomyTerm';
 import TimerTermTimersList from './TimerTermTimersList';
 import TimerFetch from './TimerFetch';
+import TimerDB from './TimerDB';
 // import $ from 'jquery'; // Import jQuery.
 
 class TimerTaxonomyTerms extends Component {
@@ -25,6 +26,8 @@ class TimerTaxonomyTerms extends Component {
       // console.log(terms);
 
       this.setState({ terms });
+
+      TimerDB.set( terms, this.props.taxonomyName );
     }.bind(this),
     function ( error ) {
       console.log( 'TimerFetch.getTaxonomy error:' + error );

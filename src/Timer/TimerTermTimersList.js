@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import LoadingIcon from '../LoadingIcon';
 import TimerTermTimer from './TimerTermTimer';
 import TimerFetch from './TimerFetch';
+import TimerDB from './TimerDB';
 import FontAwesome from 'react-fontawesome';
 
 class TimerTermTimersList extends Component {
@@ -97,15 +98,40 @@ class TimerTermTimersList extends Component {
 
     this._totalHours = 0;
 
+    const taxonomyName = this.props.taxonomyName;
+
+    let otherTaxonomyName = 'client';
+
+    const projectsOrClients = TimerDB.get( otherTaxonomyName );
+
+    if ( taxonomyName === 'client' ) {
+      otherTaxonomyName = 'project';
+    }
+
+    let projectOrClient,
+      projectOrClientName;
+
     // Returns an array...
     return this.state.timers.map((timer) => {
 
       this._totalHours += parseFloat(timer.pwptt_hours);
 
+      projectOrClient = projectsOrClients.find(function( projectOrClient ) {
+
+        return projectOrClient.id === timer['premise_time_tracker_' + otherTaxonomyName][0];
+      });
+
+      if ( projectOrClient ) {
+        projectOrClientName = projectOrClient.name;
+      } else {
+        projectOrClientName = '\u00A0'; // &nbsp;.
+      }
+
       return ( <TimerTermTimer
         timer={timer /* Pass the whole timer */}
-        taxonomyName={this.props.taxonomyName}
-        key={this.props.taxonomyName + timer.id} /> );
+        projectOrClientName={projectOrClientName}
+        taxonomyName={taxonomyName}
+        key={taxonomyName + timer.id} /> );
         // Unique key.
     });
   }

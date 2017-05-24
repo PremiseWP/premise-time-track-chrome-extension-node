@@ -9,8 +9,7 @@ class TimerTermTimer extends Component {
   render() {
     const props = this.props;
 
-    console.log(props.timer);
-
+    // console.log(props.timer);
     return (
       <li>
         <h4>
@@ -24,7 +23,7 @@ class TimerTermTimer extends Component {
             dangerouslySetInnerHTML={this._formatDescription( props.timer.content.rendered )} />
           <div className="timer-details-bottom-wrapper">
             <p className="timer-project">
-              {props.timer.premise_time_tracker_project[0] /* TODO! */}&nbsp;
+              {props.projectOrClientName}
             </p>
             <p className="timer-hours">
               {props.timer.pwptt_hours} hrs

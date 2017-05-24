@@ -1,13 +1,13 @@
 import Cookies from 'js-cookie';
 
 class PTT {
-	constructor() {
-		this.ptt = {};
+  constructor() {
+    this.ptt = {};
 
     this.ptt.creds = Cookies.getJSON( '_ptt' );
 
     console.log('cookie creds:' + this.ptt.creds);
-	}
+  }
 
   // Set all ptt object or only an attribute passing the key param.
   set( ptt, key ) {
