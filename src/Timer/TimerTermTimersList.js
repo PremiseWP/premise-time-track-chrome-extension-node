@@ -59,6 +59,8 @@ class TimerTermTimersList extends Component {
       timerNodes = <p className="no-timers-found">No timers found.</p>
     }
 
+    const jumpToSelect = this._jumpToSelect();
+
     return (
       <div className="term-timers-wrapper">
         <div className="term-controls-bar">
@@ -66,10 +68,21 @@ class TimerTermTimersList extends Component {
             <FontAwesome
               name="long-arrow-left" />
           </a>
-          <a className="term-filters" href="#" onClick={this._openTermFilters.bind(this)}>
+          <a className="term-filters-wrapper" href="#" onClick={this._openTermFilters.bind(this)}>
             <FontAwesome
               name="list-ul" />
           </a>
+          <div className="term-filters">
+            <div className="arrow-up"></div>
+            <p>Filter Timers</p>
+            <div className="jump-to-select-wrapper">
+              {jumpToSelect}
+            </div>
+            <div className="date-range-input-wrapper">
+              <input className="date-range-input"
+                placeholder="Enter a date range" />
+            </div>
+          </div>
           <div className="term-total-hours-wrapper">
             {this._totalHours} hrs
           </div>
@@ -134,6 +147,41 @@ class TimerTermTimersList extends Component {
         key={taxonomyName + timer.id} /> );
         // Unique key.
     });
+  }
+
+  _jumpToSelect() {
+    const weekNum = this._getWeek();
+    const monthNum = this._getMonth();
+
+    return (
+      <select className="jump-to-select"
+        onChange={this._jumpToFilter.bind(this)}
+        ref={(select) => this._jumpToSelectInput = select}>
+        <option value="">Jump to...</option>
+        <option value={ 'n' + monthNum }>This month</option>
+        <option value={ 'n' + ( monthNum - 1 ) }>Last month</option>
+        <option value={ 'W' + weekNum }>This week</option>
+        <option value={ 'W' + ( weekNum - 1 ) }>Last week</option>
+      </select>
+    );
+  }
+
+  _getMonth() {
+    const date = new Date();
+    return ( date.getMonth() + 1 );
+  }
+
+  _getWeek() {
+    const date = new Date();
+    // https://stackoverflow.com/questions/7765767/show-week-number-with-javascript#7765814
+    const onejan = new Date(date.getFullYear(), 0, 1);
+    return Math.ceil((((date - onejan) / 86400000) + onejan.getDay() + 1) / 7);
+  }
+
+  _jumpToFilter() {
+    const jumpToFilter = this._jumpToSelectInput.value;
+
+    this.setState({ jumpToFilter });
   }
 }
 

@@ -146,6 +146,7 @@
   height: 18px;
   color: rgb(155, 155, 155);
   font-size: 18px;
+  position: relative;
 }
 
 .back-arrow {
@@ -158,8 +159,65 @@
   vertical-align: top;
 }
 
-.term-filters {
+.term-filters-wrapper {
   font-size: 24px;
+}
+
+.term-filters {
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+  border-radius: 5px;
+  z-index: 2;
+  position: absolute;
+  background: #fff;
+  margin-top: 7px;
+  padding: 15px 10px 20px 6px;
+  width: 100%;
+}
+
+/* https://davidwalsh.name/demo/css-triangles.php */
+.term-filters:before, .term-filters:after {
+  content: ' ';
+  height: 0;
+  position: absolute;
+  width: 0;
+  border: 11px solid transparent; /* arrow size */
+}
+
+.term-filters:before {
+  border-bottom-color: #fff;  /* arrow color */
+  /* positioning */
+  position: absolute;
+  top: -20px;
+  left: 60px;
+  z-index: 2;
+}
+
+/* arrow which acts as a background shadow */
+.term-filters:after {
+  border-bottom-color: rgba(0, 0, 0, 0.2);  /* arrow color */
+
+  /* positioning */
+  position: absolute;
+  top: -22px;
+  left: 60px;
+  z-index: 1;
+}
+
+.term-filters p {
+  padding: 0 7px;
+  margin-bottom: 14px;
+}
+
+.term-filters select {
+  background: #fff;
+  padding: 3px 7px;
+  margin-bottom: 20px;
+}
+
+.term-filters input,
+.term-filters select {
+  width: 100%;
+  border: 1px solid rgb(238, 238, 238);
 }
 
 .back-arrow .fa {
