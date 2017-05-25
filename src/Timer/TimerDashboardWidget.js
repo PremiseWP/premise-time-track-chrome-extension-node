@@ -12,7 +12,7 @@ class TimerDashboardWidget extends Component {
       stateClass = 'closed';
     }
 
-    const widgetClass = 'timer-dashboard-widget ' + stateClass;
+    const widgetClass = 'timer-dashboard-widget ' + stateClass + ' ' + props.class;
 
     return (
       <div className={widgetClass}>

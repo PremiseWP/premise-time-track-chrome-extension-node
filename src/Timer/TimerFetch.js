@@ -81,12 +81,63 @@ class TimerFetch {
     if ( ! termId ) return false;
     if ( ! taxonomy ) return false;
 
+    const url = this.timersByTermUrl( termId, taxonomy );
+
+    // console.log(url);
+
+    const timers = fetch( url )
+    .then( response => {
+      return response.json();
+    });
+
+    return timers;
+  }
+
+  /**
+   * Get timers by term URL.
+   *
+   * @param  {Integer}  Term ID.
+   * @param  {String}  Taxonomy.
+   * @return {String}  Wordpress API URL.
+   */
+  timersByTermUrl( termId, taxonomy ) {
+
     taxonomy = 'premise_time_tracker_' + taxonomy;
 
-    const url = PTT.get( 'endpoint' ) + '?' + encodeURIComponent( taxonomy ) +
+    return PTT.get( 'endpoint' ) + '?' + encodeURIComponent( taxonomy ) +
       '[]=' + encodeURIComponent( termId );
+  }
 
-    console.log(url);
+  /**
+   * Get timers by term, filtered by date.
+   *
+   * @param  {Integer}  Term ID.
+   * @param  {String}   Taxonomy.
+   * @param  {String}   Timers before date (ISO8601 compliant date).
+   * @param  {String}   Timers before date (ISO8601 compliant date).
+   * @return {Promise}  Promise for the timers object
+   */
+  getTimersByTermFilterByDate( termId, taxonomy, before, after ) {
+    taxonomy = taxonomy || null;
+
+    if ( ! termId ) return false;
+    if ( ! taxonomy ) return false;
+
+    if ( ! before && ! after ) {
+      return this.getTimersByTerm( termId, taxonomy );
+    }
+
+    let url = this.timersByTermUrl( termId, taxonomy );
+
+    if ( after ) {
+      url += '&after=' + encodeURIComponent( after );
+    }
+
+    if ( before ) {
+      url += '&before=' + encodeURIComponent( before );
+    }
+
+    // console.log(url);
 
     const timers = fetch( url )
     .then( response => {

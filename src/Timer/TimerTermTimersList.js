@@ -14,7 +14,7 @@ class TimerTermTimersList extends Component {
       loadingTimers: false
     };
 
-    this._totalHours;
+    this._totalHours = 0;
   }
 
   // Called before the component is rendered to the page.
@@ -23,22 +23,37 @@ class TimerTermTimersList extends Component {
     this._fetchTimers();
   }
 
-  _fetchTimers() {
+  _fetchTimers( before, after ) {
 
     this.setState({loadingTimers: true});
 
     const props = this.props;
 
-    TimerFetch.getTimersByTerm( props.term.id, props.taxonomyName ).then( function( timers ) {
-      console.log(timers);
+    if ( before && after ) {
+      // Filter timers by date.
+      TimerFetch.getTimersByTermFilterByDate( props.term.id, props.taxonomyName, before, after )
+      .then( function( timers ) {
+        console.log(timers);
 
-      this.setState({ timers });
+        this.setState({ timers });
 
-      this.setState({loadingTimers: false});
-    }.bind(this),
-    function ( error ) {
-      console.log( 'TimerFetch.getTimersByTerm error:' + error );
-    });
+        this.setState({loadingTimers: false});
+      }.bind(this),
+      function ( error ) {
+        console.log( 'TimerFetch.getTimersByTermFilterByDate error:' + error );
+      });
+    } else {
+      TimerFetch.getTimersByTerm( props.term.id, props.taxonomyName ).then( function( timers ) {
+        // console.log(timers);
+
+        this.setState({ timers });
+
+        this.setState({loadingTimers: false});
+      }.bind(this),
+      function ( error ) {
+        console.log( 'TimerFetch.getTimersByTerm error:' + error );
+      });
+    }
   }
 
   render() {
@@ -150,38 +165,84 @@ class TimerTermTimersList extends Component {
   }
 
   _jumpToSelect() {
-    const weekNum = this._getWeek();
-    const monthNum = this._getMonth();
-
     return (
       <select className="jump-to-select"
         onChange={this._jumpToFilter.bind(this)}
         ref={(select) => this._jumpToSelectInput = select}>
-        <option value="">Jump to...</option>
-        <option value={ 'n' + monthNum }>This month</option>
-        <option value={ 'n' + ( monthNum - 1 ) }>Last month</option>
-        <option value={ 'W' + weekNum }>This week</option>
-        <option value={ 'W' + ( weekNum - 1 ) }>Last week</option>
+        <option value="">
+          Jump to...
+        </option>
+        <option value={this._getMonth()}>
+          This month
+        </option>
+        <option value={this._getMonth(true)}>
+          Last month
+        </option>
+        <option value={this._getWeek()}>
+          This week
+        </option>
+        <option value={this._getWeek(true)}>
+          Last week
+        </option>
       </select>
     );
   }
 
-  _getMonth() {
+  _getMonth( last ) {
     const date = new Date();
-    return ( date.getMonth() + 1 );
+
+    let now,
+      firstDayMonth;
+
+    if ( ! last ) {
+
+      now = new Date( date.setHours( 23, 59, 59 ) );
+      firstDayMonth = new Date(date.getFullYear(), date.getMonth(), 1, 0, 0, 0 );
+
+    } else {
+      // Last month.
+      now = new Date(date.getFullYear(), date.getMonth(), 0, 23, 59, 59 );
+      firstDayMonth = new Date(date.getFullYear(), (date.getMonth() - 1), 1, 0, 0, 0 );
+    }
+
+    return firstDayMonth.toISOString() + '~' + now.toISOString();
   }
 
-  _getWeek() {
+  _getWeek( last ) {
     const date = new Date();
-    // https://stackoverflow.com/questions/7765767/show-week-number-with-javascript#7765814
-    const onejan = new Date(date.getFullYear(), 0, 1);
-    return Math.ceil((((date - onejan) / 86400000) + onejan.getDay() + 1) / 7);
+
+    let firstDayWeek;
+
+    if ( ! last ) {
+      firstDayWeek = date.getDate() - date.getDay();
+    } else {
+      // Last week.
+      firstDayWeek = date.getDate() - date.getDay() - 7;
+    }
+
+    const lastDayWeek = new Date( new Date( date.setDate( firstDayWeek + 6 ) ).setHours(23,59,59) );
+
+    firstDayWeek = new Date( new Date( date.setDate( firstDayWeek ) ).setHours(0,0,0) );
+
+    return firstDayWeek.toISOString() + '~' + lastDayWeek.toISOString();
   }
 
   _jumpToFilter() {
     const jumpToFilter = this._jumpToSelectInput.value;
 
-    this.setState({ jumpToFilter });
+    if ( ! jumpToFilter ) {
+      this._fetchTimers();
+
+      return;
+    }
+
+    // Get before & after date filters.
+    const dates = jumpToFilter.split("~");
+
+    const before = dates[0];
+    const after = dates[1];
+
+    this._fetchTimers( before, after );
   }
 }
 

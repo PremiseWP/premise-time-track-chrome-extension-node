@@ -119,6 +119,11 @@
   transition: max-height 0.5s ease-out;
 }
 
+.timer-dashboard-widget.project.open,
+.timer-dashboard-widget.client.open {
+  min-height: 290px;
+}
+
 .timer-dashboard-widget.closed {
   max-height: 54px;
   overflow-y: hidden;
@@ -231,6 +236,10 @@
 /**
  * Term timers
  */
+.no-timers-found {
+  margin-top: 16px;
+}
+
 .term-timers-list {
   padding-left: 0;
   list-style-type: none;

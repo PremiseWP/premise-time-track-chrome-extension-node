@@ -33,6 +33,7 @@ class TimerTaxonomyWidget extends Component {
   render() {
     return (
       <TimerDashboardWidget
+        class={this.props.taxonomyName}
         isOpen={this.state.widgetIsOpen}
         onAfterOpen={this._afterOpenWidget.bind(this)}
         onRequestOpen={this._openWidget.bind(this)}
