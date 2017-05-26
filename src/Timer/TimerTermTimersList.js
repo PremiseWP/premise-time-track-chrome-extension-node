@@ -101,7 +101,9 @@ class TimerTermTimersList extends Component {
             </div>
             <div className="date-range-input-wrapper">
               <input className="date-range-input"
-                placeholder="Enter a date range" />
+                placeholder="Enter a date range"
+                onKeyPress={this._dateRangeFilter.bind(this)}
+                ref={(input) => this._rangeFilterInput = input} />
             </div>
           </div>
           <div className="term-total-hours-wrapper">
@@ -253,6 +255,36 @@ class TimerTermTimersList extends Component {
     const after = dates[0];
 
     this._fetchTimers( before, after );
+  }
+
+  _dateRangeFilter( event ) {
+    if ( event.key !== 'Enter') {
+      return;
+    }
+
+    this.setState({ isTermFiltersOpen: ( !this.state.isTermFiltersOpen ) });
+
+    // Validate range.
+    const rangeFilter = this._rangeFilterInput.value;
+
+    if ( ! rangeFilter ) {
+      this._fetchTimers();
+
+      return;
+    }
+
+    // Get before & after date filters.
+    const dates = rangeFilter.split("-");
+
+    const before = dates[1].trim();
+    const after = dates[0].trim();
+
+    const beforeDate = new Date( before ).toISOString();
+    const afterDate = new Date( after ).toISOString();
+
+    // console.log(beforeDate, afterDate);
+
+    this._fetchTimers( beforeDate, afterDate );
   }
 }
 
