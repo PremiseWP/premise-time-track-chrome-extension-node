@@ -137,7 +137,7 @@ class TimerFetch {
       url += '&before=' + encodeURIComponent( before );
     }
 
-    // console.log(url);
+    console.log(url);
 
     const timers = fetch( url )
     .then( response => {

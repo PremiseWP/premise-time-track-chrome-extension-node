@@ -249,8 +249,8 @@ class TimerTermTimersList extends Component {
     // Get before & after date filters.
     const dates = jumpToFilter.split("~");
 
-    const before = dates[0];
-    const after = dates[1];
+    const before = dates[1];
+    const after = dates[0];
 
     this._fetchTimers( before, after );
   }
