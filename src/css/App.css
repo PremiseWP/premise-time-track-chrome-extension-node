@@ -119,6 +119,10 @@
   transition: max-height 0.5s ease-out;
 }
 
+.timer-dashboard-widget .loading-icon {
+  margin: 32px 0;
+}
+
 .timer-dashboard-widget.project.open,
 .timer-dashboard-widget.client.open {
   min-height: 290px;
@@ -177,6 +181,11 @@
   margin-top: 7px;
   padding: 15px 10px 20px 6px;
   width: 100%;
+  display: none;
+}
+
+.term-filters.open {
+  display: block;
 }
 
 /* https://davidwalsh.name/demo/css-triangles.php */
@@ -199,6 +208,7 @@
 
 /* arrow which acts as a background shadow */
 .term-filters:after {
+  border-bottom-color: #fafafa;  /* Fallback */
   border-bottom-color: rgba(0, 0, 0, 0.2);  /* arrow color */
 
   /* positioning */

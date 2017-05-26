@@ -31,7 +31,7 @@ class LoadingIcon extends Component {
     };
 
     return (
-      <div className="loading_icon" style={divStyle}>
+      <div className="loading-icon" style={divStyle}>
         <FontAwesome
           name={this.state.icon}
           spin

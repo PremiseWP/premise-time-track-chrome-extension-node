@@ -76,6 +76,12 @@ class TimerTermTimersList extends Component {
 
     const jumpToSelect = this._jumpToSelect();
 
+    let termFiltersClass = 'term-filters';
+
+    if ( this.state.isTermFiltersOpen ) {
+      termFiltersClass += ' open';
+    }
+
     return (
       <div className="term-timers-wrapper">
         <div className="term-controls-bar">
@@ -87,7 +93,7 @@ class TimerTermTimersList extends Component {
             <FontAwesome
               name="list-ul" />
           </a>
-          <div className="term-filters">
+          <div className={termFiltersClass}>
             <div className="arrow-up"></div>
             <p>Filter Timers</p>
             <div className="jump-to-select-wrapper">
@@ -119,6 +125,8 @@ class TimerTermTimersList extends Component {
   _openTermFilters( event ) {
 
     event.preventDefault();
+
+    this.setState({ isTermFiltersOpen: ( !this.state.isTermFiltersOpen ) });
   }
 
   // Underscore helps distinguish custom methods from React methods.
@@ -229,6 +237,8 @@ class TimerTermTimersList extends Component {
 
   _jumpToFilter() {
     const jumpToFilter = this._jumpToSelectInput.value;
+
+    this.setState({ isTermFiltersOpen: ( !this.state.isTermFiltersOpen ) });
 
     if ( ! jumpToFilter ) {
       this._fetchTimers();
