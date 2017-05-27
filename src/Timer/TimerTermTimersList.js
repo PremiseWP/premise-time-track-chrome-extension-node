@@ -152,7 +152,7 @@ class TimerTermTimersList extends Component {
     // Returns an array...
     return this.state.timers.map((timer) => {
 
-      this._totalHours += parseFloat(timer.pwptt_hours);
+      this._totalHours += ( timer.pwptt_hours ) ? parseFloat(timer.pwptt_hours) : 0.00;
 
       projectOrClient = projectsOrClients.find(function( projectOrClient ) {
 
