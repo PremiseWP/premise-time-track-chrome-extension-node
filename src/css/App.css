@@ -114,8 +114,8 @@
   border-radius: 5px;
   margin-bottom: 40px;
   padding: 0 20px;
-  max-height: 1500px;
-  overflow-y: auto;
+  /*max-height: 1500px;*/
+  overflow: hidden;
   transition: max-height 0.5s ease-out;
 }
 
