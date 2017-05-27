@@ -104,7 +104,7 @@ class TimerFetch {
 
     taxonomy = 'premise_time_tracker_' + taxonomy;
 
-    return PTT.get( 'endpoint' ) + '?' + encodeURIComponent( taxonomy ) +
+    return PTT.get( 'endpoint' ) + '?per_page=100&' + encodeURIComponent( taxonomy ) +
       '[]=' + encodeURIComponent( termId );
   }
 
