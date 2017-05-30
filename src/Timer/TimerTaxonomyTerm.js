@@ -5,7 +5,8 @@ class TimerTaxonomyTerm extends Component {
   render() {
     const props = this.props;
 
-    console.log(props.term);
+    // console.log(props.term);
+
     let totalHours = '';
 
     if (this.props.taxonomyName === 'project') {

@@ -158,6 +158,7 @@ class TimerNewForm extends Component {
     var fields = $(e.target).serializeArray(),
     query      = e.target.action,
     parser     = '',
+    projectId  = false,
     id;
     // parse fields
     for (var i = fields.length - 1; i >= 0; i--) {
@@ -169,6 +170,10 @@ class TimerNewForm extends Component {
           fields[i].name === 'premise_time_tracker_project' ) {
           // Get term ID from list, or create new term if needed.
           fields[i].value = this._getTermId( fields[i].name, fields[i].value );
+
+          if ( fields[i].name === 'premise_time_tracker_project' ) {
+            projectId = fields[i].value;
+          }
         }
 
         parser += '&' + fields[i].name + '=' + fields[i].value;
@@ -193,6 +198,21 @@ class TimerNewForm extends Component {
       console.log(response);
       // delete post cookie
       Cookies.remove( 'ptt_current_timer' );
+
+      if ( projectId ) {
+        const url = PTT.get( 'site' ).url +
+          '/wp-json/wp/v2/premise_time_tracker_project/'
+          + projectId + '?pwptt_project_hours=0';
+
+        console.log(url);
+
+        // Update pwptt_project_hours.
+        $.ajax( {
+          url: url,
+          method: 'POST',
+          beforeSend: PTT.get('auth').ajaxBeforeSend,
+        });
+      }
 
       _this.props.onSaved();
 

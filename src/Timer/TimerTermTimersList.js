@@ -230,11 +230,11 @@ class TimerTermTimersList extends Component {
       firstDayWeek = date.getDate() - date.getDay() - 7;
     }
 
-    const lastDayWeek = new Date( new Date( date.setDate( firstDayWeek + 6 ) ).setHours(23,59,59) );
+    const firstDayWeekDate = new Date( new Date( date.setDate( firstDayWeek ) ).setHours(0,0,0) );
 
-    firstDayWeek = new Date( new Date( date.setDate( firstDayWeek ) ).setHours(0,0,0) );
+    const lastDayWeekDate = new Date( new Date( date.setDate( firstDayWeek + 6 ) ).setHours(23,59,59) );
 
-    return firstDayWeek.toISOString() + '~' + lastDayWeek.toISOString();
+    return firstDayWeekDate.toISOString() + '~' + lastDayWeekDate.toISOString();
   }
 
   _jumpToFilter() {
