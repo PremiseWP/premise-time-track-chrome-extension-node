@@ -2,10 +2,6 @@ import React, { Component } from 'react';
 import $ from 'jquery'; // Import jQuery.
 
 class TimerTermTimer extends Component {
-  constructor() {
-    super(); // super() must be called in our constructor.
-  }
-
   render() {
     const props = this.props;
 

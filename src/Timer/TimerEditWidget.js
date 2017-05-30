@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import TimerDashboardWidget from './TimerDashboardWidget';
-import TimerEditForm from './TimerEditForm';
-import TimerSavedConfirmation from './TimerSavedConfirmation';
 import TimerNew from './TimerNew';
 
 class TimerEditWidget extends Component {
@@ -31,8 +29,6 @@ class TimerEditWidget extends Component {
   }
 
   render() {
-    const partial = this._getPartial.bind(this);
-
     return (
       <TimerDashboardWidget
         isOpen={this.state.widgetIsOpen}
@@ -44,31 +40,6 @@ class TimerEditWidget extends Component {
         <TimerNew />
       </TimerDashboardWidget>
     );
-  }
-
-  _getPartial() {
-    let partial;
-
-    if ( this.state.timerSavedConfirmation ) {
-      partial = <TimerSavedConfirmation
-        onClose={this._closeWidget.bind(this)}
-        onAddAnotherTimer={this._timerSavedConfirmation.bind(this)} />
-    } else if ( 'id' in this.state.timer ) {
-
-      // Will open modal if has timer, see componentWillMount().
-      const timer = this.state.timer;
-
-      partial = <TimerEditForm
-        timer={timer}
-        onClose={this._closeWidget.bind(this)}
-        onSave={this._timerSavedConfirmation.bind(this)} />;
-
-    } else {
-
-      partial = <TimerNew />;
-    }
-
-    return partial;
   }
 }
 
