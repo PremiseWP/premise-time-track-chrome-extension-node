@@ -199,6 +199,24 @@ class TimerNewForm extends Component {
       // delete post cookie
       Cookies.remove( 'ptt_current_timer' );
 
+      if ( projectId ) {
+        const url = PTT.get( 'endpoint' ) + '/' + id;
+
+        console.log(url);
+
+        // Update pwptt_project_hours trick
+        // Dummy POST to call the rest_insert_premise_time_tracker hook again now
+        // as the timer should now be related to the project.
+        $.ajax( {
+          url: url,
+          method: 'POST',
+          beforeSend: PTT.get('auth').ajaxBeforeSend,
+        }).done( function( response ) {
+          // Global callback fetch / update project terms.
+          window.updateProjectWidgetTerms(response);
+        });
+      }
+
       _this.props.onSaved();
 
     }).fail( function( err ) {

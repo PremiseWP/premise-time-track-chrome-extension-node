@@ -19,6 +19,17 @@ class TimerTaxonomyTerms extends Component {
   componentWillMount() {
     // Fetch terms from server before component is rendered.
     this._fetchTerms();
+
+    if ( this.props.taxonomyName === 'project' ) {
+      this._setUpdateProjectGlobalCallback();
+    }
+  }
+
+  _setUpdateProjectGlobalCallback() {
+    window.updateProjectWidgetTerms = (data) => {
+      // `this` refers to our react component.
+      this._fetchTerms();
+    };
   }
 
   _fetchTerms() {

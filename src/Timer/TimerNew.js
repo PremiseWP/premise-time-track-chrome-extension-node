@@ -33,7 +33,7 @@ class TimerNew extends Component {
       this.state = { post, message, view };
     } else {
       this.setState({ post, message, view });
-    }
+   }
   }
 
   render() {
