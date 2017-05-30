@@ -199,21 +199,6 @@ class TimerNewForm extends Component {
       // delete post cookie
       Cookies.remove( 'ptt_current_timer' );
 
-      if ( projectId ) {
-        const url = PTT.get( 'site' ).url +
-          '/wp-json/wp/v2/premise_time_tracker_project/'
-          + projectId + '?pwptt_project_hours=0';
-
-        console.log(url);
-
-        // Update pwptt_project_hours.
-        $.ajax( {
-          url: url,
-          method: 'POST',
-          beforeSend: PTT.get('auth').ajaxBeforeSend,
-        });
-      }
-
       _this.props.onSaved();
 
     }).fail( function( err ) {
