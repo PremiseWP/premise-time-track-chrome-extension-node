@@ -101,6 +101,13 @@
   text-decoration: none;
 }
 
+.taxonomy-terms-list .total-hours {
+  float: right;
+  font-size: 14px;
+  color: rgb(155, 155, 155);
+  line-height: 27px;
+}
+
 .ajax-results-timers ul {
   margin: 0;
 }
