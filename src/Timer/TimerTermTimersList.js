@@ -211,7 +211,7 @@ class TimerTermTimersList extends Component {
 
     } else {
       // Last month.
-      now = new Date(date.getFullYear(), date.getMonth(), 0, 23, 59, 59 );
+      now = new Date(date.getFullYear(), date.getMonth(), -1, 23, 59, 59 );
       firstDayMonth = new Date(date.getFullYear(), (date.getMonth() - 1), 1, 0, 0, 0 );
     }
 
