@@ -2,6 +2,10 @@ import Cookies from 'js-cookie';
 
 class PTT {
   constructor() {
+    this._construct();
+  }
+
+  _construct() {
     this.ptt = {};
 
     this.ptt.creds = Cookies.getJSON( '_ptt' );
@@ -36,6 +40,13 @@ class PTT {
     }
 
     Cookies.set( '_ptt', this.ptt[ key ] );
+  }
+
+  reset() {
+    // Remove _ptt cookie, reset PTT.
+    Cookies.remove('_ptt');
+
+    this._construct();
   }
 }
 

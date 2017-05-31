@@ -25,14 +25,17 @@ class App extends Component {
         <Header />
         <div className="container">
           {this.state.view}
-          <HelpButtons step="" />
+          <HelpButtons onReset={this._showInit.bind(this)} />
         </div>
       </div>
     );
   }
 
   componentDidMount() {
+    this._showInit();
+  }
 
+  _showInit() {
     console.log(PTT);
 
     let view;
