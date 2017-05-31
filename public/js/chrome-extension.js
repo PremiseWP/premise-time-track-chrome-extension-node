@@ -1,4 +1,5 @@
-if (document.cookie.indexOf("_ptt=") < 0 ) {
+if (document.cookie.indexOf("_ptt=") < 0 &&
+  typeof chrome !== 'undefined' ) {
 
   chrome.tabs.getCurrent(function(tab) {
     if (tab) {
