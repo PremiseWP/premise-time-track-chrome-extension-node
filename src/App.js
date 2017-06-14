@@ -33,6 +33,10 @@ class App extends Component {
 
   componentDidMount() {
     this._showInit();
+    fetch( 'http://wp.dev/wp-json/wp/v2/users/2/' )
+    .then( response => {
+      console.log( response.json() );
+    });
   }
 
   _showInit() {

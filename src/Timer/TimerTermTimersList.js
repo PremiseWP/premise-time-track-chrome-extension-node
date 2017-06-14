@@ -3,7 +3,6 @@ import LoadingIcon from '../LoadingIcon';
 import TimerTermTimer from './TimerTermTimer';
 import TimerFetch from './TimerFetch';
 import TimerDB from './TimerDB';
-import FontAwesome from 'react-fontawesome';
 
 class TimerTermTimersList extends Component {
   constructor() {
@@ -86,12 +85,16 @@ class TimerTermTimersList extends Component {
       <div className="term-timers-wrapper">
         <div className="term-controls-bar">
           <a className="back-arrow" href="#" onClick={this._backToTermsList.bind(this)}>
-            <FontAwesome
-              name="long-arrow-left" />
+            <img
+              alt="controls - back arrow"
+              src="/img/back_arrow.png"
+              className="back_arrow_svg" />
           </a>
           <a className="term-filters-wrapper" href="#" onClick={this._openTermFilters.bind(this)}>
-            <FontAwesome
-              name="list-ul" />
+            <img
+              alt="controls - filter icon"
+              src="/img/filter_icon.png"
+              className="filter_icon_svg" />
           </a>
           <div className={termFiltersClass}>
             <div className="arrow-up"></div>
@@ -117,17 +120,15 @@ class TimerTermTimersList extends Component {
     );
   }
 
+  // go bakc ti the list
   _backToTermsList( event ) {
-
     event.preventDefault();
-
     this.props.onBack();
   }
 
+  // open the filters
   _openTermFilters( event ) {
-
     event.preventDefault();
-
     this.setState({ isTermFiltersOpen: ( !this.state.isTermFiltersOpen ) });
   }
 

@@ -7,18 +7,18 @@ class TimerTaxonomyTerm extends Component {
 
     // console.log(props.term);
 
-    let totalHours = '';
+    // let totalHours = '';
 
     if (this.props.taxonomyName === 'project') {
-      totalHours = <span className="total-hours">
+      /*totalHours = <span className="total-hours">
         {props.term.pwptt_project_hours + ' hrs'}
-      </span>;
+      </span>;*/
     }
 
     return (
       <li>
         <a href="#" onClick={this._handleClick.bind(this)}>
-          {props.term.name} {totalHours}
+          {props.term.name} {/*totalHours // commented out, feature not ready yet */}
         </a>
       </li>
     );

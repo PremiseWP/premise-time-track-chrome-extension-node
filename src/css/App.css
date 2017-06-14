@@ -126,18 +126,25 @@
   position: relative;
 }
 
-.back-arrow {
-  margin-right: 22px;
-}
-
 .term-controls-bar .fa {
   color: rgb(155, 155, 155);
   line-height: 18px;
   vertical-align: top;
 }
 
+.back-arrow,
+.term-filters-wrapper {
+  display: inline-block;
+  max-width: 40px;
+}
+
+.back-arrow {
+  margin-right: 22px;
+}
+
 .term-filters-wrapper {
   font-size: 24px;
+  max-width: 30px;
 }
 
 .term-filters {
