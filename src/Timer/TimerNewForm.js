@@ -87,7 +87,8 @@ class TimerNewForm extends Component {
               <input type="text" name="premise_time_tracker_client"
                 list="clients" className="new-tag-input"
                 ref={(input) => this._client = input}
-                onFocus={this._loadClients.bind(this)} />
+                onFocus={this._loadClients.bind(this)}
+                onBlur={this._checkTermId.bind(this)} />
               {clientsList}
             </label>
           </div>
@@ -97,7 +98,8 @@ class TimerNewForm extends Component {
               <input type="text" name="premise_time_tracker_project"
                 list="projects" className="new-tag-input"
                 ref={(input) => this._project = input}
-                onFocus={this._loadProjects.bind(this)} />
+                onFocus={this._loadProjects.bind(this)}
+                onBlur={this._checkTermId.bind(this)} />
               {projectsList}
             </label>
           </div>
@@ -313,13 +315,32 @@ class TimerNewForm extends Component {
 
   // check if the term exists in our object already,
   // if so, we get back the term id. false otherwise.
-  _checkTermId( taxonomyName, termName ) {
+  _checkTermId(e) {
+
+    let taxonomyName = $(e.target).attr('name');
+    let termName     = $(e.target).val();
+
     // Check if term already in list.
     let term = this.state[taxonomyName].find(function(term){
       return term.name === termName;
     });
 
-    return ( typeof term !== 'undefined' ) ? term.id : false;
+    if ( typeof term === 'undefined' ) {
+      let _this = this;
+      $.ajax({
+        method: 'POST',
+        beforeSend: PTT.get( 'auth' ).ajaxBeforeSend,
+        url: PTT.get( 'site' ).url + '/wp-json/wp/v2/'+taxonomyName+'/?name=' + termName,
+      })
+      .done(function( newTerm ){
+        const _preTerm = {};
+        _preTerm[ taxonomyName ] = newTerm;[ taxonomyName ] = newTerm;
+        _this.setState({
+          _preTerm
+        });
+        console.log(_preTerm);
+      });
+    }
   }
 }
 
