@@ -160,70 +160,85 @@ class TimerNewForm extends Component {
     parser     = '',
     projectId  = false,
     id;
-    // parse fields
-    for (var i = fields.length - 1; i >= 0; i--) {
-      // exclude id or empty values
-      if ( 'id' !== fields[i].name
-         && fields[i].value.length ) {
 
-        if ( fields[i].name === 'premise_time_tracker_client' ||
-          fields[i].name === 'premise_time_tracker_project' ) {
-          // Get term ID from list, or create new term if needed.
-          fields[i].value = this._getTermId( fields[i].name, fields[i].value );
+    // verify the fields
+    $.when( function() {
+      for (var i = fields.length - 1; i >= 0; i--) {
+        if ( 'id' !== fields[i].name
+           && fields[i].value.length ) {
 
+          if ( fields[i].name === 'premise_time_tracker_client' ||
+               fields[i].name === 'premise_time_tracker_project' ) {
+            // Get term ID from list, or create new term if needed.
+            fields[i].value = this._getTermId( fields[i].name, fields[i].value );
+          }
+
+          parser += '&' + fields[i].name + '=' + fields[i].value;
+        }
+      }
+    })
+
+    .then(function(){
+      // parse fields
+      for (var i = fields.length - 1; i >= 0; i--) {
+        // exclude id or empty values
+        if ( 'id' !== fields[i].name
+           && fields[i].value.length ) {
+
+          // I believe this used to do the count on hours from the server side.
           if ( fields[i].name === 'premise_time_tracker_project' ) {
             projectId = fields[i].value;
           }
+          parser += '&' + fields[i].name + '=' + fields[i].value;
+        }
+        // save the id separately
+        else {
+          id = fields[i].value;
+        }
+      }
+      // build the query
+      query += '/' + id + '?' + parser.substr(1, parser.length);
+
+      // console.log(query); return;
+
+
+      // save our timer
+      $.ajax( {
+        url: query,
+        method: 'POST',
+        beforeSend: PTT.get('auth').ajaxBeforeSend,
+      }).done( function( response ) {
+        // we were successful!
+        console.log(response);
+        // delete post cookie
+        Cookies.remove( 'ptt_current_timer' );
+
+        if ( projectId ) {
+          const url = PTT.get( 'endpoint' ) + '/' + id;
+
+          console.log(url);
+
+          // Update pwptt_project_hours trick
+          // Dummy POST to call the rest_insert_premise_time_tracker hook again now
+          // as the timer should now be related to the project.
+          $.ajax( {
+            url: url,
+            method: 'POST',
+            beforeSend: PTT.get('auth').ajaxBeforeSend,
+          }).done( function( response ) {
+            // Global callback fetch / update project terms.
+            window.updateProjectWidgetTerms(response);
+          });
         }
 
-        parser += '&' + fields[i].name + '=' + fields[i].value;
-      }
-      // save the id separately
-      else {
-        id = fields[i].value;
-      }
-    }
-    // build the query
-    query += '/' + id + '?' + parser.substr(1, parser.length);
+        _this.props.onSaved();
 
-    // console.log(query); return;
-
-    // save our timer
-    $.ajax( {
-      url: query,
-      method: 'POST',
-      beforeSend: PTT.get('auth').ajaxBeforeSend,
-    }).done( function( response ) {
-      // we were successful!
-      console.log(response);
-      // delete post cookie
-      Cookies.remove( 'ptt_current_timer' );
-
-      if ( projectId ) {
-        const url = PTT.get( 'endpoint' ) + '/' + id;
-
-        console.log(url);
-
-        // Update pwptt_project_hours trick
-        // Dummy POST to call the rest_insert_premise_time_tracker hook again now
-        // as the timer should now be related to the project.
-        $.ajax( {
-          url: url,
-          method: 'POST',
-          beforeSend: PTT.get('auth').ajaxBeforeSend,
-        }).done( function( response ) {
-          // Global callback fetch / update project terms.
-          window.updateProjectWidgetTerms(response);
+      }).fail( function( err ) {
+        console.error( err );
+        _this.setState( {
+          message: <span className="error">There was an error</span>
+          // TODO test err.responseText();
         });
-      }
-
-      _this.props.onSaved();
-
-    }).fail( function( err ) {
-      console.error( err );
-      _this.setState( {
-        message: <span className="error">There was an error</span>
-        // TODO test err.responseText();
       });
     });
   }
@@ -285,8 +300,26 @@ class TimerNewForm extends Component {
     if ( typeof term !== 'undefined' ) {
       return term.id;
     }
+    else {
+      return $.ajax({
+        method: 'POST',
+        beforeSend: PTT.get( 'auth' ).ajaxBeforeSend,
+        url: PTT.get( 'site' ).url + '/wp-json/wp/v2/'+taxonomyName+'/?name=' + termName,
+      });
+    }
 
     // TODO Else create term first and get ID.
+  }
+
+  // check if the term exists in our object already,
+  // if so, we get back the term id. false otherwise.
+  _checkTermId( taxonomyName, termName ) {
+    // Check if term already in list.
+    let term = this.state[taxonomyName].find(function(term){
+      return term.name === termName;
+    });
+
+    return ( typeof term !== 'undefined' ) ? term.id : false;
   }
 }
 
