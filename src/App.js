@@ -32,36 +32,14 @@ class App extends Component {
   }
 
   componentDidMount() {
+    PTT._init();
     this._showInit();
-    fetch( 'http://wp.dev/wp-json/wp/v2/users/2/' )
-    .then( response => {
-      console.log( response.json() );
-    });
   }
 
   _showInit() {
-    console.log(PTT);
 
-    let view;
-
-    if ( PTT.get('auth') && PTT.get('auth').authenticated ) {
-      console.log('authenticated');
-
-      view = <TimerDashboard />;
-
-    } else {
-
-      if ( PTT.get('creds') ) {
-        console.log('not authenticated but we have creds.');
-
-      } else {
-
-        console.log('not authenticated, no creds.');
-      }
-
-      view = <DiscoverWpApi
+    const view = <DiscoverWpApi
         onDiscovered={this._showDashboard.bind(this)} />;
-    }
 
     this.setState({ view });
   }

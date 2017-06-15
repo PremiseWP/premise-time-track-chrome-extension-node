@@ -2,26 +2,28 @@ import Cookies from 'js-cookie';
 
 class PTT {
   constructor() {
-    this._construct();
+    this._init = this._init.bind(this);
+
+    this.ptt = {};
   }
 
-  _construct() {
-    this.ptt = {};
-
-    this.ptt.creds = Cookies.getJSON( '_ptt' );
-
-    console.log('cookie creds:' + this.ptt.creds);
+  _init() {
+    this.ptt = Cookies.getJSON( '_ptt' ) || {};
+    console.log(this.ptt);
   }
 
   // Set all ptt object or only an attribute passing the key param.
   set( ptt, key ) {
-    if ( key && key in this.ptt ) {
+    if ( this.ptt && key ) {
 
       this.ptt[ key ] = ptt;
 
     } else if ( ptt ) {
 
-      this.ptt = ptt;
+      for ( var i in ptt ) {
+        this.ptt[ i ] = ptt[ i ];
+      }
+
     }
   }
 
@@ -29,17 +31,24 @@ class PTT {
     if ( key && key in this.ptt ) {
       return this.ptt[ key ];
     } else {
-      return this.ptt;
+      return false;
     }
   }
 
-  setCookie( key ) {
-    if ( ! (key in this.ptt) ) {
-
-      return false;
-    }
-
-    Cookies.set( '_ptt', this.ptt[ key ] );
+  setCookies() {
+    const _cookies = {
+      authenticated: this.ptt.auth && this.ptt.auth.authenticated() ? true : false,
+      creds: this.ptt.creds,
+      site: {
+        url: this.ptt.site.url,
+        name: this.ptt.site.name,
+        home: this.ptt.site.home,
+        description: this.ptt.site.description,
+      },
+      user: this.ptt.user,
+    };
+    Cookies.set( '_ptt', _cookies );
+    console.log( 'Cookies set!' );
   }
 
   reset() {

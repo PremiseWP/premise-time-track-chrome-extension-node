@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PTT from './PTT';
 import LoadingIcon from './LoadingIcon';
+import $ from 'jquery';
 
 /**
  * Displays and handles the form to discover the site and get the user signed in.
@@ -124,8 +125,7 @@ class DiscoverWpApi extends Component {
 
 
   /**
-   * Authenticates our user and saves the site
-   * info as a cookie in our browser.
+   * Finds the site and authenticates the user
    *
    * @param  {Object} creds the credentials to authenticate user
    */
@@ -133,14 +133,17 @@ class DiscoverWpApi extends Component {
     creds = creds || null;
 
     if ( ! creds ) {
-      console.error( 'No URL supplied to discover site.' );
+      console.error( 'No credentials supplied to discover site.' );
       return false;
     }
 
+    // get the site
     fetch( creds.url + '/wp-json/' )
-    .then( r => {
-      r.json()
+    .then( resp => {
+      resp.json()
       .then( site => {
+        // we got the site,
+        // let's authenticate the user
         const auth = window.wpApiAuth( {
           oauth_consumer_key: creds.key,
           oauth_secret:       creds.secret,
@@ -148,15 +151,16 @@ class DiscoverWpApi extends Component {
           urls:               site.authentication.oauth1,
           // singlepage: true,
         });
-
         const endpoint = site.url + '/wp-json/wp/v2/premise_time_tracker';
-
-        // Save the site info, auth, endpoint & creds.
-        const newPtt = { creds, site, auth, endpoint };
-
+        const newPtt   = {
+          creds,
+          site,
+          auth,
+          endpoint,
+        };
+        // save the ptt object
         PTT.set( newPtt );
-
-        newPtt.auth.authenticate( this._maybeAuthenticated.bind(this) );
+        auth.authenticate( this._maybeAuthenticated.bind(this) );
       });
     });
   }
@@ -170,9 +174,17 @@ class DiscoverWpApi extends Component {
       this.setState({ message });
 
     } else {
-
-      // No errors! Save creds to cookie & show the dashboard.
-      PTT.setCookie( 'creds' );
+      // get the user 1
+      console.log( 'getting the user' );
+      $.ajax({
+        method: 'GET',
+        beforeSend: PTT.get( 'auth' ).ajaxBeforeSend,
+        url: PTT.get( 'site' ).url + '/wp-json/wp/v2/users/me',
+      })
+      .then( function( user ) {
+        PTT.set( user, 'user' );
+        PTT.setCookies();
+      });
 
       this.props.onDiscovered();
     }
