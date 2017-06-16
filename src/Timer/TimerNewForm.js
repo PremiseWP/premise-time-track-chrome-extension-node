@@ -12,10 +12,21 @@ class TimerNewForm extends Component {
   constructor(props) {
     super(props);
 
+    // Bind this.
+    this._handleSubmit     = this._handleSubmit.bind(this);
+    this._loadClients      = this._loadClients.bind(this);
+    this._loadProjects     = this._loadProjects.bind(this);
+    this._updateFieldValue = this._updateFieldValue.bind(this);
+    this._startProcess     = this._startProcess.bind(this);
+    this._endProcess       = this._endProcess.bind(this);
+    this._buildForm        = this._buildForm.bind(this);
+
+    // build initial state
     this.state = {
       view: 'show',
-      loading: '',
-      post: null, // The current post we are working with.
+      processing: false,
+      formState: '',
+      post: null, // current post
       premise_time_tracker_project: null,
       premise_time_tracker_client: null,
       form: {
@@ -27,14 +38,9 @@ class TimerNewForm extends Component {
         content: '',
         client: '',
         project: ''
-      }
+      },
+      author: PTT.get('user') || {},
     }
-
-    // Bind this.
-    this._handleSubmit = this._handleSubmit.bind(this);
-    this._loadClients = this._loadClients.bind(this);
-    this._loadProjects = this._loadProjects.bind(this);
-    this._updateFieldValue = this._updateFieldValue.bind(this);
   }
 
   render() {
@@ -50,9 +56,18 @@ class TimerNewForm extends Component {
       projectsList = this._listTax( state.premise_time_tracker_project, 'projects' );
     }
 
+    const wrapperClass = this.state.processing
+    ? 'processing'
+    : '';
+
+    const loading = this.state.processing
+    ? <LoadingIcon
+      message={this.state.formState} />
+    : '';
+
     return (
-      <div className="timer-new-form">
-        {state.loading}
+      <div className={"timer-new-form "+wrapperClass}>
+        {loading}
         <form className={state.view}
             action={state.form.action}
             method="post"
@@ -65,6 +80,10 @@ class TimerNewForm extends Component {
           <input type="hidden"
               name="id"
               value={state.form.id} />
+
+          <input type="hidden"
+              name="author"
+              value={state.author.id} />
 
           <div className="basic_fields">
             <label htmlFor="title">Title
@@ -87,7 +106,6 @@ class TimerNewForm extends Component {
               <input type="text" name="premise_time_tracker_client"
                 list="clients" className="new-tag-input"
                 ref={(input) => this._client = input}
-                onFocus={this._loadClients.bind(this)}
                 onBlur={this._checkTermId.bind(this)} />
               {clientsList}
             </label>
@@ -98,7 +116,6 @@ class TimerNewForm extends Component {
               <input type="text" name="premise_time_tracker_project"
                 list="projects" className="new-tag-input"
                 ref={(input) => this._project = input}
-                onFocus={this._loadProjects.bind(this)}
                 onBlur={this._checkTermId.bind(this)} />
               {projectsList}
             </label>
@@ -110,31 +127,64 @@ class TimerNewForm extends Component {
     );
   }
 
-  componentDidMount() {
-    const state = this.state;
-
-    // if we have a form id, the lets get the post before loading the form
-    if ( state.form.id ) {
-      // get the post and save it
-      state.post = TimerFetch.getPost( state.form.id );
-      state.post.then( _p => {
-        // Build form before showing it.
-        const buildForm = Object.assign( state.form, {
-          title:       _p.title.rendered,
-          content: _p.content.rendered,
-          client: ( _p.premise_time_tracker_client.length )
-              ? _p.premise_time_tracker_client.split(',')
-              : '',
-          project: ( _p.premise_time_tracker_project.length )
-               ? _p.premise_time_tracker_project.split(',')
-               : '',
-        } )
-        this.setState( {
-          form: buildForm,
-        });
-        console.log('form should be built');
-      } );
+  // react component.
+  // fires right before component has loaded
+  componentWillMount() {
+    // if we have a form id,
+    // then lets get the post
+    // before loading the form
+    if ( this.state.form.id ) {
+      this._buildForm();
     }
+  }
+
+  // changes formState to processing
+  // and loads loading icon with optional message
+  // to let the user know what process is
+  // about to start
+  _startProcess( msg ) {
+    const _msg = msg || '';
+    this.setState( {
+      processing: true,
+      formState: _msg,
+    });
+  }
+
+  // changes formState to done
+  // hides loading icon
+  _endProcess() {
+    this.setState( {
+      processing: false,
+      formState: '',
+    });
+  }
+
+  // build the form if we have a post
+  _buildForm() {
+    this._startProcess('Building the form..');
+    // get the post and save it
+    TimerFetch.getPost( this.state.form.id )
+    .then( _p => {
+      // Build form before showing it.
+      const buildForm = Object.assign( this.state.form, {
+        title: _p.title.rendered,
+        content: _p.content.rendered,
+        client: ( _p.premise_time_tracker_client.length )
+            ? _p.premise_time_tracker_client.split(',')
+            : '',
+        project: ( _p.premise_time_tracker_project.length )
+             ? _p.premise_time_tracker_project.split(',')
+             : '',
+      } );
+      this.setState( {
+        post: _p,
+        form: buildForm,
+      });
+      this._startProcess('Loading clients & projects..');
+      this._loadClients();
+      this._loadProjects();
+      setTimeout(this._endProcess, 500);
+    } );
   }
 
   _updateFieldValue(e) {
@@ -273,19 +323,17 @@ class TimerNewForm extends Component {
     // );
   }
 
+  // Load Clients to use as dropdown options
   _loadClients() {
-    console.log('loading clients');
     TimerFetch.getTaxonomy( 'client' ).then( premise_time_tracker_client => {
-      // Do not mutate state directly. Use setState().
-      // this.state.clients = this._listTax( clients );
       this.setState({
         premise_time_tracker_client
       });
     });
   }
 
+  // Load Projects to use as dropdown options
   _loadProjects() {
-    console.log('loading projects');
     TimerFetch.getTaxonomy( 'project' ).then( premise_time_tracker_project => {
       this.setState({
         premise_time_tracker_project,
@@ -308,6 +356,8 @@ class TimerNewForm extends Component {
         beforeSend: PTT.get( 'auth' ).ajaxBeforeSend,
         url: PTT.get( 'site' ).url + '/wp-json/wp/v2/'+taxonomyName+'/?name=' + termName,
       });
+
+      //update state taxonomy name
     }
 
     // TODO Else create term first and get ID.
@@ -341,6 +391,13 @@ class TimerNewForm extends Component {
         console.log(_preTerm);
       });
     }
+  }
+
+  _disableWhenProcessing() {
+    console.log(this.state.formState);
+    return ( 'processing' === this.state.formState )
+      ? 'disabled'
+      : '';
   }
 }
 
