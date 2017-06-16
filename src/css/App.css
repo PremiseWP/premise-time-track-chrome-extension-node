@@ -376,4 +376,10 @@
 .timer-taxonomies-wrapper .new-tag-input {
   width: 100%;
   margin-right: 0;
+  outline: 0;
+}
+.timer-taxonomies-wrapper .notification {
+  display: inline-block;
+  float: right;
+  font-size: 0.6em;
 }
