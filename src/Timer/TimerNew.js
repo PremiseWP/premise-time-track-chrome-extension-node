@@ -86,10 +86,11 @@ class TimerNew extends Component {
       });
     })
     .fail( function( err ) {
-      console.log( err );
       _this.setState( {
-        message: <span className="error">There was an error</span>
-        // TODO test err.responseText();
+        message: <span
+        className="error">
+          {err.responseJSON.message}
+        </span>,
       });
     });
   }

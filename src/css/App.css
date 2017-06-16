@@ -225,7 +225,8 @@
  * Term timers
  */
 .no-timers-found {
-  margin-top: 16px;
+  margin-top: 2em;
+  display: block;
 }
 
 .term-timers-list {

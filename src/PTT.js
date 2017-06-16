@@ -7,13 +7,14 @@ class PTT {
     this.ptt = {};
   }
 
+  // initialize our object
   _init() {
     this.ptt = Cookies.getJSON( '_ptt' ) || {};
-    console.log('cookies:');
-    console.log(this.ptt);
+    console.log('cookies:');console.log(this.ptt);
   }
 
-  // Set all ptt object or only an attribute passing the key param.
+  // Set whole ptt object or
+  // only an attribute by passing the key param.
   set( ptt, key ) {
     if ( this.ptt && key ) {
 
@@ -28,6 +29,9 @@ class PTT {
     }
   }
 
+  // get an attribute set in this object
+  // Notcie we do not retrieve from cookies
+  // directly.
   get( key ) {
     if ( key && key in this.ptt ) {
       return this.ptt[ key ];
@@ -36,6 +40,9 @@ class PTT {
     }
   }
 
+  // set the attributes of this object
+  // as cookies in our browser.
+  // called by DiscoverWpApi -> _maybeAuthenticated
   setCookies() {
     const _cookies = {
       authenticated: this.ptt.auth && this.ptt.auth.authenticated() ? true : false,
@@ -49,7 +56,7 @@ class PTT {
       user: this.ptt.user,
     };
     Cookies.set( '_ptt', _cookies );
-    console.log( 'Cookies set!' );
+    // console.log( 'Cookies set!' );
   }
 
   reset() {

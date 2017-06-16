@@ -46,6 +46,8 @@ class App extends Component {
   // used by componentDidMount and
   // help buttons - on reset.
   _showInit() {
+    // DiscoverWpApi will check if
+    // user is authenticated
     const view = <DiscoverWpApi
       onDiscovered={this._showDashboard.bind(this)} />;
 

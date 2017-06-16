@@ -1,6 +1,12 @@
 import PTT from '../PTT';
 
 class TimerFetch {
+
+  _defaultParams() {
+    const uId = PTT.get('user').id;
+    return '?per_page=100&author='+uId;
+  }
+
   /**
    * Retrieve a taxonomy from premise time tracker.
    *
@@ -13,7 +19,11 @@ class TimerFetch {
 
     if ( ! slug ) return false;
 
-    fetch( PTT.get( 'site' ).url + '/wp-json/wp/v2/premise_time_tracker_' + slug + '/?per_page=100' )
+    fetch( PTT.get( 'site' ).url
+      + '/wp-json/wp/v2/premise_time_tracker_'
+      + slug
+      + '/'
+      + this._defaultParams() )
     .then( response => {
       response.json()
       .then( _terms => {
@@ -33,7 +43,10 @@ class TimerFetch {
 
     if ( ! slug ) return false;
 
-    const url = PTT.get( 'site' ).url + '/wp-json/wp/v2/premise_time_tracker_' + slug + '/?per_page=100';
+    const url = PTT.get( 'site' ).url
+    + '/wp-json/wp/v2/premise_time_tracker_'
+    + slug
+    + this._defaultParams();
 
     // console.log(url);
 
@@ -56,7 +69,10 @@ class TimerFetch {
 
     if ( ! searchTerm ) return false;
 
-    const url = PTT.get( 'endpoint' ) + '?search=' + encodeURIComponent( searchTerm );
+    const url = PTT.get( 'endpoint' )
+    + this._defaultParams()
+    + '&search='
+    + encodeURIComponent( searchTerm );
 
     // console.log(url);
 
@@ -101,11 +117,13 @@ class TimerFetch {
    * @return {String}  Wordpress API URL.
    */
   timersByTermUrl( termId, taxonomy ) {
-
     taxonomy = 'premise_time_tracker_' + taxonomy;
 
-    return PTT.get( 'endpoint' ) + '?per_page=100&' + encodeURIComponent( taxonomy ) +
-      '[]=' + encodeURIComponent( termId );
+    return PTT.get( 'endpoint' )
+    + this._defaultParams()
+    + '&'
+    + encodeURIComponent( taxonomy )
+    + '[]=' + encodeURIComponent( termId );
   }
 
   /**

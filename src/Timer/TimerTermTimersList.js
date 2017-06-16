@@ -67,10 +67,21 @@ class TimerTermTimersList extends Component {
       timerNodes = <LoadingIcon />;
     }
     else if (timers.length) {
-      const taxonomyClass = 'term-timers-list ' + props.taxonomyName + ' ' + props.term.name;
-      timerNodes = <ul className={taxonomyClass}>{timers}</ul>;
-    } else {
-      timerNodes = <p className="no-timers-found">No timers found.</p>
+      const taxonomyClass = 'term-timers-list '
+      + props.taxonomyName
+      + ' '
+      + props.term.name;
+
+      timerNodes = <ul
+      className={taxonomyClass}>
+        {timers}
+      </ul>;
+    }
+    else {
+      timerNodes = <p
+      className="no-timers-found">
+        You do not find any timers under this {this.props.taxonomyName}.
+      </p>
     }
 
     const jumpToSelect = this._jumpToSelect();
