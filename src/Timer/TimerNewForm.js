@@ -40,6 +40,9 @@ class TimerNewForm extends Component {
         project: ''
       },
       author: PTT.get('user') || {},
+      fieldMessage: {},
+      onSavedCb: props.onSaved || this._endProcess,
+      //TODO end process correctly
     }
   }
 
@@ -61,9 +64,14 @@ class TimerNewForm extends Component {
     : '';
 
     const loading = this.state.processing
+    && this.state.formState.length
     ? <LoadingIcon
       message={this.state.formState} />
     : '';
+
+
+
+    const disabled = this.state.processing;
 
     return (
       <div className={"timer-new-form "+wrapperClass}>
@@ -103,25 +111,29 @@ class TimerNewForm extends Component {
 
           <div className="timer-taxonomies-wrapper clients">
             <label>Clients
+              {this.state.fieldMessage.premise_time_tracker_client}
               <input type="text" name="premise_time_tracker_client"
                 list="clients" className="new-tag-input"
                 ref={(input) => this._client = input}
-                onBlur={this._checkTermId.bind(this)} />
+                onChange={this._checkTaxExists.bind(this)}
+                onBlur={this._saveTax.bind(this)} />
               {clientsList}
             </label>
           </div>
 
           <div className="timer-taxonomies-wrapper projects">
             <label>Projects
+              {this.state.fieldMessage.premise_time_tracker_project}
               <input type="text" name="premise_time_tracker_project"
                 list="projects" className="new-tag-input"
                 ref={(input) => this._project = input}
-                onBlur={this._checkTermId.bind(this)} />
+                onChange={this._checkTaxExists.bind(this)}
+                onBlur={this._saveTax.bind(this)} />
               {projectsList}
             </label>
           </div>
 
-          <button type="submit">Submit</button>
+          <button type="submit" disabled={disabled}>Submit</button>
         </form>
       </div>
     );
@@ -198,14 +210,12 @@ class TimerNewForm extends Component {
   _handleSubmit(e) {
     e.preventDefault();
 
+    this._startProcess('Saving timer..');
+
     $('body').animate({scrollTop: 0}, 400);
 
-    // Reference 'this' and show the loading icon.
+    // Reference 'this'
     let _this = this;
-    _this.setState( {
-      loading: <LoadingIcon />,
-      view: 'hide',
-    });
 
     var fields = $(e.target).serializeArray(),
     query      = e.target.action,
@@ -213,85 +223,74 @@ class TimerNewForm extends Component {
     projectId  = false,
     id;
 
-    // verify the fields
-    $.when( function() {
-      for (var i = fields.length - 1; i >= 0; i--) {
-        if ( 'id' !== fields[i].name
-           && fields[i].value.length ) {
+    // parse fields
+    for (var i = fields.length - 1; i >= 0; i--) {
+      // exclude id or empty values
+      if ( 'id' !== fields[i].name
+         && fields[i].value.length ) {
 
-          if ( fields[i].name === 'premise_time_tracker_client' ||
-               fields[i].name === 'premise_time_tracker_project' ) {
-            // Get term ID from list, or create new term if needed.
-            fields[i].value = this._getTermId( fields[i].name, fields[i].value );
-          }
-
-          parser += '&' + fields[i].name + '=' + fields[i].value;
+        if ( fields[i].name === 'premise_time_tracker_client' ||
+             fields[i].name === 'premise_time_tracker_project' ) {
+          // Get term ID from list, or create new term if needed.
+          fields[i].value = this._getTermId( fields[i].name, fields[i].value );
         }
+
+        // I believe this used to do the count on hours from the server side.
+        if ( fields[i].name === 'premise_time_tracker_project' ) {
+          projectId = fields[i].value;
+        }
+
+        // parse fields without id
+        parser += '&' + fields[i].name + '=' + fields[i].value;
       }
-    })
-
-    .then(function(){
-      // parse fields
-      for (var i = fields.length - 1; i >= 0; i--) {
-        // exclude id or empty values
-        if ( 'id' !== fields[i].name
-           && fields[i].value.length ) {
-
-          // I believe this used to do the count on hours from the server side.
-          if ( fields[i].name === 'premise_time_tracker_project' ) {
-            projectId = fields[i].value;
-          }
-          parser += '&' + fields[i].name + '=' + fields[i].value;
-        }
+      else {
         // save the id separately
-        else {
-          id = fields[i].value;
-        }
+        id = fields[i].value;
       }
-      // build the query
-      query += '/' + id + '?' + parser.substr(1, parser.length);
+    }
 
-      // console.log(query); return;
+    // build the query
+    query += '/'
+      + id
+      + '?'
+      + parser.substr(1, parser.length);
 
+    // save our timer
+    $.ajax( {
+      url: query,
+      method: 'POST',
+      beforeSend: PTT.get('auth').ajaxBeforeSend,
+    })
+    .done( function( response ) {
+      console.log(response);
+      // delete post cookie
+      Cookies.remove( 'ptt_current_timer' );
 
-      // save our timer
-      $.ajax( {
-        url: query,
-        method: 'POST',
-        beforeSend: PTT.get('auth').ajaxBeforeSend,
-      }).done( function( response ) {
-        // we were successful!
-        console.log(response);
-        // delete post cookie
-        Cookies.remove( 'ptt_current_timer' );
+      if ( projectId ) {
+        const url = PTT.get( 'endpoint' ) + '/' + id;
 
-        if ( projectId ) {
-          const url = PTT.get( 'endpoint' ) + '/' + id;
+        console.log(url);
 
-          console.log(url);
-
-          // Update pwptt_project_hours trick
-          // Dummy POST to call the rest_insert_premise_time_tracker hook again now
-          // as the timer should now be related to the project.
-          $.ajax( {
-            url: url,
-            method: 'POST',
-            beforeSend: PTT.get('auth').ajaxBeforeSend,
-          }).done( function( response ) {
-            // Global callback fetch / update project terms.
-            window.updateProjectWidgetTerms(response);
-          });
-        }
-
-        _this.props.onSaved();
-
-      }).fail( function( err ) {
-        console.error( err );
-        _this.setState( {
-          message: <span className="error">There was an error</span>
-          // TODO test err.responseText();
+        // Update pwptt_project_hours trick
+        // Dummy POST to call the rest_insert_premise_time_tracker hook again now
+        // as the timer should now be related to the project.
+        $.ajax( {
+          url: url,
+          method: 'POST',
+          beforeSend: PTT.get('auth').ajaxBeforeSend,
+        }).done( function( response ) {
+          // Global callback fetch / update project terms.
+          window.updateProjectWidgetTerms(response);
         });
+      }
+      _this.state.onSavedCb();
+    })
+    .fail( function( err ) {
+      console.error( err );
+      _this.setState( {
+        message: <span className="error">err.responseText()</span>
       });
+      _this._endProcess();
     });
   }
 
@@ -323,6 +322,60 @@ class TimerNewForm extends Component {
     // );
   }
 
+  _checkTaxExists(e) {
+    const s   = e.target.value;
+    const tax = e.target.name;
+
+    let inProcess;
+    let message = {};
+    // if field is empty
+    // or we have the id already
+    if ( 0 === s.length
+         || this._checkTermId(tax, s) ) {
+      inProcess = false;
+      message = {};
+    }
+    else {
+      inProcess = true;
+      message[tax] = <span className="notification">Confirm saving new item</span>;
+    }
+
+    this.setState({
+      processing: inProcess,
+      fieldMessage: message,
+    });
+  }
+
+  _saveTax(e) {
+    const term     = e.target.value;
+    const taxonomy = e.target.name;
+    if ( term.length
+      && !this._checkTermId(taxonomy, term) ) {
+      let _this = this;
+      $.ajax({
+        method: 'POST',
+        beforeSend: PTT.get( 'auth' ).ajaxBeforeSend,
+        url:  PTT.get( 'site' ).url
+              + '/wp-json/wp/v2/'
+              + taxonomy
+              + '/?name=' + term,
+      })
+      .done(function( newTerm ){
+        let taxList = _this.state[taxonomy];
+        taxList.push(newTerm);
+
+        let msg = {};
+        msg[taxonomy] = <span className="notification">Saved</span>;
+
+        _this.setState({
+          taxList,
+          processing: false,
+          fieldMessage: msg,
+        });
+      });
+    }
+  }
+
   // Load Clients to use as dropdown options
   _loadClients() {
     TimerFetch.getTaxonomy( 'client' ).then( premise_time_tracker_client => {
@@ -351,53 +404,20 @@ class TimerNewForm extends Component {
       return term.id;
     }
     else {
-      return $.ajax({
-        method: 'POST',
-        beforeSend: PTT.get( 'auth' ).ajaxBeforeSend,
-        url: PTT.get( 'site' ).url + '/wp-json/wp/v2/'+taxonomyName+'/?name=' + termName,
-      });
-
-      //update state taxonomy name
+      return 0;
     }
-
-    // TODO Else create term first and get ID.
   }
 
   // check if the term exists in our object already,
-  // if so, we get back the term id. false otherwise.
-  _checkTermId(e) {
-
-    let taxonomyName = $(e.target).attr('name');
-    let termName     = $(e.target).val();
-
-    // Check if term already in list.
-    let term = this.state[taxonomyName].find(function(term){
-      return term.name === termName;
+  // if it is return term id, false otherwise.
+  _checkTermId(taxonomy, term) {
+    let _t = this.state[taxonomy].find(function(_t){
+      return _t.name === term;
     });
 
-    if ( typeof term === 'undefined' ) {
-      let _this = this;
-      $.ajax({
-        method: 'POST',
-        beforeSend: PTT.get( 'auth' ).ajaxBeforeSend,
-        url: PTT.get( 'site' ).url + '/wp-json/wp/v2/'+taxonomyName+'/?name=' + termName,
-      })
-      .done(function( newTerm ){
-        const _preTerm = {};
-        _preTerm[ taxonomyName ] = newTerm;[ taxonomyName ] = newTerm;
-        _this.setState({
-          _preTerm
-        });
-        console.log(_preTerm);
-      });
-    }
-  }
-
-  _disableWhenProcessing() {
-    console.log(this.state.formState);
-    return ( 'processing' === this.state.formState )
-      ? 'disabled'
-      : '';
+    return ( typeof _t !== 'undefined' )
+    ? _t.id
+    : false;
   }
 }
 
