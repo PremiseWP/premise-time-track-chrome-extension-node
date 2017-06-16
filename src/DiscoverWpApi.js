@@ -174,6 +174,7 @@ class DiscoverWpApi extends Component {
       this.setState({ message });
 
     } else {
+
       // get the user 1
       console.log( 'getting the user' );
       $.ajax({
