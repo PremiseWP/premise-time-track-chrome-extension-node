@@ -30,13 +30,21 @@ class LoadingIcon extends Component {
       fontSize: this.state.size,
     };
 
+    const message = this.props.message ?
+      <span
+      className="message">
+        {this.props.message}
+      </span> :
+      '';
+
     return (
       <div className="loading-icon" style={divStyle}>
         <FontAwesome
           name={this.state.icon}
           spin
           style={iconStyle}
-        />
+        /><br />
+        {message}
       </div>
     );
   }
