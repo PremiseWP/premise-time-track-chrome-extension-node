@@ -13,7 +13,7 @@ class TimerFetch {
 
     if ( ! slug ) return false;
 
-    fetch( PTT.get( 'site' ).url + '/wp-json/wp/v2/premise_time_tracker_' + slug + '/' )
+    fetch( PTT.get( 'site' ).url + '/wp-json/wp/v2/premise_time_tracker_' + slug + '/?per_page=100' )
     .then( response => {
       response.json()
       .then( _terms => {
@@ -33,7 +33,7 @@ class TimerFetch {
 
     if ( ! slug ) return false;
 
-    const url = PTT.get( 'site' ).url + '/wp-json/wp/v2/premise_time_tracker_' + slug + '/';
+    const url = PTT.get( 'site' ).url + '/wp-json/wp/v2/premise_time_tracker_' + slug + '/?per_page=100';
 
     // console.log(url);
 
