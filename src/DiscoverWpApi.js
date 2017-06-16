@@ -32,7 +32,7 @@ class DiscoverWpApi extends Component {
       return;
     }
 
-    const message = ''; // "Authentication in process, please wait.";
+    const message = 'Authenticating you..';
 
     this.setState({ message, processing: true });
 
@@ -41,12 +41,11 @@ class DiscoverWpApi extends Component {
   }
 
   render() {
-    const view = ( this.state.processing ) ? <LoadingIcon /> : this._theForm();
+    const view = ( this.state.processing )
+    ? <LoadingIcon message={this.state.message} />
+    : this._theForm();
     return (
       <div className="discover-wp-api">
-        <div className="message">
-          <p>{this.state.message}</p>
-        </div>
         {view}
       </div>
     );
@@ -95,7 +94,10 @@ class DiscoverWpApi extends Component {
     e.preventDefault();
 
     // Loading icon.
-    this.setState({ processing: true });
+    this.setState({
+      message: 'Looking for your site..',
+      processing: true
+    });
 
     // Get the data from the form.
     const data = new FormData( e.target );
@@ -142,6 +144,9 @@ class DiscoverWpApi extends Component {
     .then( resp => {
       resp.json()
       .then( site => {
+        this.setState({
+          message: 'We found your site! Getting you authenticated..'
+        })
         // we got the site,
         // let's authenticate the user
         const auth = window.wpApiAuth( {
@@ -172,22 +177,25 @@ class DiscoverWpApi extends Component {
       const message =  <span className="error">{error.responseText}</span>;
 
       this.setState({ message });
-
     } else {
-
-      // get the user 1
-      console.log( 'getting the user' );
+      // get user info
+      this.setState({
+        message: 'You\'re authenticated! Saving your user info for this session only..',
+      });
+      let _this = this;
       $.ajax({
         method: 'GET',
         beforeSend: PTT.get( 'auth' ).ajaxBeforeSend,
         url: PTT.get( 'site' ).url + '/wp-json/wp/v2/users/me',
       })
       .then( function( user ) {
+        _this.setState({
+          message: 'We\'re all set!',
+        });
         PTT.set( user, 'user' );
         PTT.setCookies();
+        _this.props.onDiscovered();
       });
-
-      this.props.onDiscovered();
     }
   }
 }

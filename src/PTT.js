@@ -9,6 +9,7 @@ class PTT {
 
   _init() {
     this.ptt = Cookies.getJSON( '_ptt' ) || {};
+    console.log('cookies:');
     console.log(this.ptt);
   }
 

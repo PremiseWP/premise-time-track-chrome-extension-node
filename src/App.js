@@ -15,7 +15,8 @@ class App extends Component {
     super();
 
     this.state = {
-      view: <LoadingIcon />
+      view: <LoadingIcon
+        message="Locating your info.."/>
     }
   }
 
@@ -31,19 +32,27 @@ class App extends Component {
     );
   }
 
-  componentDidMount() {
+  // before the component loads
+  componentWillMount() {
     PTT._init();
+  }
+
+  // once the component has loaded
+  componentDidMount() {
     this._showInit();
   }
 
+  // show the initial view,
+  // used by componentDidMount and
+  // help buttons - on reset.
   _showInit() {
-
     const view = <DiscoverWpApi
-        onDiscovered={this._showDashboard.bind(this)} />;
+      onDiscovered={this._showDashboard.bind(this)} />;
 
     this.setState({ view });
   }
 
+  // show the dashboard.
   _showDashboard() {
     const view = <TimerDashboard />;
 
