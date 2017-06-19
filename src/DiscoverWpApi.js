@@ -28,7 +28,7 @@ class DiscoverWpApi extends Component {
     const creds = PTT.get( 'creds' );
 
     if ( ! creds ) {
-
+      PTT.reset();
       return;
     }
 
@@ -146,7 +146,7 @@ class DiscoverWpApi extends Component {
       .then( site => {
         this.setState({
           message: 'We found your site! Getting you authenticated..'
-        })
+        });
         // we got the site,
         // let's authenticate the user
         const auth = window.wpApiAuth( {
@@ -172,30 +172,49 @@ class DiscoverWpApi extends Component {
 
   _maybeAuthenticated( error ) {
 
+    // Handle errors first.
     if ( error ) {
-      // Handle errors first.
-      const message =  <span className="error">{error.responseText}</span>;
+      // console.log(error);
+      const message =  <span
+      className="error">
+        {error.responseText}
+      </span>;
 
       this.setState({ message });
-    } else {
-      // get user info
+    }
+    // if no errors,
+    // get user info
+    else {
       this.setState({
         message: 'You\'re authenticated! Saving your user info for this session only..',
       });
-      let _this = this;
-      $.ajax({
-        method: 'GET',
-        beforeSend: PTT.get( 'auth' ).ajaxBeforeSend,
-        url: PTT.get( 'site' ).url + '/wp-json/wp/v2/users/me',
-      })
-      .then( function( user ) {
-        _this.setState({
-          message: 'We\'re all set!',
+      if ( PTT.get( 'auth' )
+        && PTT.get( 'auth' ).authenticated() ) {
+        let _this = this; // reference this
+        $.ajax({
+          method: 'GET',
+          beforeSend: PTT.get( 'auth' ).ajaxBeforeSend,
+          url: PTT.get( 'site' ).url + '/wp-json/wp/v2/users/me',
+          error: function( err ) {
+            console.error(err);
+            _this.setState({
+              message: err.responseText
+            });
+            PTT.setCookies();
+            _this.props.onDiscovered();
+            return false;
+          },
+        })
+        .done( function( user ) {
+          _this.setState({
+            message: 'We\'re all set!',
+          });
+          PTT.set( user, 'user' );
+          PTT.setCookies();
+          _this.props.onDiscovered();
+          return false;
         });
-        PTT.set( user, 'user' );
-        PTT.setCookies();
-        _this.props.onDiscovered();
-      });
+      }
     }
   }
 }
