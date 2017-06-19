@@ -63,7 +63,7 @@ class PTT {
     // Remove _ptt cookie, reset PTT.
     Cookies.remove('_ptt');
 
-    this._construct();
+    // this._init();
   }
 }
 
