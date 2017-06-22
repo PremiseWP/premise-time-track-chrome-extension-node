@@ -27,9 +27,9 @@ class HelpButtons extends Component {
     event.preventDefault();
 
     // Remove _ptt cookie, reset PTT.
-    PTT.reset();
+    PTT._reset();
 
-    this.props.onReset();
+    location.reload();
   }
 }
 
