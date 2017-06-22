@@ -1,10 +1,16 @@
 import PTT from '../PTT';
+import $ from 'jquery';
 
 class TimerFetch {
 
   _defaultParams() {
-    const uId = PTT.get('user').id;
-    return '?per_page=100&author='+uId;
+    let _params = '?per_page=100';
+
+    _params += PTT.get('user').id
+    ? '&author=' + PTT.get('user').id
+    : '';
+
+    return _params;
   }
 
   /**
@@ -19,9 +25,8 @@ class TimerFetch {
 
     if ( ! slug ) return false;
 
-    fetch( PTT.get( 'site' ).url
-      + '/wp-json/wp/v2/premise_time_tracker_'
-      + slug
+    fetch( PTT.get( 'endpoint' )
+      + '_' + slug
       + '/'
       + this._defaultParams() )
     .then( response => {
@@ -43,9 +48,8 @@ class TimerFetch {
 
     if ( ! slug ) return false;
 
-    const url = PTT.get( 'site' ).url
-    + '/wp-json/wp/v2/premise_time_tracker_'
-    + slug
+    const url = PTT.get( 'endpoint' )
+    + '_' + slug
     + this._defaultParams();
 
     // console.log(url);
@@ -178,6 +182,9 @@ class TimerFetch {
 
     if ( ! id ) return false;
 
+    let _url = PTT.get( 'endpoint' )
+    + '/' + id;
+
     // Parse options as params.
     // BETA not fully tested
     if ( options ) {
@@ -187,15 +194,26 @@ class TimerFetch {
           _options += '&' + i + '=' + options[i];
         }
       }
-      // console.log(_options);
+      _url += '?' + _options + '/';
     }
 
     // Fetch the post and return promise.
-    var post = fetch( PTT.get( 'endpoint' ) + '/' + id + '?' + _options + '/' )
+    return fetch( _url )
     .then( response => {
       return response.json();
     });
-    return post;
+  }
+
+  otherEndpoint( endpoint ) {
+    const url = PTT.get( 'site' ).url
+    + '/wp-json/'
+    + endpoint;
+
+    return $.ajax({
+        method:     'GET',
+        beforeSend: PTT.get( 'auth' ).ajaxBeforeSend,
+        url: url,
+    });
   }
 }
 
