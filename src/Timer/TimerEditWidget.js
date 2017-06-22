@@ -4,14 +4,13 @@ import TimerNew from './TimerNew';
 
 class TimerEditWidget extends Component {
   constructor() {
-    super(); // super() must be called in our constructor.
+    super();
 
     // Initial state.
     this.state = {
       widgetIsOpen: true,
       widgetTitle: 'New Timer',
       timerSavedConfirmation: false,
-      timer: {} // We manage the current timer here, only!
     };
   }
 
