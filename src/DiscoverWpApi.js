@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PTT from './PTT';
 import LoadingIcon from './LoadingIcon';
 import $ from 'jquery';
+// import TimerFetch from './Timer/TimerFetch';
 
 /**
  * Displays and handles the form to discover the site and get the user signed in.
@@ -12,42 +13,53 @@ class DiscoverWpApi extends Component {
     super();
 
     this.state = {
+      view: '',
+      creds: PTT.get('creds'),
       message: props.message || 'Let\'s find your site and get you authenticated.',
       processing: false,
       onDiscovered: props.onDiscovered || null,
+      onUserFound: props.onUserFound || null,
     };
 
     this._handleSubmit = this._handleSubmit.bind(this);
+    this._selectUser = this._selectUser.bind(this);
+    this._saveUserOnSelect = this._saveUserOnSelect.bind(this);
  }
 
   // called before the component is rendered to the page.
   componentWillMount() {
-    this._checkCredentials(); // Fetch comments from server before component is rendered.
+    this._checkCredentials();
   }
 
   _checkCredentials() {
-    const creds = PTT.get( 'creds' );
-
-    if ( ! creds ) {
+    if ( ! this.state.creds ) {
       PTT._reset();
-      return;
+      this.setState({
+        view: this._theForm(),
+      });
     }
+    else {
+      const message = 'Authenticating you..';
 
-    const message = 'Authenticating you..';
+      this.setState({
+        message: message,
+        processing: true,
+      });
 
-    this.setState({ message, processing: true });
-
-    // Discover the site.
-    this._discoverSite( creds );
+      // Discover the site.
+      this._discoverSite( this.state.creds );
+    }
   }
 
   render() {
-    const view = ( this.state.processing )
-    ? <LoadingIcon message={this.state.message} />
-    : this._theForm();
+    let _view = this.state.view;
+    if (this.state.processing) {
+      _view = <LoadingIcon
+        message={this.state.message} />;
+    }
     return (
       <div className="discover-wp-api">
-        {view}
+        {_view}
       </div>
     );
   }
@@ -146,7 +158,7 @@ class DiscoverWpApi extends Component {
       resp.json()
       .then( site => {
         this.setState({
-          message: 'We found your site! Getting you authenticated..'
+          message: 'We found your site!'
         });
         // we got the site,
         // let's authenticate the user
@@ -157,16 +169,20 @@ class DiscoverWpApi extends Component {
           urls:               site.authentication.oauth1,
           // singlepage: true,
         });
-        const endpoint = site.url + '/wp-json/wp/v2/premise_time_tracker';
+        // save the endpoint for use later
+        const endpoint = site.url
+        + '/wp-json/wp/v2/premise_time_tracker';
+        // save the ptt object
         const newPtt   = {
           creds,
           site,
           auth,
           endpoint,
         };
-        // save the ptt object
         PTT.set( newPtt );
+        // save Cookies
         PTT.setCookies();
+        // authenticate!
         auth.authenticate( this._maybeAuthenticated.bind(this) );
       });
     });
@@ -185,15 +201,22 @@ class DiscoverWpApi extends Component {
     // if no errors
     else {
       this.setState({
-        message: 'You\'re authenticated! Saving your user info for this session only..',
+        message: 'You\'re authenticated!',
       });
       // get user info
-      this._getCurrentUser();
-      this.state.onDiscovered();
+      if ( ! PTT.get('user') ) {
+        this._getCurrentUser();
+      }
+      else {
+        this.state.onDiscovered();
+      }
     }
   }
 
   _getCurrentUser() {
+    this.setState({
+      message: 'Getting your user info..',
+    });
     if ( PTT.get( 'auth' )
       && PTT.get( 'auth' ).authenticated() ) {
       // User is authenticated, we can proceed
@@ -210,19 +233,116 @@ class DiscoverWpApi extends Component {
         // We do not update the cookie
         // so the app knows something is up.
         error: function( err ) {
-          console.log('User not found.');
-          console.log(err);
-          // maybe delete cookie?
-          // PTT.set({},'user');
-          // PTT.setCookies();
+          // console.log(err);
+          _this.setState({
+            message: 'Sorry for the wait. We should be done soon.',
+          });
+          _this._forceUserDownload();
           return false;
         },
       })
       .done( function( user ) {
         PTT.set( user, 'user' );
         PTT.setCookies();
+        _this.state.onDiscovered();
       });
     }
+    else {
+      this.setState({
+        message: 'Your user info could not be retreived. It looks like you are not authenticated.',
+      });
+    }
+  }
+
+  _forceUserDownload() {
+    let _this = this;
+
+    $.ajax({
+      method:     'GET',
+      beforeSend: PTT.get( 'auth' ).ajaxBeforeSend,
+      url:        PTT.get( 'site' ).url
+      + '/wp-json/premise_time_tracker/v2/currentuser/',
+      error: function( err ) {
+        _this.setState({
+          message: 'Sorry, we could not find you user. Let\'s load it manually.',
+        });
+        _this._selectUser();
+        return false;
+      },
+    })
+    .done( function( user ) {
+      PTT.set( user, 'user' );
+      PTT.setCookies();
+      _this.state.onDiscovered();
+    });
+  }
+
+  _selectUser() {
+    let _this = this;
+    $.ajax({
+      method:     'GET',
+      beforeSend: PTT.get( 'auth' ).ajaxBeforeSend,
+      url:        PTT.get( 'site' ).url
+      + '/wp-json/wp/v2/users/',
+      error: function( err ) {
+        _this.setState({
+          message: err.responseText,
+        });
+      },
+    })
+    .done( function( user ) {
+      console.log(user);
+      let _list = [
+        <option
+        key={0}
+        className="user-option">
+          Please slect YOUR user..
+        </option>
+      ];
+
+      for (var i = user.length - 1; i >= 0; i--) {
+        const _listItem = <option
+        key={user[i].id}
+        className="user-option"
+        value={user[i].id}>
+          {user[i].name}
+        </option>;
+        _list.push( _listItem );
+      }
+
+      const _select = <select
+      onInput={_this._saveUserOnSelect}>
+        {_list}
+      </select>;
+
+      _this.setState({
+        message: 'Select a user.',
+        view: _select,
+      });
+    });
+  }
+
+  _saveUserOnSelect(e) {
+    e.preventDefault();
+    const _uid = e.target.value;
+    let _this = this;
+    $.ajax({
+      method:     'GET',
+      beforeSend: PTT.get( 'auth' ).ajaxBeforeSend,
+      url:        PTT.get( 'site' ).url
+      + '/wp-json/wp/v2/users/'
+      + _uid,
+      error: function( err ) {
+        _this.setState({
+          message: err.responseText,
+        });
+      },
+    })
+    .done( function ( user ) {
+      PTT.set( user, 'user' );
+      PTT.setCookies();
+      _this.state.onDiscovered();
+    });
   }
 }
 
