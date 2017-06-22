@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import PTT from '../PTT';
-import Cookies from 'js-cookie';
 import TimerNewButton from './TimerNewButton';
 import TimerStopButton from './TimerStopButton';
 import TimerNewForm from './TimerNewForm';
 import LoadingIcon from '../LoadingIcon';
 import $ from 'jquery'; // Import jQuery.
+import TimerFetch from './TimerFetch';
 
 /**
  * Display the new timer button
@@ -14,26 +14,57 @@ class TimerNew extends Component {
   constructor(props) {
     super(props);
 
-    this._construct( true );
+    this.state = {
+      post: PTT.get('current_timer'),
+      message: '',
+      view: <LoadingIcon
+      message="Checking if you have any timers opened.." />,
+    };
+  }
+
+  componentWillMount() {
+    this._construct();
   }
 
   _construct( isConstructor ) {
-    const post = Cookies.getJSON( 'ptt_current_timer' );
-
-    const message = ( post )
-        ? this._timerStartedMessage( new Date( post.start ) )
-        : '';
-
-    const view = ( post )
-        ? <TimerStopButton post={post.id}
-                onClick={this._handleStopTimer.bind(this)} />
-        : <TimerNewButton onClick={this._handleNewTimer.bind(this)} />;
-
-    if ( isConstructor ) {
-      this.state = { post, message, view };
-    } else {
-      this.setState({ post, message, view });
-   }
+    if ( this.state.post
+      && this.state.post.id ) {
+      // we have a post saved in our cookies
+      // lets try and verify it.
+      // consle.log( this.state.post );
+      TimerFetch.getPost( this.state.post.id )
+      .then( r => {
+        if ( r.id ) {
+          // we have a post id
+          // which means we have a post.
+          this.setState({
+            message: this._timerStartedMessage(
+              new Date( this.state.post.start )
+            ),
+            view: <TimerStopButton post={this.state.post.id}
+            onClick={this._handleStopTimer.bind(this)} />,
+          });
+        }
+        else {
+          // we do not have a post.
+          // which means there will be an issue.
+          this.setState({
+            message: 'It looks like there was a timer saved in your cookies but we could not verify it. This usually means the post was removed or you no longer have access to it. Sorry for the inconvenience, please create a new timer.',
+            view: <TimerNewButton
+            onClick={this._handleNewTimer.bind(this)} />,
+          });
+          PTT.set('current_timer', {}); // delete post cookie
+          PTT.setCookies(); // reset cookies.
+        }
+      });
+    }
+    // we do not have a post
+    else {
+      this.setState({
+        view: <TimerNewButton
+        onClick={this._handleNewTimer.bind(this)} />,
+      });
+    }
   }
 
   render() {
@@ -51,7 +82,10 @@ class TimerNew extends Component {
 
     const view = <LoadingIcon />;
 
-    this.setState({ view });
+    this.setState({
+      message: '',
+      view: view,
+    });
 
     var _this = this; // Move callback to proper functions w/ bind this!!
 
@@ -66,21 +100,16 @@ class TimerNew extends Component {
         + _start.toLocaleTimeString(),
     })
     .done( function( post ) {
-      // save post info in a cookie.
-      Cookies.remove( 'ptt_current_timer' );
-      Cookies.set( 'ptt_current_timer', {
+      const _post = {
         id: post.id,
         start: _start.getTime(),
-      } );
-
+      };
+      PTT.set('current_timer', _post);
+      PTT.setCookies();
       console.log(post);
-
       _this.setState( {
-        post: {
-          id: post.id,
-          start: _start.getTime(),
-        },
-        view: <TimerStopButton post={post.id}
+        post: _post,
+        view: <TimerStopButton post={_post.id}
             onClick={_this._handleStopTimer.bind(_this)} />,
         message: _this._timerStartedMessage( _start ),
       });
