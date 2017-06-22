@@ -13,57 +13,73 @@ class PTT {
     console.log('cookies:');console.log(this.ptt);
   }
 
-  // Set whole ptt object or
-  // only an attribute by passing the key param.
-  set( ptt, key ) {
-    if ( this.ptt && key ) {
+  /**
+   * Set whole ptt object or only an attribute by passing the key param.
+   *
+   * @param {mixed}  value typically an object. can be a string or array if used with a key.
+   * @param {string} key   name to use as the key for the parameter being added to ptt. if passed, the object ptt will not be overwritten.
+   */
+  set( value, key ) {
+    if ( value && key ) {
 
-      this.ptt[ key ] = ptt;
+      this.ptt[ key ] = value;
 
-    } else if ( ptt ) {
+    }
+    else if ( value ) {
 
-      for ( var i in ptt ) {
-        this.ptt[ i ] = ptt[ i ];
+      for ( var i in value ) {
+        this.ptt[ i ] = value[ i ];
       }
 
     }
   }
 
-  // get an attribute set in this object
-  // Notcie we do not retrieve from cookies
-  // directly.
+  /**
+   * get an attribute set in this object Notcie we do not retrieve from cookies directly.
+   * sf
+   * @param  {string} key name of param to get from ptt
+   * @return {mixed}      false, or whatever value was found.
+   */
   get( key ) {
-    if ( key && key in this.ptt ) {
+    if ( ! key || 0 === key.length ) {
+      return this.ptt;
+    }
+    else if ( key && key in this.ptt ) {
       return this.ptt[ key ];
-    } else {
+    }
+    else {
       return false;
     }
   }
 
-  // set the attributes of this object
-  // as cookies in our browser.
-  // called by DiscoverWpApi -> _maybeAuthenticated
+  /**
+   * set the attributes of this object as cookies in our browser.
+   *
+   * called by DiscoverWpApi -> _maybeAuthenticated
+   *
+   * Note: An additional property will be added to our object called 'auth'. This property is not part of the _cookies const; not all of the auth property could be saved as part of our cookies. So we save it to the active window.
+   *
+   * This is a single page, fully AJAX app anyways.
+   */
   setCookies() {
+    this._reset();
     const _cookies = {
-      authenticated: this.ptt.auth && this.ptt.auth.authenticated() ? true : false,
-      creds: this.ptt.creds,
-      site: {
-        url: this.ptt.site.url,
-        name: this.ptt.site.name,
-        home: this.ptt.site.home,
+      user          : this.ptt.user,
+      current_timer : this.ptt.current_timer,
+      site          : {
+        url:         this.ptt.site.url,
+        name:        this.ptt.site.name,
+        home:        this.ptt.site.home,
         description: this.ptt.site.description,
       },
-      user: this.ptt.user,
+      creds         : this.ptt.creds,
     };
     Cookies.set( '_ptt', _cookies );
-    // console.log( 'Cookies set!' );
   }
 
-  reset() {
-    // Remove _ptt cookie, reset PTT.
+  // Remove _ptt cookie
+  _reset() {
     Cookies.remove('_ptt');
-
-    // this._init();
   }
 }
 
