@@ -315,6 +315,17 @@
   transition: .5s;
 }
 
+/**
+ * User buttons
+ */
+
+.user-buttons-wrapper {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  font-size: 24px;
+}
+
 
 /**
  * New Timer
