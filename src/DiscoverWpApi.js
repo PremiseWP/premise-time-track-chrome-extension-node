@@ -13,7 +13,8 @@ class DiscoverWpApi extends Component {
 
     this.state = {
       message: props.message || 'Let\'s find your site and get you authenticated.',
-      processing: false
+      processing: false,
+      onDiscovered: props.onDiscovered || null,
     };
 
     this._handleSubmit = this._handleSubmit.bind(this);
@@ -28,7 +29,7 @@ class DiscoverWpApi extends Component {
     const creds = PTT.get( 'creds' );
 
     if ( ! creds ) {
-      PTT.reset();
+      PTT._reset();
       return;
     }
 
@@ -165,14 +166,13 @@ class DiscoverWpApi extends Component {
         };
         // save the ptt object
         PTT.set( newPtt );
+        PTT.setCookies();
         auth.authenticate( this._maybeAuthenticated.bind(this) );
       });
     });
   }
 
   _maybeAuthenticated( error ) {
-
-    // Handle errors first.
     if ( error ) {
       // console.log(error);
       const message =  <span
@@ -182,39 +182,46 @@ class DiscoverWpApi extends Component {
 
       this.setState({ message });
     }
-    // if no errors,
-    // get user info
+    // if no errors
     else {
       this.setState({
         message: 'You\'re authenticated! Saving your user info for this session only..',
       });
-      if ( PTT.get( 'auth' )
-        && PTT.get( 'auth' ).authenticated() ) {
-        let _this = this; // reference this
-        $.ajax({
-          method: 'GET',
-          beforeSend: PTT.get( 'auth' ).ajaxBeforeSend,
-          url: PTT.get( 'site' ).url + '/wp-json/wp/v2/users/me',
-          error: function( err ) {
-            console.error(err);
-            _this.setState({
-              message: err.responseText
-            });
-            PTT.setCookies();
-            _this.props.onDiscovered();
-            return false;
-          },
-        })
-        .done( function( user ) {
-          _this.setState({
-            message: 'We\'re all set!',
-          });
-          PTT.set( user, 'user' );
-          PTT.setCookies();
-          _this.props.onDiscovered();
+      // get user info
+      this._getCurrentUser();
+      this.state.onDiscovered();
+    }
+  }
+
+  _getCurrentUser() {
+    if ( PTT.get( 'auth' )
+      && PTT.get( 'auth' ).authenticated() ) {
+      // User is authenticated, we can proceed
+      // reference 'this', we'll need it later
+      let _this = this;
+      $.ajax({
+        method:     'GET',
+        beforeSend: PTT.get( 'auth' ).ajaxBeforeSend,
+        url:        PTT.get( 'site' ).url
+                    + '/wp-json/wp/v2/users/me',
+        // there was an issue getting the user
+        // but we are authenticated.
+        // This is not right!
+        // We do not update the cookie
+        // so the app knows something is up.
+        error: function( err ) {
+          console.log('User not found.');
+          console.log(err);
+          // maybe delete cookie?
+          // PTT.set({},'user');
+          // PTT.setCookies();
           return false;
-        });
-      }
+        },
+      })
+      .done( function( user ) {
+        PTT.set( user, 'user' );
+        PTT.setCookies();
+      });
     }
   }
 }
