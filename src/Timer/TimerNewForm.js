@@ -263,13 +263,13 @@ class TimerNewForm extends Component {
     .done( function( response ) {
       console.log(response);
       // delete post cookie
-      PTT.set('current_timer', {});
+      PTT.set({},'current_timer');
       PTT.setCookies();
 
       if ( projectId ) {
         const url = PTT.get( 'endpoint' ) + '/' + id;
 
-        console.log(url);
+        // console.log(url);
 
         // Update pwptt_project_hours trick
         // Dummy POST to call the rest_insert_premise_time_tracker hook again now
