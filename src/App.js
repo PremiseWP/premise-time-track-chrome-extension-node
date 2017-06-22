@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PTT from './PTT';
-import HelpButtons from './HelpButtons';
 import LoadingIcon from './LoadingIcon';
 import Header from './Header';
 import TimerDashboard from './Timer/TimerDashboard';
@@ -26,7 +25,6 @@ class App extends Component {
         <Header />
         <div className="container">
           {this.state.view}
-          <HelpButtons onReset={this._showInit.bind(this)} />
         </div>
       </div>
     );
