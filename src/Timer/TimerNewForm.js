@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PTT from '../PTT';
 import TimerFetch from './TimerFetch';
-import Cookies from 'js-cookie';
 import LoadingIcon from '../LoadingIcon';
 import $ from 'jquery'; // Import jQuery.
 
@@ -264,7 +263,8 @@ class TimerNewForm extends Component {
     .done( function( response ) {
       console.log(response);
       // delete post cookie
-      Cookies.remove( 'ptt_current_timer' );
+      PTT.set('current_timer', {});
+      PTT.setCookies();
 
       if ( projectId ) {
         const url = PTT.get( 'endpoint' ) + '/' + id;
