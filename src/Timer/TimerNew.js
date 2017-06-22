@@ -26,6 +26,14 @@ class TimerNew extends Component {
     this._construct();
   }
 
+  _postCreated() {
+    this.setState({
+      post: PTT.get('current_timer'),
+      view: <TimerNewButton
+            onClick={this._handleNewTimer.bind(this)} />
+    });
+  }
+
   _construct( isConstructor ) {
     if ( this.state.post
       && this.state.post.id ) {
@@ -53,7 +61,7 @@ class TimerNew extends Component {
             view: <TimerNewButton
             onClick={this._handleNewTimer.bind(this)} />,
           });
-          PTT.set('current_timer', {}); // delete post cookie
+          PTT.set({},'current_timer'); // delete post cookie
           PTT.setCookies(); // reset cookies.
         }
       });
@@ -61,6 +69,7 @@ class TimerNew extends Component {
     // we do not have a post
     else {
       this.setState({
+        post: PTT.get('current_timer'),
         view: <TimerNewButton
         onClick={this._handleNewTimer.bind(this)} />,
       });
@@ -104,7 +113,7 @@ class TimerNew extends Component {
         id: post.id,
         start: _start.getTime(),
       };
-      PTT.set('current_timer', _post);
+      PTT.set(_post,'current_timer');
       PTT.setCookies();
       console.log(post);
       _this.setState( {
@@ -134,7 +143,7 @@ class TimerNew extends Component {
     const time     = ( Math.round(total * 4) / 4).toFixed(2);
 
     this.setState( {
-      view: <TimerNewForm post={this.state.post.id} total={time} onSaved={this._construct.bind(this)} />,
+      view: <TimerNewForm post={this.state.post.id} total={time} onSaved={this._postCreated.bind(this)} />,
       // message: 'Congratulations, you finished a task! Enter some information about it here to complete recording your time.',
       message: '',
     });
