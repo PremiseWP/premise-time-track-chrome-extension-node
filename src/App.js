@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import PTT from './PTT';
 import LoadingIcon from './LoadingIcon';
-import Header from './Header';
 import TimerDashboard from './Timer/TimerDashboard';
 import DiscoverWpApi from './DiscoverWpApi';
+import HelpButtons from './HelpButtons';
+import PTT from './PTT';
 import './css/App.css';
 
 /**
@@ -22,9 +22,12 @@ class App extends Component {
   render() {
     return (
       <div className="app">
-        <Header />
+        <div className="header">
+          <h2>Premise Time Tracker</h2>
+        </div>
         <div className="container">
           {this.state.view}
+          <HelpButtons />
         </div>
       </div>
     );
