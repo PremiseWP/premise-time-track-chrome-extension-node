@@ -210,7 +210,7 @@ class TimerFetch {
     + endpoint;
 
     return $.ajax({
-        method:     'GET',
+        method: 'GET',
         beforeSend: PTT.get( 'auth' ).ajaxBeforeSend,
         url: url,
     });
