@@ -326,6 +326,21 @@
   font-size: 24px;
 }
 
+.user-buttons-wrapper .user-options {
+  font-size: .6em; /* based on 24px */
+  width: 200px;
+  /*position: absolute;
+  bottom: 100%;
+  left: 0px;*/
+  margin-bottom: 10px;
+}
+
+.user-buttons-wrapper .user-options .user-name {
+  display: block;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
 
 /**
  * New Timer
