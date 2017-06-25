@@ -2,16 +2,22 @@
  * Header
  */
 .header {
-  background-color: rgb(32,111,204);
+  background-color: rgba(32,111,204,0.8);
   color: #fff;
   text-align: center;
-  padding: 25px;
+  padding: 1em 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 9999;
+  box-shadow: 0 0 .125em .0125em #444;
 }
 
 .header h2 {
   margin: 0;
-  line-height: 30px;
-  font-size: 26px;
+  line-height: 1;
+  font-size: 1.5em;
   font-weight: 400;
 }
 
@@ -236,11 +242,20 @@
 }
 
 .term-timers-list li {
+  position: relative;
   border: 1px solid rgb(238,238,238);
   border-radius: 5px;
   padding: 14px 14px 0;
   margin: 20px 0;
   font-size: 18px;
+  display: block;
+  height: auto;
+}
+
+.term-timers-list .edit-timer-ui {
+  position: absolute;
+  top: .025em;
+  right: .025em;
 }
 
 .term-timers-list li:nth-child(even) {
@@ -280,16 +295,19 @@
 }
 
 
-
+.user-buttons-wrapper,
+.help-buttons-wrapper {
+  position: fixed;
+  z-index: 9999;
+}
 
 /**
  * Reset button, New tab, Help button.
  */
 .help-buttons-wrapper {
-  position: fixed;
-  bottom: 10px;
-  right: 10px;
   font-size: 24px;
+  right: .6em;
+  bottom: .6em;
   width: 82px;
 }
 
@@ -300,12 +318,12 @@
 .new-tab-link {
   /*display: none;*/
   position: absolute;
-  right: -38px;
+  right: -43px;
 }
 
 .help-buttons-wrapper:hover .reset-link {
   position: fixed;
-  right: 38px;
+  right: 43px;
   transition: .5s;
 }
 
@@ -320,25 +338,41 @@
  */
 
 .user-buttons-wrapper {
-  position: fixed;
-  bottom: 10px;
-  left: 10px;
-  font-size: 24px;
+  /*font-size: 24px;*/
+  left: .3em;
+  bottom: .3em;
+}
+
+.user-buttons-wrapper .user-avatar {
+  width: 48px;
+  height: 48px;
+  display: block;
+  background-color: rgba(255,255,255,0.8);
+  border: 0.0125em solid #ccc;
+  border-radius: 50%;
+  /*padding: .5em;*/
+  box-sizing: content-box;
+}
+
+.user-buttons-wrapper .user-avatar img {
+  display: block;
+  margin: 0 auto;
 }
 
 .user-buttons-wrapper .user-options {
-  font-size: .6em; /* based on 24px */
+  font-size: 1em;
   width: 200px;
-  /*position: absolute;
-  bottom: 100%;
-  left: 0px;*/
-  margin-bottom: 10px;
+  margin-bottom: .5em;
+  height: auto;
+  display: block;
+  background-color: rgba(255,255,255,0.8);
+  padding: 1em;
+  border: 0.0125em solid #ccc;
+  border-radius: .3em;
 }
 
-.user-buttons-wrapper .user-options .user-name {
-  display: block;
-  font-weight: bold;
-  margin-top: 5px;
+.user-buttons-wrapper .user-options a {
+  text-decoration: none;
 }
 
 
@@ -383,6 +417,10 @@
 /**
  * New Timer form
  */
+.timer-new-form {
+  display: block;
+  margin-bottom: 1em;
+}
 .timer-new-form.processing {
   position: relative;
   height: 100%;
