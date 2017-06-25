@@ -7,11 +7,18 @@ class UserButtons extends Component {
     super(props);
 
     this._showOptions = this._showOptions.bind(this);
-    this._hideOptions = this._hideOptions.bind(this);
+    this._toggleOptions = this._toggleOptions.bind(this);
+    this._logout = this._logout.bind(this);
 
     this.state = {
       view: null,
       options: '',
+      link: (this.props.user && this.props.user.id)
+      ? PTT.get('site').url
+        + '/wp-admin/user-edit.php?user_id='
+        + this.props.user.id
+      : '',
+      optionsOpened: false,
     };
   }
 
@@ -22,52 +29,59 @@ class UserButtons extends Component {
   }
 
   render() {
-    const _userLink = (this.props.user.id)
-    ? PTT.get('site').url
-      + '/wp-admin/user-edit.php?user_id='
-      + this.props.user.id
-    : '';
-
-    const _avatar = (this.props.user.avatar_urls
-      && this.props.user.avatar_urls[24])
-    ? <img
-      src={this.props.user.avatar_urls[24]}
-      alt={this.props.user.name}
-      title="Visit Your Profile" />
-    : <FontAwesome
-      name="user"
-      title="Visit Your Profile" />;
-
     return(
       <div
       className="user-buttons-wrapper"
-      onMouseEnter={this._showOptions.bind(this)}
-      onMouseLeave={this._hideOptions.bind(this)}>
-        {this.state.options}
-        <a href={_userLink}
-        target="_blank">
-          {_avatar}
-        </a>
+      onClick={this._toggleOptions}>
+        {(this.state.optionsOpened) ? this._showOptions() : ''}
+        <div className="user-avatar">
+          <img
+          src={this.props.user.avatar_urls[48]}
+          alt={this.props.user.name}
+          title="Visit Your Profile" />
+        </div>
       </div>
     );
   }
 
   _showOptions() {
+    return (
+      <div className="user-options">
+        <p>
+          <span className="user-name">
+            {this.props.user.name}
+          </span>
+        </p>
+        <p>
+          <a href={this.state.link} target="_blank">
+            <FontAwesome
+            name="user"
+            title="Visit My Profile" />
+            &nbsp;Visit My Profile
+          </a>
+        </p>
+        <p>
+          <a href="#" onClick={this._logout} target="_blank">
+            <FontAwesome
+            name="chain-broken"
+            title="Logout" />
+            &nbsp;Logout
+          </a>
+        </p>
+      </div>
+    );
+  }
+
+  _toggleOptions() {
     this.setState({
-      options: <div
-      className="user-options">
-        You are logged in as:
-        <span className="user-name">
-          {this.props.user.name}
-        </span>
-      </div>,
+      optionsOpened: (this.state.optionsOpened) ? false : true,
     });
   }
 
-  _hideOptions() {
-    this.setState({
-      options: '',
-    });
+  _logout(e) {
+    e.preventDefault();
+    PTT._reset();
+    location.reload();
   }
 }
 
