@@ -360,7 +360,6 @@
 }
 
 .user-buttons-wrapper .user-options {
-  font-size: 1em;
   width: 200px;
   margin-bottom: .5em;
   height: auto;
@@ -369,6 +368,7 @@
   padding: 1em;
   border: 0.0125em solid #ccc;
   border-radius: .3em;
+  overflow: hidden;
 }
 
 .user-buttons-wrapper .user-options a {

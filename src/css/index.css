@@ -39,6 +39,12 @@ body {
 code {
 	white-space: nowrap;
 	overflow: auto;
+	display: inherit;
+}
+
+pre {
+	display: block;
+	overflow: auto;
 }
 
 img {
@@ -102,6 +108,11 @@ hr {
 
 a {
 	color: #5d5d5d;
+}
+
+p {
+	line-height: 1.5;
+	font-size: 1em;
 }
 
 input, textarea {
