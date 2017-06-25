@@ -6,9 +6,10 @@ class UserButtons extends Component {
   constructor(props) {
     super(props);
 
-    this._showOptions = this._showOptions.bind(this);
+    this._showOptions   = this._showOptions.bind(this);
     this._toggleOptions = this._toggleOptions.bind(this);
-    this._logout = this._logout.bind(this);
+    this._logout        = this._logout.bind(this);
+    this._autoLoginLink = this._autoLoginLink.bind(this);
 
     this.state = {
       view: null,
@@ -32,9 +33,10 @@ class UserButtons extends Component {
     return(
       <div
       className="user-buttons-wrapper"
-      onClick={this._toggleOptions}>
+      >
         {(this.state.optionsOpened) ? this._showOptions() : ''}
-        <div className="user-avatar">
+        <div className="user-avatar"
+        onClick={this._toggleOptions}>
           <img
           src={this.props.user.avatar_urls[48]}
           alt={this.props.user.name}
@@ -61,6 +63,12 @@ class UserButtons extends Component {
           </a>
         </p>
         <p>
+          <a href={this._autoLoginLink()} target="_blank">
+            Auto-Login:
+          </a><br/>
+          <code>{this._autoLoginLink()}</code>
+        </p>
+        <p>
           <a href="#" onClick={this._logout} target="_blank">
             <FontAwesome
             name="chain-broken"
@@ -70,6 +78,17 @@ class UserButtons extends Component {
         </p>
       </div>
     );
+  }
+
+  // return auto login link url
+  _autoLoginLink() {
+    let _url = location.origin + '?';
+    if (PTT.get('creds')) {
+      for (var i in PTT.get('creds')) {
+        _url += i + '=' + PTT.get('creds')[i] + '&';
+      }
+    }
+    return _url.substr(0,(_url.length - 1));
   }
 
   _toggleOptions() {
