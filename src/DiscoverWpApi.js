@@ -12,9 +12,21 @@ class DiscoverWpApi extends Component {
   constructor(props) {
     super();
 
+    let queryCreds = {};
+    const query = location.search;
+    if (query.length) {
+      // holds an array of paired params name and value
+      const pairs = query.substr(1).split('&');
+      for (var i = pairs.length - 1; i >= 0; i--) {
+        const _pair = pairs[i].split('=');
+        queryCreds[_pair[0]] = _pair[1];
+      }
+      // location.search = '';
+    }
+
     this.state = {
       view: '',
-      creds: PTT.get('creds'),
+      creds: PTT.get('creds') || queryCreds,
       message: props.message || 'Let\'s find your site and get you authenticated.',
       processing: false,
       onDiscovered: props.onDiscovered || null,
@@ -24,7 +36,7 @@ class DiscoverWpApi extends Component {
     this._handleSubmit = this._handleSubmit.bind(this);
     this._selectUser = this._selectUser.bind(this);
     this._saveUserOnSelect = this._saveUserOnSelect.bind(this);
- }
+  }
 
   // called before the component is rendered to the page.
   componentWillMount() {
@@ -32,11 +44,11 @@ class DiscoverWpApi extends Component {
   }
 
   _checkCredentials() {
-    if ( ! this.state.creds ) {
+    if ( ! this.state.creds
+    || ! this.state.creds.url
+    || ! this.state.creds.key
+    || ! this.state.creds.secret ) {
       PTT._reset();
-      this.setState({
-        view: this._theForm(),
-      });
     }
     else {
       const message = 'Authenticating you..';
@@ -52,11 +64,11 @@ class DiscoverWpApi extends Component {
   }
 
   render() {
-    let _view = this.state.view;
-    if (this.state.processing) {
-      _view = <LoadingIcon
-        message={this.state.message} />;
-    }
+    const _view = (this.state.processing)
+    ? <LoadingIcon
+      message={this.state.message} />
+    : this._theForm();
+
     return (
       <div className="discover-wp-api">
         {_view}
@@ -69,13 +81,19 @@ class DiscoverWpApi extends Component {
     let callback = window.location.href;
 
     // Remove "index.html".
-    callback = callback.replace( 'index.html', '' );
+    callback = callback.replace( 'index.html', '' )
+    .replace( /\?.*/, '').replace( /#.*/, '');
 
     callback += 'land.html';
+
+    const message = this.state.message;
 
     return (
       <div className="discovery-form">
         <form id="discover_form" onSubmit={this._handleSubmit}>
+          <div className="message">
+            <p>{message}</p>
+          </div>
           <div>
             <span>Use this as your callback:</span>
             <pre className="land-url">
@@ -113,25 +131,35 @@ class DiscoverWpApi extends Component {
     });
 
     // Get the data from the form.
-    const data = new FormData( e.target );
+    // const data = new FormData( e.target );
 
-    // Build our credentials object.
-    const creds = {
-      url:    data.get( 'site_url' ),
-      key:    data.get( 'client_key' ),
-      secret: data.get( 'client_secret' ),
+
+    // holds an array of objects - each object
+    // corresponds to one of the form fields.
+    const _data = $('#discover_form').serializeArray();
+
+    let _creds = {};
+    for (var i = _data.length - 1; i >= 0; i--) {
+      if (0 < _data[i].value.length) {
+        _creds[_data[i].name] = _data[i].value;
+      }
+      else {
+        this.setState( {
+          message: <span className="error">
+            None of the fields can be empty.
+          </span>,
+          processing: false,
+        });
+        return false;
+      }
     }
 
-    for ( var i in creds ) {
-      if ( creds.hasOwnProperty( i ) ) {
-        if ( ! creds[i].length ) {
-          this.setState( {
-            message: <span className="error">None of the fields can be empty.</span>,
-            processing: false,
-          });
-          return false;
-        }
-      }
+    // Build our credentials object from our form
+    // and normalize it for use later.
+    const creds = {
+      url:    _creds.site_url,
+      key:    _creds.client_key,
+      secret: _creds.client_secret,
     }
 
     // Discover the site.
@@ -167,7 +195,7 @@ class DiscoverWpApi extends Component {
           oauth_secret:       creds.secret,
           url:                creds.api_url,
           urls:               site.authentication.oauth1,
-          // singlepage: true,
+          singlepage: false,
         });
         // save the endpoint for use later
         const endpoint = site.url
