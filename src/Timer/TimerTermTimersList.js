@@ -158,8 +158,13 @@ class TimerTermTimersList extends Component {
       otherTaxonomyName = 'project';
     }
 
+    // get projects tax terms
+    const _projects = TimerDB.get( 'project' );
+
     let projectOrClient,
-      projectOrClientName;
+      projectOrClientName,
+      _projectExists,
+      projectName;
 
     // Returns an array...
     return this.state.timers.map((timer) => {
@@ -171,6 +176,14 @@ class TimerTermTimersList extends Component {
         return projectOrClient.id === timer['premise_time_tracker_' + otherTaxonomyName][0];
       });
 
+      _projectExists = _projects.find( function( _p ) {
+        return _p.id === timer['premise_time_tracker_project'][0];
+      });
+
+      if (_projectExists) {
+        projectName = _projectExists.name;
+      }
+
       if ( projectOrClient ) {
         projectOrClientName = projectOrClient.name;
       } else {
@@ -180,6 +193,7 @@ class TimerTermTimersList extends Component {
       return ( <TimerTermTimer
         timer={timer /* Pass the whole timer */}
         projectOrClientName={projectOrClientName}
+        projectName={projectName}
         taxonomyName={taxonomyName}
         key={taxonomyName + timer.id} /> );
         // Unique key.
