@@ -30,7 +30,7 @@ class TimerNew extends Component {
     this.setState({
       post: PTT.get('current_timer'),
       view: <TimerNewButton
-            onClick={this._handleNewTimer.bind(this)} />
+      onClick={this._handleNewTimer.bind(this)} />,
     });
   }
 
@@ -103,7 +103,7 @@ class TimerNew extends Component {
 
     $.ajax({
       beforeSend: PTT.get('auth').ajaxBeforeSend,
-      method: 'POST', // Create a post. 'GET' retrieves them.
+      method: 'POST',
       url: PTT.get('endpoint')
         + '?status=publish&title=Timer in progress create by PTT at '
         + _start.toLocaleTimeString(),
