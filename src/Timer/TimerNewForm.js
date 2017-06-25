@@ -127,7 +127,8 @@ class TimerNewForm extends Component {
                 list="projects" className="new-tag-input"
                 ref={(input) => this._project = input}
                 onChange={this._checkTaxExists.bind(this)}
-                onBlur={this._saveTax.bind(this)} />
+                onBlur={this._saveTax.bind(this)}
+                value={state.form.project} />
               {projectsList}
             </label>
           </div>
