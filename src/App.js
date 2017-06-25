@@ -15,7 +15,8 @@ class App extends Component {
 
     this.state = {
       view: <LoadingIcon
-        message="Locating your info.."/>
+        message="Locating your info.."/>,
+      help: <HelpButtons />,
     }
   }
 
@@ -27,7 +28,7 @@ class App extends Component {
         </div>
         <div className="container">
           {this.state.view}
-          <HelpButtons />
+          {this.state.help}
         </div>
       </div>
     );
@@ -59,7 +60,7 @@ class App extends Component {
   _showDashboard() {
     const view = <TimerDashboard />;
 
-    this.setState({ view });
+    this.setState({ view, help: '' });
   }
 }
 
