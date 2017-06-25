@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PTT from '../PTT';
 import TimerFetch from './TimerFetch';
 import LoadingIcon from '../LoadingIcon';
+import TimerDB from './TimerDB';
 import $ from 'jquery'; // Import jQuery.
 
 /**
@@ -68,8 +69,6 @@ class TimerNewForm extends Component {
       message={this.state.formState} />
     : '';
 
-
-
     const disabled = this.state.processing;
 
     return (
@@ -115,7 +114,8 @@ class TimerNewForm extends Component {
                 list="clients" className="new-tag-input"
                 ref={(input) => this._client = input}
                 onChange={this._checkTaxExists.bind(this)}
-                onBlur={this._saveTax.bind(this)} />
+                onBlur={this._saveTax.bind(this)}
+                value={state.form.client} />
               {clientsList}
             </label>
           </div>
@@ -176,16 +176,30 @@ class TimerNewForm extends Component {
     // get the post and save it
     TimerFetch.getPost( this.state.form.id )
     .then( _p => {
+      let _foundClient, _foundProject;
+
+      if ( _p.premise_time_tracker_client.length ) {
+        const _clientList = TimerDB.get( 'client' );
+
+        _foundClient = _clientList.find( function( client ) {
+          return client.id === _p.premise_time_tracker_client[0]
+        });
+      }
+
+      if ( _p.premise_time_tracker_project.length ) {
+        const _projectList = TimerDB.get( 'project' );
+
+        _foundProject = _projectList.find( function( project ) {
+          return project.id === _p.premise_time_tracker_project[0]
+        });
+      }
+
       // Build form before showing it.
       const buildForm = Object.assign( this.state.form, {
         title: _p.title.rendered,
         content: _p.content.rendered,
-        client: ( _p.premise_time_tracker_client.length )
-            ? _p.premise_time_tracker_client.split(',')
-            : '',
-        project: ( _p.premise_time_tracker_project.length )
-             ? _p.premise_time_tracker_project.split(',')
-             : '',
+        client: (_foundClient) ? _foundClient.name : '',
+        project: (_foundProject) ? _foundProject.name : '',
       } );
       this.setState( {
         post: _p,
@@ -210,8 +224,6 @@ class TimerNewForm extends Component {
     e.preventDefault();
 
     this._startProcess('Saving timer..');
-
-    $('body').animate({scrollTop: 0}, 400);
 
     // Reference 'this'
     let _this = this;
@@ -254,44 +266,49 @@ class TimerNewForm extends Component {
       + '?'
       + parser.substr(1, parser.length);
 
-    // save our timer
-    $.ajax( {
-      url: query,
-      method: 'POST',
-      beforeSend: PTT.get('auth').ajaxBeforeSend,
-    })
-    .done( function( response ) {
-      console.log(response);
-      // delete post cookie
-      PTT.set({},'current_timer');
-      PTT.setCookies();
+    if ( PTT.get('auth')
+      && PTT.get('auth').authenticated() ){
+      // save our timer
+      $.ajax( {
+        url: query,
+        method: 'POST',
+        beforeSend: PTT.get('auth').ajaxBeforeSend,
+        error: function( err ) {
+          console.error( err );
+          _this.setState( {
+            processing: true,
+            formState: <span className="error">err.responseText</span>
+          });
+          // _this._endProcess();
+          return false;
+        },
+      })
+      .done( function( response ) {
+        console.log(response);
+        // delete post cookie
+        PTT.set({},'current_timer');
+        PTT.setCookies();
 
-      if ( projectId ) {
-        const url = PTT.get( 'endpoint' ) + '/' + id;
+        if ( projectId ) {
+          const url = PTT.get( 'endpoint' ) + '/' + id;
 
-        // console.log(url);
+          // console.log(url);
 
-        // Update pwptt_project_hours trick
-        // Dummy POST to call the rest_insert_premise_time_tracker hook again now
-        // as the timer should now be related to the project.
-        $.ajax( {
-          url: url,
-          method: 'POST',
-          beforeSend: PTT.get('auth').ajaxBeforeSend,
-        }).done( function( response ) {
-          // Global callback fetch / update project terms.
-          window.updateProjectWidgetTerms(response);
-        });
-      }
-      _this.state.onSavedCb();
-    })
-    .fail( function( err ) {
-      console.error( err );
-      _this.setState( {
-        message: <span className="error">err.responseText()</span>
+          // Update pwptt_project_hours trick
+          // Dummy POST to call the rest_insert_premise_time_tracker hook again now
+          // as the timer should now be related to the project.
+          $.ajax( {
+            url: url,
+            method: 'POST',
+            beforeSend: PTT.get('auth').ajaxBeforeSend,
+          }).done( function( response ) {
+            // Global callback fetch / update project terms.
+            window.updateProjectWidgetTerms(response);
+          });
+        }
+        _this.state.onSavedCb();
       });
-      _this._endProcess();
-    });
+    }
   }
 
   _listTax( terms, taxonomyName ) {
@@ -340,17 +357,33 @@ class TimerNewForm extends Component {
       message[tax] = <span className="notification">Confirm saving new item</span>;
     }
 
+    const _taxonomy = ('premise_time_tracker_client' === tax)
+    ? 'client'
+    : 'project';
+    let _newForm = {}
+    _newForm[_taxonomy] = e.target.value;
+
     this.setState({
       processing: inProcess,
       fieldMessage: message,
+      form: Object.assign( this.state.form, _newForm ),
     });
   }
 
   _saveTax(e) {
     const term     = e.target.value;
     const taxonomy = e.target.name;
+
     if ( term.length
       && !this._checkTermId(taxonomy, term) ) {
+
+      let msg = {};
+      msg[taxonomy] = <span className="notification">Saving</span>;
+
+      this.setState({
+        fieldMessage: msg,
+      });
+
       let _this = this;
       $.ajax({
         method: 'POST',
@@ -364,7 +397,6 @@ class TimerNewForm extends Component {
         let taxList = _this.state[taxonomy];
         taxList.push(newTerm);
 
-        let msg = {};
         msg[taxonomy] = <span className="notification">Saved</span>;
 
         _this.setState({
