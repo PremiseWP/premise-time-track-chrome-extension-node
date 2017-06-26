@@ -145,58 +145,44 @@ class TimerTermTimersList extends Component {
 
   // Underscore helps distinguish custom methods from React methods.
   _getTimers() {
-
-    this._totalHours = 0;
+    // start with empty total
+    this._totalHours = 0.00;
 
     const taxonomyName = this.props.taxonomyName;
 
-    let otherTaxonomyName = 'client';
+    const _otherTax = ('client' === taxonomyName)
+    ? 'project'
+    : 'client';
 
-    const projectsOrClients = TimerDB.get( otherTaxonomyName );
-
-    if ( taxonomyName === 'client' ) {
-      otherTaxonomyName = 'project';
-    }
-
-    // get projects tax terms
-    const _projects = TimerDB.get( 'project' );
-
-    let projectOrClient,
-      projectOrClientName,
-      _projectExists,
-      projectName;
-
+    const _taxCollection = TimerDB.get( _otherTax );
+    console.log(_taxCollection);
+    // get projects
+    // array of taxonomy objects
+    // const _projects = TimerDB.get( 'project' );
     // Returns an array...
     return this.state.timers.map((timer) => {
+      // add this timer's time to the total
+      this._totalHours += ( timer.pwptt_hours )
+      ? parseFloat(timer.pwptt_hours)
+      : 0.00;
 
-      this._totalHours += ( timer.pwptt_hours ) ? parseFloat(timer.pwptt_hours) : 0.00;
-
-      projectOrClient = projectsOrClients.find(function( projectOrClient ) {
-
-        return projectOrClient.id === timer['premise_time_tracker_' + otherTaxonomyName][0];
+      let projectName = '';
+      // check for taxonomy
+      const _taxMatch = _taxCollection.find( function( _p ) {
+        return _p.id === timer['premise_time_tracker_'+_otherTax][0];
       });
-
-      _projectExists = _projects.find( function( _p ) {
-        return _p.id === timer['premise_time_tracker_project'][0];
-      });
-
-      if (_projectExists) {
-        projectName = _projectExists.name;
+      // save name if project found
+      if ('undefined' !== typeof _taxMatch) {
+        projectName = _taxMatch.name;
       }
-
-      if ( projectOrClient ) {
-        projectOrClientName = projectOrClient.name;
-      } else {
-        projectOrClientName = '\u00A0'; // &nbsp;.
-      }
-
-      return ( <TimerTermTimer
-        timer={timer /* Pass the whole timer */}
-        projectOrClientName={projectOrClientName}
-        projectName={projectName}
-        taxonomyName={taxonomyName}
-        key={taxonomyName + timer.id} /> );
-        // Unique key.
+      // return timer module
+      return (
+        <TimerTermTimer
+          timer={timer}
+          projectName={projectName}
+          taxonomyName={this.props.taxonomyName}
+          key={this.props.taxonomyName + timer.id} />
+      );
     });
   }
 
