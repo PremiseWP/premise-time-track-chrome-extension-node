@@ -256,6 +256,12 @@ class TimerNewForm extends Component {
         parser += '&' + fields[i].name + '=' + fields[i].value;
       }
       else {
+        // if taxonomies are empty attempt to delete.
+        if ( fields[i].name === 'premise_time_tracker_client' ||
+             fields[i].name === 'premise_time_tracker_project' ) {
+          fields[i].value = 0;
+          parser += '&' + fields[i].name + '=' + -1;
+        }
         // save the id separately
         id = fields[i].value;
       }
