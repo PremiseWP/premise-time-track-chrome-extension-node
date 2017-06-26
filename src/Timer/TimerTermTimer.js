@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import $ from 'jquery'; // Import jQuery.
 import TimerNewForm from './TimerNewForm';
 import TimerFetch from './TimerFetch';
+import TimerDB from './TimerDB';
 import FontAwesome from 'react-fontawesome';
 
 class TimerTermTimer extends Component {
@@ -21,6 +22,7 @@ class TimerTermTimer extends Component {
       onEditTimerClick: props.onEditTimerClick || null,
       view: this._theTimer(),
       controls: this._editTimerControls(),
+      onEdit: props.onEdit || null,
     }
   }
 
@@ -34,7 +36,24 @@ class TimerTermTimer extends Component {
   }
 
   _theTimer(timer) {
-    timer = timer || this.props.timer
+    timer = timer || this.props.timer;
+
+    let projectName;
+
+    const _taxName = this.props.taxonomyName;
+    const _otherTax = ('client' === _taxName) ? 'project' : 'client';
+
+    if (timer['premise_time_tracker_'+_otherTax].length) {
+
+      const _otherTaxCollection = TimerDB.get(_otherTax)
+      .find(function(_tax){
+        return _tax.id === timer['premise_time_tracker_'+_otherTax][0];
+      });
+      projectName = ('undefined' !== typeof _otherTaxCollection)
+      ? _otherTaxCollection.name
+      : '';
+    }
+
     return(
       <div>
         <h4>
@@ -48,7 +67,7 @@ class TimerTermTimer extends Component {
             dangerouslySetInnerHTML={this._formatDescription( timer.content.rendered )} />
           <div className="timer-details-bottom-wrapper">
             <p className="timer-project">
-              {this.props.projectName}
+              {projectName}
             </p>
             <p className="timer-hours">
               {timer.pwptt_hours} hrs
