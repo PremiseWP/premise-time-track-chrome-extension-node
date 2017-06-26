@@ -3,10 +3,14 @@ import LoadingIcon from '../LoadingIcon';
 import TimerTermTimer from './TimerTermTimer';
 import TimerFetch from './TimerFetch';
 import TimerDB from './TimerDB';
+import FontAwesome from 'react-fontawesome';
 
 class TimerTermTimersList extends Component {
   constructor() {
     super(); // super() must be called in our constructor.
+
+    this._fetchTimers = this._fetchTimers.bind(this);
+    this._refreshTimerList = this._refreshTimerList.bind(this);
 
     this.state = {
       timers: [],
@@ -120,6 +124,9 @@ class TimerTermTimersList extends Component {
                 ref={(input) => this._rangeFilterInput = input} />
             </div>
           </div>
+          <a href="#" onClick={this._refreshTimerList} className="terms-refresh">
+            <FontAwesome name="refresh" />
+          </a>
           <div className="term-total-hours-wrapper">
             {this._totalHours} hrs
           </div>
@@ -155,7 +162,6 @@ class TimerTermTimersList extends Component {
     : 'client';
 
     const _taxCollection = TimerDB.get( _otherTax );
-    console.log(_taxCollection);
     // get projects
     // array of taxonomy objects
     // const _projects = TimerDB.get( 'project' );
@@ -179,7 +185,6 @@ class TimerTermTimersList extends Component {
       return (
         <TimerTermTimer
           timer={timer}
-          projectName={projectName}
           taxonomyName={this.props.taxonomyName}
           key={this.props.taxonomyName + timer.id} />
       );
@@ -297,6 +302,11 @@ class TimerTermTimersList extends Component {
     // console.log(beforeDate, afterDate);
 
     this._fetchTimers( beforeDate, afterDate );
+  }
+
+  _refreshTimerList(e) {
+    e.preventDefault();
+    this._fetchTimers();
   }
 }
 
