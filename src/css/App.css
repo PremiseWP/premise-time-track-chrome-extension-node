@@ -172,6 +172,13 @@
   display: block;
 }
 
+.terms-refresh {
+  display: inline-block;
+  vertical-align: middle;
+  font-size: 1.5em;
+  margin: 0 0 0 .8em;
+}
+
 /* https://davidwalsh.name/demo/css-triangles.php */
 .term-filters:before, .term-filters:after {
   content: ' ';
@@ -256,6 +263,13 @@
   position: absolute;
   top: .025em;
   right: .025em;
+  text-align: center;
+}
+
+.term-timers-list .edit-timer-ui a {
+  width: 1em;
+  height: 1em;
+  display: inline-block;
 }
 
 .term-timers-list li:nth-child(even) {
