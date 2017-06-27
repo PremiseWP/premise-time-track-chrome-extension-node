@@ -1,0 +1,25 @@
+<svg width="112px" height="118px" viewBox="0 0 112 118" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="timer_svg">
+    <title>Premise Time Tracker - Timer Icon</title>
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Apple-Touch-Icon" transform="translate(-34.000000, -32.000000)" stroke="#4A4A4A">
+            <g id="Icon">
+                <g id="Timer" transform="translate(33.000000, 32.000000)">
+                    <ellipse id="Oval" cx="56.8245614" cy="61.75" rx="55.1754386" ry="55.25"></ellipse>
+                    <ellipse id="Oval-2" fill="#4A4A4A" cx="56.8245614" cy="61.75" rx="1" ry="1"></ellipse>
+                    <g id="Group-Copy-2" transform="translate(102.032252, 26.187404) scale(-1, 1) rotate(309.000000) translate(-102.032252, -26.187404) translate(97.032252, 22.187404)">
+                        <path d="M1.59649205,6.5235711 L1.59649205,1.625" id="Path-3"></path>
+                        <path d="M8.08772012,6.5235711 L8.08772012,1.625" id="Path-3-Copy"></path>
+                        <rect id="Rectangle-6" x="0.5" y="0.5" width="8.73684211" height="1" rx="0.5"></rect>
+                    </g>
+                    <g id="Group" transform="translate(29.292609, 55.371891) rotate(140.000000) translate(-29.292609, -55.371891) translate(11.792609, 31.871891)" stroke-linecap="round">
+                        <path d="M0.649122807,0.773144531 L0.649122807,46.3353516" id="Path-4"></path>
+                        <path d="M0.926774945,0.773144531 L34.0320381,0.773144531" id="Path-4-Copy"></path>
+                    </g>
+                    <g id="Group-Copy-3" transform="translate(56.666667, 4.000000) scale(-1, 1) translate(-56.666667, -4.000000) translate(50.666667, 0.000000)">
+                        <rect id="Rectangle-6" x="0.5" y="0.5" width="10.6842105" height="6.15" rx="1"></rect>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
